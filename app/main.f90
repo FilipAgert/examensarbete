@@ -1,7 +1,6 @@
 program main
-  use markovSparse, only: compareSparseRunTime, test
-  use twoDimensionalMarkov, only: run
+  use markovMatrixExamples, only: compareSparseRunTime, test
   implicit none
 
-  call test()
+  call compareSparseRunTime()
 end program main

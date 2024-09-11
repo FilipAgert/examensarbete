@@ -28,6 +28,15 @@ module denseMatrix
             close(unit = 9)
         end subroutine printMatrixToFile
         
+        function getMiddleCell(dimSize)
+            integer, intent(in), dimension(:) :: dimSize
+            integer, dimension(SIZE(dimSize)) :: getMiddleCell
+            integer :: i
+            do i = 1 , SIZE(dimSize)
+                getMiddleCell(i) = (dimSize(i)- 1)/2 + 1
+            end do
+        end function getMiddleCell
+
         subroutine printMatrix(A)
             !Prints two dimensional matrix A to console output.
             real(dp), dimension(:,:), intent(in) :: A
@@ -43,42 +52,9 @@ module denseMatrix
             return
         end subroutine printMatrix
         
-        subroutine linkStates(A, fromCoord, toCoord, dimSize)
-            !Links two states for matrix A. Returns nothing, A is directly modified.
-            !Modifies probability such that total probability to leave fromCoord is still equal 1.
-            real(dp), dimension(:,:) :: A
-            integer, dimension(:) , intent(in) :: fromCoord, toCoord, dimSize
-            integer :: fromIdx, toIdx, i, idx
-            integer, dimension(:,:), allocatable :: neighbours
-            real(dp) :: prob
-            
-            fromIdx = linearIdxFromCoord(fromCoord, dimSize)
-            toIdx = linearIdxFromCoord(toCoord, dimSize)
-            neighbours = pruneNeighbours(getNeighbours(fromCoord), dimSize)
-            
-            do i = 1, SIZE(neighbours, 2)
-                if (all(toCoord == neighbours(:, i))) then
-                    return !If toCoord already in list of neighbours, no need to link.
-                end if
-            end do
-            
-            prob = 1.0/(Size(neighbours,2) + 1.0)
-            A(toIdx, fromIdx) = prob
-            do i = 1, SIZE(neighbours,2)
-                idx = linearIdxFromCoord(neighbours(:,i), dimSize)
-                A(idx, fromIdx) = prob
-            end do
-        end subroutine linkStates
         
-        function getMiddleCell(dimSize)
-            !Gives middle coordinate for a given number of coordinates in dimSize
-            integer, intent(in), dimension(:) :: dimSize
-            integer, dimension(SIZE(dimSize)) :: getMiddleCell
-            integer :: i
-            do i = 1 , SIZE(dimSize)
-                getMiddleCell(i) = (dimSize(i)- 1)/2 + 1
-            end do
-        end function getMiddleCell
+        
+        
         
         function walkMatrix(dimSize)
             !Creates matrix containing transition probabilities for every state
@@ -164,7 +140,32 @@ module denseMatrix
                 getNeighbours(i, 2*i + 1) = coord(i) + 1
             end do
         end function getNeighbours
-        
+        subroutine linkStates(A, fromCoord, toCoord, dimSize)
+            !Links two states for matrix A. Returns nothing, A is directly modified.
+            !Modifies probability such that total probability to leave fromCoord is still equal 1.
+            real(dp), dimension(:,:) :: A
+            integer, dimension(:) , intent(in) :: fromCoord, toCoord, dimSize
+            integer :: fromIdx, toIdx, i, idx
+            integer, dimension(:,:), allocatable :: neighbours
+            real(dp) :: prob
+            
+            fromIdx = linearIdxFromCoord(fromCoord, dimSize)
+            toIdx = linearIdxFromCoord(toCoord, dimSize)
+            neighbours = pruneNeighbours(getNeighbours(fromCoord), dimSize)
+            
+            do i = 1, SIZE(neighbours, 2)
+                if (all(toCoord == neighbours(:, i))) then
+                    return !If toCoord already in list of neighbours, no need to link.
+                end if
+            end do
+            
+            prob = 1.0/(Size(neighbours,2) + 1.0)
+            A(toIdx, fromIdx) = prob
+            do i = 1, SIZE(neighbours,2)
+                idx = linearIdxFromCoord(neighbours(:,i), dimSize)
+                A(idx, fromIdx) = prob
+            end do
+        end subroutine linkStates
         function coordFromLinearIdx(idx, dimSize)
         !Function converts linear idx to coordinates
             integer, intent(in) :: idx
