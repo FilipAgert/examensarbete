@@ -1,154 +1,18 @@
-module twoDimensionalMarkov
-    use fsparse
+module denseMatrix
+    
     use iso_fortran_env, only: dp=>real64
     implicit none
-    public :: run, sparse
-    
-    
-    contains
-        subroutine sparse()
-
-        end subroutine sparse
-
-        subroutine run()
-            integer , dimension(2) :: coord, dimSize, linkedRow, linkedCol
-            integer i, midPointRow, midPointCol
-            double precision, dimension(:,:), allocatable :: A, grid
-            double precision, dimension(:), allocatable :: probabilityCoeffs
-
-            character (len=100) :: filePath
-            filePath = "A.txt"
-            dimSize(1) = 101
-            dimSize(2) = 101
-            midPointRow = dimSize(1)/2 + 1
-            midPointCol = dimSize(2)/2 + 1
-            allocate(probabilityCoeffs(dimSize(1)*dimSize(2)))
-            A = walkMatrix(dimSize)
-            
-            linkedRow = (/midPointRow,1/)
-            linkedCol = (/1, midPointCol/)
-            
-            
-            do i = 1, 3
-                coord(2) = linkedRow(2)
-                coord(1) = linkedRow(1) + i
-                call linkCells(A, coord, getMiddleCell(dimSize), dimSize)
-                coord(1) = linkedRow(1) - i
-                call linkCells(A, coord, getMiddleCell(dimSize), dimSize)
-            end do
-            
-            do i = 1, 3
-                coord(1) = linkedCol(1)
-                coord(2) = linkedCol(2) + i
-                call linkCells(A, coord, getMiddleCell(dimSize), dimSize)
-                coord(2) = linkedCol(2) - i
-                call linkCells(A, coord, getMiddleCell(dimSize), dimSize)
-                
-            end do
-            
-            
-            
-            probabilityCoeffs = 0
-            probabilityCoeffs(linearIdxFromCoord(getMiddleCell(dimSize), dimSize)) = 1.0 !Initialize middle cell to 1
-            
-            !timeSteps = 250
-            !probabilityCoeffs = timeStep(A, probabilityCoeffs, timeSteps)
-            probabilityCoeffs = timeStepUntilConvergence(A, probabilityCoeffs)
-            grid = gridFromColumnVector(probabilityCoeffs, dimSize)
-            call printMatrix(grid)
-            call printMatrixToFile(filePath, grid)
-        end subroutine run
-
-        function timeStep(matrix, probabilityCoeffs, steps) !This computes A^k then applies to V
-        !MUCH SLOWER THAN TIMESTEP2
-            integer, intent(in) :: steps
-            double precision, dimension(:), intent(in) :: probabilityCoeffs
-            double precision, dimension(SIZE(probabilityCoeffs)) :: timeStep
-            double precision, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
-            double precision, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)) :: tempMatrix
-            integer :: i
-            tempMatrix = matrix
-            timeStep = 0
-            do i = 2, steps
-                tempMatrix = MATMUL(matrix, tempMatrix)
-            end do
-            timeStep = MATMUL(tempMatrix, probabilityCoeffs)
-        end function timeStep
-        function timeStep2(matrix, probabilityCoeffs, steps) !This computes repeated matrix multiplication (A*(A*...*(A*V)
-            integer, intent(in) :: steps                     !In order to only have to store one matrix
-            double precision, dimension(:), intent(in) :: probabilityCoeffs
-            double precision, dimension(SIZE(probabilityCoeffs)) :: timeStep2
-            double precision, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
-            integer :: i
-            timeStep2 = probabilityCoeffs
-            do i = 1, steps
-                timeStep2 = MATMUL(matrix, timeStep2)
-            end do
-        end function timeStep2
-
-        function timeStepSparse(matrixSparse, probabilityCoeffs, steps)
-            integer, intent(in) :: steps
-            real(dp), dimension(:), intent(in) :: probabilityCoeffs
-            real(dp), dimension(SIZE(probabilityCoeffs)) :: timeStepSparse
-            type(COO_dp) :: matrixSparse
-            integer :: i
-
-
-            timeStepSparse = probabilityCoeffs
-            do i = 1, steps
-                call matvec(matrixSparse, timeStepSparse, timeStepSparse) ! new timeStepSparse = matrixSparse * timeStepSparse
-            end do
-        end function timeStepSparse
-        
-        
-        function timeStepUntilConvergence(matrix, probabilityCoeffs)
-            double precision, dimension(:), intent(in) :: probabilityCoeffs
-            double precision, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in) :: matrix
-            double PRECISION, dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergence
-            double PRECISION :: tol
-            logical converged
-            integer :: timeSteps, stepsTaken
-            
-            stepsTaken = 0
-            tol = 1.0/(SIZE(probabilityCoeffs) * 1e4) !Tolerance is one part in ten thousand.
-            timeSteps = 50
-            tol = tol * timeSteps !Dynamically change tolerance based on number of steps taken
-            
-            converged = .FALSE.
-            prevProbCoeffs = probabilityCoeffs
-            do while (.not. converged)
-                timeStepUntilConvergence = timeStep2(matrix, prevProbCoeffs, timeSteps) !Dont check for convergence after every step, rather take a few time steps at a time.
-                converged = convergence(timeStepUntilConvergence, prevProbCoeffs, tol)
-                prevProbCoeffs = timeStepUntilConvergence
-                stepsTaken = stepsTaken + timeSteps
-                print *, 'Steps taken: ', stepsTaken
-            end do
-            
-        end function timeStepUntilConvergence
-        
-        !TODO
-        
-        function convergence(newCoeff, oldCoeff, tol)
-            double PRECISION, dimension(:), intent(in) :: newCoeff, oldCoeff
-            double PRECISION, dimension(SIZE(newCoeff)) :: difference
-            double PRECISION, intent(in) :: tol
-            LOGICAL :: convergence
-            integer i
-            convergence = .TRUE.
-            difference = newCoeff - oldCoeff
-            do i = 1, SIZE(difference)
-                if(difference(i) > tol) then
-                    convergence = .FALSE.
-                    return
-                end if
-            end do
-        end function convergence
-    
+    contains    
         subroutine printMatrixToFile(fileName, A)
-            double precision, dimension(:,:), intent(in) :: A
+            !Prints two dimensional matrix A to file.
+            real(dp), dimension(:,:), intent(in) :: A
             integer :: i,j
             character (len = *), intent(in) :: fileName
-            open(unit = 9, file = fileName)
+            character (len = 6) :: folderPath
+            folderPath = 'data/' !Name cannot have prefix /
+            folderPath = trim(folderPath) 
+
+            open(unit = 9, file = (folderPath // fileName))
             
             do i = 1,SIZE(A,1)
                 do j = 1,SIZE(A,2)
@@ -165,7 +29,8 @@ module twoDimensionalMarkov
         end subroutine printMatrixToFile
         
         subroutine printMatrix(A)
-            double precision, dimension(:,:), intent(in) :: A
+            !Prints two dimensional matrix A to console output.
+            real(dp), dimension(:,:), intent(in) :: A
             integer :: i, j
             print*, 'Matrix: '
             do i = 1,SIZE(A,1)
@@ -178,12 +43,14 @@ module twoDimensionalMarkov
             return
         end subroutine printMatrix
         
-        subroutine linkCells(A, fromCoord, toCoord, dimSize)
-            double precision, dimension(:,:) :: A
+        subroutine linkStates(A, fromCoord, toCoord, dimSize)
+            !Links two states for matrix A. Returns nothing, A is directly modified.
+            !Modifies probability such that total probability to leave fromCoord is still equal 1.
+            real(dp), dimension(:,:) :: A
             integer, dimension(:) , intent(in) :: fromCoord, toCoord, dimSize
             integer :: fromIdx, toIdx, i, idx
             integer, dimension(:,:), allocatable :: neighbours
-            double precision :: prob
+            real(dp) :: prob
             
             fromIdx = linearIdxFromCoord(fromCoord, dimSize)
             toIdx = linearIdxFromCoord(toCoord, dimSize)
@@ -201,20 +68,10 @@ module twoDimensionalMarkov
                 idx = linearIdxFromCoord(neighbours(:,i), dimSize)
                 A(idx, fromIdx) = prob
             end do
-        end subroutine linkCells
-        
-        subroutine linkMultipleCells(A, fromCoords, toCoord, dimSize)
-            double precision, dimension(:,:) :: A
-            integer, dimension(:) , intent(in) :: toCoord, dimSize
-            integer, dimension(:,:), intent(in) :: fromCoords
-            integer :: i
-            
-            do i = 1, SIZE(fromCoords,2)
-                call linkCells(A, fromCoords(:,i), toCoord, dimSize)
-            end do
-        end subroutine linkMultipleCells
+        end subroutine linkStates
         
         function getMiddleCell(dimSize)
+            !Gives middle coordinate for a given number of coordinates in dimSize
             integer, intent(in), dimension(:) :: dimSize
             integer, dimension(SIZE(dimSize)) :: getMiddleCell
             integer :: i
@@ -223,9 +80,11 @@ module twoDimensionalMarkov
             end do
         end function getMiddleCell
         
-        function walkMatrix(dimSize) !Creates walk matrix
+        function walkMatrix(dimSize)
+            !Creates matrix containing transition probabilities for every state
+            !Gives equal probability for each neighbour 
             integer, intent(in), dimension(:) :: dimSize
-            double precision, dimension(:,:), allocatable :: walkMatrix
+            real(dp), dimension(:,:), allocatable :: walkMatrix
             integer :: d, i, numberOfCoords, idx
             integer, dimension(:), allocatable :: coord
             integer, dimension(:,:), allocatable :: neighbours
@@ -252,7 +111,9 @@ module twoDimensionalMarkov
         end function walkMatrix
             
         
-        function pruneNeighbours(neighbours, dimSize) !Some neighbours are outside bounds. remove them
+        function pruneNeighbours(neighbours, dimSize) 
+            !Removes all neighbours outside the bounds given in dimsize
+            !Removes neighbours with any coordinate < 1 or larger than dimension given in dimSize
             integer, intent(in), dimension(:) :: dimSize
             integer, intent(in), dimension(:, :) :: neighbours
             integer, dimension(:, :), allocatable :: pruneNeighbours, tempNeighbours     
@@ -288,6 +149,7 @@ module twoDimensionalMarkov
             
         
         function getNeighbours(coord)
+            !Gets all neighbours (non diagonal) of a given coordinate.
             integer, intent(in), dimension(:) :: coord
             integer, dimension(SIZE(coord), 2*SIZE(coord) + 1) :: getNeighbours !Includes self
             integer :: i, startIdx
@@ -295,7 +157,7 @@ module twoDimensionalMarkov
             do i = 1, (SIZE(coord)*2 + 1)
                 getNeighbours(:,i) = coord
             end do
-             
+            
             do i = 1, SIZE(coord)
                 startIdx = 2*i
                 getNeighbours(i, 2*i) = coord(i) - 1
@@ -353,19 +215,17 @@ module twoDimensionalMarkov
             end if
         end function linearIdxFromCoord
         
-        function gridFromColumnVector(colVector, dimSize) !Only works for 2 dimensions
-            double precision, dimension(:), intent(in) :: colVector
+        function gridFromColumnVector(colVector, dimSize) !Creates a grid of states from a column vector of states. ONly works for two dimensions
+            real(dp), dimension(:), intent(in) :: colVector
             integer, dimension(2), intent(in) :: dimSize
             integer :: i
             integer, dimension(2) :: coord
-            double precision, dimension(dimSize(1),dimSize(2)) :: gridFromColumnVector
+            real(dp), dimension(dimSize(1),dimSize(2)) :: gridFromColumnVector
             
             do i = 1, SIZE(colVector)
                 coord = coordFromLinearIdx(i, dimSize)
                 gridfromColumnVector(coord(1), coord(2)) = colVector(i)
             end do
         end function gridFromColumnVector
-        
-
-end module twoDimensionalMarkov
     
+end module denseMatrix
