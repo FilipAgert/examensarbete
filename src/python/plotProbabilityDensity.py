@@ -9,6 +9,6 @@ def plotMatrix(matrix):
     plt.ylabel("Rows")
     plt.show()
 
-fileName = "As.txt"
+fileName = r'data/fusion-fission.txt'
 A = readMatrixFromFile(fileName)
 plotMatrix(A)

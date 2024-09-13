@@ -46,7 +46,7 @@ module markovMatrixExamples
             type(COO_dp) :: sparseA
 
             character (len=100) :: filePath
-            filePath = "As.txt"
+            filePath = "fusion-fission.txt"
 
             dimsize = 41
 
@@ -88,15 +88,17 @@ module markovMatrixExamples
             coord2 = 1
 
             coord1(1) = dimSize(1)/2 + 1
-            coord2(2) = dimSize(2)/2 + 1
+
+            coord2(1) = dimSize(1)/2 + 1
+            coord2(2) = dimSize(2)
             call linkStates(A, coord1, getMiddleCell(dimSize), dimSize)
             call linkStates(A, coord2, getMiddleCell(dimSize), dimSize)
             coord1(1) = coord1(1) - 1
-            coord2(2) = coord2(2) - 1
+            coord2(1) = coord2(1) - 1
             call linkStates(A, coord1, getMiddleCell(dimSize), dimSize)
             call linkStates(A, coord2, getMiddleCell(dimSize), dimSize)
             coord1(1) = coord1(1) + 2
-            coord2(2) = coord2(2) + 2
+            coord2(1) = coord2(1) + 2
             call linkStates(A, coord1, getMiddleCell(dimSize), dimSize)
             call linkStates(A, coord2, getMiddleCell(dimSize), dimSize)
 

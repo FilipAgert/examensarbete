@@ -8,11 +8,11 @@ module denseMatrix
             real(dp), dimension(:,:), intent(in) :: A
             integer :: i,j
             character (len = *), intent(in) :: fileName
-            character (len = 6) :: folderPath
+            character (len = 5) :: folderPath
             folderPath = 'data/' !Name cannot have prefix /
             folderPath = trim(folderPath) 
 
-            open(unit = 9, file = (folderPath // fileName))
+            open(unit = 9, file = trim(folderPath//trim(fileName)))
             
             do i = 1,SIZE(A,1)
                 do j = 1,SIZE(A,2)

@@ -2,5 +2,5 @@ program main
   use markovMatrixExamples, only: compareSparseRunTime, test
   implicit none
 
-  call compareSparseRunTime()
+  call test()
 end program main

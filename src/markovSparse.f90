@@ -25,28 +25,33 @@ module markovSparse
         function timeStepUntilConvergenceSparse(matrix, probabilityCoeffs)
             real(dp), dimension(:), intent(in) :: probabilityCoeffs
             type(COO_dp) :: matrix
-            real(dp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergenceSparse
-            real(dp) :: tol
+            real(dp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergenceSparse, diff
+            real(dp) :: tol, normVal
             logical converged
-            integer :: timeSteps, stepsTaken
+            integer :: timeSteps, matrixMultiplications
+            character (len = 2):: normType = "L2"
             
-            stepsTaken = 0
+            matrixMultiplications = 0
             tol = 1.0/(SIZE(probabilityCoeffs) * 1e6) !Tolerance is one part in one million.
             timeSteps = 20
-            tol = tol * timeSteps !Dynamically change tolerance based on number of steps taken
+            tol = tol * timeSteps !Dynamically change tolerance based on number of matrix multiplications in a row
             
             converged = .FALSE.
             prevProbCoeffs = probabilityCoeffs
             do while (.not. converged)
                 timeStepUntilConvergenceSparse = timeStepSparse(matrix, prevProbCoeffs, timeSteps) !Dont check for convergence after every step, rather take a few time steps at a time.
-                converged = convergence(timeStepUntilConvergenceSparse, prevProbCoeffs, tol)
-                prevProbCoeffs = timeStepUntilConvergenceSparse
-                stepsTaken = stepsTaken + timeSteps
-                if(mod(stepsTaken, 500) == 0) then
-                    print *, 'Steps taken: ', stepsTaken
+                converged = convergence(timeStepUntilConvergenceSparse, prevProbCoeffs, tol, normType)
+               
+                if(mod(matrixMultiplications, 500) == 0) then
+
+                    diff = timeStepUntilConvergenceSparse - prevProbCoeffs
+                    normVal = norm(diff, normType)
+                    print *, 'Matrix multiplications: ', matrixMultiplications, " ", normType, " norm: ", normVal
                 end if
+                prevProbCoeffs = timeStepUntilConvergenceSparse
+                matrixMultiplications = matrixMultiplications + timeSteps
             end do
-            print*, 'Steps taken: ', stepsTaken
+            print*, 'Matrix multiplications: ', matrixMultiplications
         end function timeStepUntilConvergenceSparse
 
 
@@ -66,12 +71,13 @@ module markovSparse
         function timeStepUntilConvergence(matrix, probabilityCoeffs)
             real(dp), dimension(:), intent(in) :: probabilityCoeffs
             real(dp), dimension(SIZE(probabilityCoeffs),SIZE(probabilityCoeffs)), intent(in):: matrix
-            real(dp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergence
-            real(dp) :: tol
+            real(dp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergence, diff
+            real(dp) :: tol, normVal
             logical converged
-            integer :: timeSteps, stepsTaken
-            
-            stepsTaken = 0
+            integer :: timeSteps, matrixMultiplications
+            character (len = 2):: normType = "L2"
+
+            matrixMultiplications = 0
             tol = 1.0/(SIZE(probabilityCoeffs) * 1e6) !Tolerance is one part in one million.
             timeSteps = 20
             tol = tol * timeSteps !Dynamically change tolerance based on number of steps taken
@@ -80,33 +86,45 @@ module markovSparse
             prevProbCoeffs = probabilityCoeffs
             do while (.not. converged)
                 timeStepUntilConvergence = timeStep(matrix, prevProbCoeffs, timeSteps) !Dont check for convergence after every step, rather take a few time steps at a time.
-                converged = convergence(timeStepUntilConvergence, prevProbCoeffs, tol)
+                converged = convergence(timeStepUntilConvergence, prevProbCoeffs, tol, normType)
                 prevProbCoeffs = timeStepUntilConvergence
-                stepsTaken = stepsTaken + timeSteps
-                if(mod(stepsTaken, 500) == 0) then
-                    print *, 'Steps taken: ', stepsTaken
+                matrixMultiplications = matrixMultiplications + timeSteps
+                if(mod(matrixMultiplications, 500) == 0) then
+                    diff = timeStepUntilConvergence - prevProbCoeffs
+                    normVal = norm(diff, normType)
+                    print *, 'Matrix multiplications: ', matrixMultiplications, " ", normType, " norm: ", normVal
+                    
                 end if
             end do
-            print*, 'Steps taken: ', stepsTaken
+            print*, 'Matrix multiplications: ', matrixMultiplications
             
         end function timeStepUntilConvergence
         
         !TODO
         
-        function convergence(newCoeff, oldCoeff, tol)
+        function convergence(newCoeff, oldCoeff, tol, normType)
             !Checks if all elements in two same sized vectors are close neough given a tolerance
             real(dp), dimension(:), intent(in) :: newCoeff, oldCoeff
             real(dp), dimension(SIZE(newCoeff)) :: difference
             real(dp), intent(in) :: tol
+            real(dp) :: normVal
             LOGICAL :: convergence
-            integer i
+            character (len = *), intent(in), optional :: normType
             convergence = .TRUE.
-            difference = abs(newCoeff - oldCoeff)
-            do i = 1, SIZE(difference)
-                if(difference(i) > tol) then
-                    convergence = .FALSE.
-                    return
-                end if
-            end do
+            difference = (newCoeff - oldCoeff)
+            normVal = norm(difference, normType)
+            convergence = (normVal < tol)
         end function convergence
+
+        function norm(vec, type)
+            real(dp), dimension(:), intent(in) :: vec
+            character (len = *), optional :: type !Set Linf if you want L_inf norm. Default is L2 norm
+            real(dp) :: norm
+            select case (type)
+                case ('Linf')
+                    norm = MAXVAL(abs(vec)) !L_infinity norm. Returns max value of vector
+                case default !L_2 norm
+                    norm = NORM2(vec)
+            end select
+        end function norm
 end module markovSparse
