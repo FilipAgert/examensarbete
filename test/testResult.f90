@@ -9,7 +9,7 @@ program testResult
     real, dimension(2) :: fusionFraction
     real, dimension(2) :: fissionFraction
     real, dimension(3,2) :: startCoordinate
-    type(result) :: res
+    type(convergedResult) :: res
     ! Initialize arrays
     probabilityDensity = reshape( (/ 1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp, 5.0_dp, &
                                      0.1_dp, 0.5_dp, 0.2_dp, 0.4_dp, 0.5_dp /), &

@@ -2,9 +2,9 @@ module result_module
     use iso_fortran_env, only: dp=>real64
     implicit none
     private
-    public :: result
+    public :: convergedResult
 
-    type result
+    type convergedResult
         real(dp), allocatable :: probabilityDensity(:,:)
         real, allocatable :: solveTime(:)
         integer, allocatable :: matrixMultiplications(:)
@@ -18,17 +18,17 @@ module result_module
         procedure, public :: getProbabilityDensity => get_probability_density_method
         procedure, public :: getStartCoord => get_coordinate_method
         procedure, public :: hasResult => has_result_method
-    end type result
+    end type convergedResult
 
 contains
     function has_result_method(self)result(res) !Checks if there is available result
-        class(result), intent(in) :: self
+        class(convergedResult), intent(in) :: self
         logical :: res
         res = self%numResults > 0
     end function has_result_method
 
     subroutine add_result_method(self, pd, startCoord, time, multiplications, fusionFrac, fissionFrac)
-        class(result), intent(inout) :: self
+        class(convergedResult), intent(inout) :: self
         real(dp), intent(in) :: pd(:)
         real, intent(in) :: time
         integer, intent(in) :: multiplications
@@ -116,7 +116,7 @@ contains
     end subroutine add_result_method
 
     subroutine print_result_method(self)
-        class(result), intent(in) :: self
+        class(convergedResult), intent(in) :: self
         integer :: i, j
         integer :: coordDim
         integer :: coordWidth
@@ -154,7 +154,7 @@ contains
             write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(A, F4.2, 15X, F4.2, 15X, F5.1, 12X, I5)', advance="no") &
+            write(*, '(A, F4.2, 15X, F4.2, 15X, F5.2, 12X, I5)', advance="no") &
                 " |  ", self%fusionFraction(i), self%fissionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
             
@@ -165,7 +165,7 @@ contains
     end subroutine print_result_method
 
     function get_probability_density_method(self, index) result(pd)
-        class(result), intent(in) :: self
+        class(convergedResult), intent(in) :: self
         real(dp), allocatable :: pd(:)
         integer :: index
 
@@ -178,7 +178,7 @@ contains
     end function get_probability_density_method
 
     function get_coordinate_method(self, index) result(coord)
-        class(result), intent(in) :: self
+        class(convergedResult), intent(in) :: self
         real, dimension(:), allocatable :: coord(:)
         integer :: index
 
