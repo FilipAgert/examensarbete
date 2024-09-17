@@ -1,0 +1,7 @@
+Linear interpolation för starting guess.
+Compare implementation of dense -> sparse vs just creating sparse matrix
+Compare implementation of dense vs sparse
+
+lanczos metod för att hitta egenvärden'
+förbättringen heter arnoldi.
+Arnoldi i fortran heter arpack

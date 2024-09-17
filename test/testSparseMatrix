@@ -1,0 +1,17 @@
+program testSparseMatrix
+    use iso_fortran_env, only: dp=>real64
+    use sparseMatrix, denseMatrix, fsparse
+    implicit none
+
+    type(COO_dp) :: sparse
+    integer(2) :: dimSize
+    real(dp), dimension(:,:), allocatable :: dense
+    dimSize(:) = 3
+    allocate(dense(dimSize(1), dimSize(2)))
+    ! Initialize arrays
+    sparse = walkMatrix(dimSize)
+    coo2dense(sparse, dense)
+    call printMatrix(dense)
+    
+
+end program testSparseMatrix

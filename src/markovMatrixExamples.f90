@@ -3,108 +3,62 @@ module markovMatrixExamples
     use denseMatrix
     use markovSparse
     use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64
+    use sparse_solver_module
+    use dense_solver_module
+    use sparseMatrix
     implicit none
-    public compareSparseRunTime, test
+
+    
+    public compareSparseRunTime
 
     contains
         subroutine compareSparseRunTime()
             integer , dimension(2) :: dimSize
             real(dp), dimension(:,:), allocatable :: A
             real(dp), dimension(:), allocatable :: probabilityCoeffs
-            type(COO_dp) :: sparseA
-            real :: T1, T2, T3
+            integer :: fusionCoord(2), fissionCoord(2), fissionIdx(1), fusionIdx(1)
+            real(dp), allocatable :: pd(:,:)
+            integer, allocatable :: startCoord(:,:), startIdxs(:)
+            type(sparse_solver) :: sparseSolver
+            type(dense_solver) :: denseSolver
+            type(COO_dp) :: sparseMat
+            integer :: i, startNumber
+            character(len=5) :: integerString
+            dimSize = [41,41]
 
-            character (len=100) :: filePath
-            filePath = "A.txt"
-            dimSize = 41
-            allocate(probabilityCoeffs(dimSize(1)*dimSize(2)))
-            A = fissionFusionHole(dimSize)
-
-            probabilityCoeffs = 0
-            probabilityCoeffs(1) = 1.0 !Initialize middle cell to 1
+         
+            startNumber = 10
+            allocate(startCoord(2, startNumber))
+            allocate(startIdxs(startNumber))
+            allocate(pd(dimSize(2)*dimSize(1), startNumber))
+            allocate(A(dimSize(2)*dimSize(1), dimSize(2)*dimSize(1)))
+            sparseMat = sparseWalkMatrix(dimSize)
+            fusionCoord(1) = dimSize(1) / 2 + 1
+            fissionCoord(1) = dimSize(1) / 2 + 1
+            fusionCoord(2) = 1
+            fissionCoord(2) = dimSize(2)
             
-            !timeSteps = 250
-            !probabilityCoeffs = timeStep(A, probabilityCoeffs, timeSteps)
-            call cpu_time(T1)
-            call dense2coo (A, sparseA)!Convert A to sparse matrix
-            probabilityCoeffs = timeStepUntilConvergenceSparse(sparseA, probabilityCoeffs)
-            call cpu_time(T2)
-            print*, "Sparse matrix execution time: ", T2-T1 , " seconds"
-            probabilityCoeffs = 0
-            probabilityCoeffs(1) = 1.0 !Initialize one cell to 1
-            probabilityCoeffs = timeStepUntilConvergence(A, probabilityCoeffs)
-            call cpu_time(T3)
-
-            print*, "Sparse matrix execution time: ", T2-T1 , " seconds"
-            print*, "Dense matrix execution time: ", T3-T2, " seconds"
-        end subroutine compareSparseRunTime
-
-        subroutine test()
-            integer , dimension(2) :: dimSize
-            real(dp), dimension(:,:), allocatable :: A, grid
-            real(dp), dimension(:), allocatable :: probabilityCoeffs, out
-            type(COO_dp) :: sparseA
-
-            character (len=100) :: filePath
-            filePath = "fusion-fission.txt"
-
-            dimsize = 41
-
-            allocate(probabilityCoeffs(dimSize(1)*dimSize(2)))
-            allocate(out(dimSize(1)*dimSize(2)))
-            A = fissionFusionHole(dimSize)
-
-            probabilityCoeffs = 0
-            probabilityCoeffs(1) = 1._dp !One cell is initialized to one.
-            call dense2coo(A, sparseA)
-            out = 0
-            out =  timeStepUntilConvergenceSparse(sparseA, probabilityCoeffs)
-            grid = gridFromColumnVector(out, dimSize)
-            call printMatrixToFile(filePath, grid)
-        end subroutine test
-
-        function noHole(dimSize)
-            !Returns a transition matrix from diSize with no holes.
-            integer, intent(in), dimension(:) :: dimSize
-            real(dp), allocatable, dimension(:,:) :: noHole
-            integer :: i, numberOfCoordinates
-
-            numberOfCoordinates = 1
-            do i = 1, SIZE(dimSize)
-                numberOfCoordinates = numberOfCoordinates * dimSize(i)
+            startCoord(1,:) = dimSize(1)/2 + 1
+            do i = 1,startNumber
+                startCoord(2,i) = dimSize(2)*i/(startNumber + 1)
+                startIdxs(i) = linearIdxFromCoord(startCoord(:,i),dimSize)
             end do
 
-            allocate(noHole(numberOfCoordinates, numberOfCoordinates))
-            noHole = walkMatrix(dimSize)
-        end function noHole
 
-        function fissionFusionHole(dimSize)
-            !Creates fission, fusion hole at middle of edge at first and second dimension
-            integer, intent(in), dimension(:) :: dimSize
-            real(dp), allocatable, dimension(:,:) :: fissionFusionHole, A
-            integer, dimension(SIZE(dimSize)):: coord1, coord2
-            A = noHole(dimSize)
-            coord1 = 1
-            coord2 = 1
+            fissionIdx(1) = linearIdxFromCoord(fusionCoord,dimSize)
+            fusionIdx(1) = linearIdxFromCoord(fissionCoord, dimSize)
 
-            coord1(1) = dimSize(1)/2 + 1
+            call sparseSolver%init(sparseMat, startIdxs, fusionIdx, fissionIdx, dimSize)
+            call sparseSolver%solve()
+            call sparseSolver%printResult()
 
-            coord2(1) = dimSize(1)/2 + 1
-            coord2(2) = dimSize(2)
-            call linkStates(A, coord1, getMiddleCell(dimSize), dimSize)
-            call linkStates(A, coord2, getMiddleCell(dimSize), dimSize)
-            coord1(1) = coord1(1) - 1
-            coord2(1) = coord2(1) - 1
-            call linkStates(A, coord1, getMiddleCell(dimSize), dimSize)
-            call linkStates(A, coord2, getMiddleCell(dimSize), dimSize)
-            coord1(1) = coord1(1) + 2
-            coord2(1) = coord2(1) + 2
-            call linkStates(A, coord1, getMiddleCell(dimSize), dimSize)
-            call linkStates(A, coord2, getMiddleCell(dimSize), dimSize)
+            call coo2dense(sparseMat, A)
 
-            fissionFusionHole = A
-        end function fissionFusionHole
-            
-        
+            call denseSolver%init(A, startIdxs,fusionIdx, fissionIdx, dimSize)
+            call denseSolver%solve()
+            call denseSolver%printResult()
+        end subroutine compareSparseRunTime
+
             
 end module markovMatrixExamples

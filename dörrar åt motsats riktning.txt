@@ -20,3 +20,5 @@ TODO:
 Gör en klass som heter t.ex. method med inputs A matrisen samt X-antal startpunkter
 Den löser problemet och räknar antal matrismultiplikationer
 Den kan även printa ut en sammanfattning om beräkningen. Antal matrismultiplikationer, konvergensgraden vid olika delar av beräkningen (t.ex efter 10%, 20%, ...av matrismultiplikationerna)
+https://tr.soe.ucsc.edu/sites/default/files/technical-reports/UCSC-SOE-13-13.pdf Interpolation of PDF
+https://www.sciencedirect.com/science/article/pii/S0096300395002162

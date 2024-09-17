@@ -1,6 +1,6 @@
 program main
-  use markovMatrixExamples, only: compareSparseRunTime, test
+  use markovMatrixExamples, only: compareSparseRunTime
   implicit none
 
-  call test()
+  call compareSparseRunTime()
 end program main
