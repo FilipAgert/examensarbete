@@ -1,5 +1,5 @@
 module solver_module
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
     use result_module
     use denseMatrix, only: coordFromLinearIdx
     
@@ -9,7 +9,7 @@ module solver_module
 
     ! Define the base solver class as a derived type
     type, abstract :: solver
-        real(dp), allocatable :: matrix(:,:)  ! The sparseMat is dynamically sized. sparseMat should have no connections beyond neigbours (no fusion/fission)
+        real(sp), allocatable :: matrix(:,:)  ! The sparseMat is dynamically sized. sparseMat should have no connections beyond neigbours (no fusion/fission)
         type(convergedResult) :: result
         integer, allocatable :: startIdxs(:)
         real, allocatable :: energies(:)
@@ -63,7 +63,7 @@ contains
     ! Constructor to initialize the sparseMat in the solver base class
     subroutine init_solver(self, input_matrix, grid, start_idxs, energies, fusion_idxs, fission_idxs, dim_size)
         class(solver), intent(inout) :: self
-        real(dp), intent(in) :: input_matrix(:,:)
+        real(sp), intent(in) :: input_matrix(:,:)
         real, intent(in) :: energies(:), grid(:,:)
         integer, intent(in) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dim_size(:)
         
@@ -83,7 +83,7 @@ contains
 
     function starting_guess_method(self) result(guess) !Guesses the initial probability distribution
         class(solver), intent(inout) :: self
-        real(dp), allocatable :: guess(:), prevGuess(:)
+        real(sp), allocatable :: guess(:), prevGuess(:)
         integer :: storedResults
         allocate(guess(self%numberOfGridPoints()))
         allocate(prevGuess(self%numberOfGridPoints())) !Allocate array to correct size
@@ -100,7 +100,7 @@ contains
 
     function generate_connections_method(self, start_idx) result(mat) !generates 25% probability to fusion
         class(solver), intent(in) :: self
-        real(dp), allocatable :: mat(:,:)
+        real(sp), allocatable :: mat(:,:)
         integer, intent(in) :: start_idx
         integer, allocatable :: fusion_idxs(:), fission_idxs(:)
         integer :: i
@@ -123,7 +123,7 @@ contains
 
     function fusion_frac_method(self, pd) result (fusionFrac)
         class(solver),intent(in) :: self
-        real(dp), intent(in) :: pd(:)
+        real(sp), intent(in) :: pd(:)
         real :: fusionFrac, fusionProb, fissionProb
         integer :: i
         fusionFrac = 0
@@ -142,14 +142,14 @@ contains
 
     function fission_frac_method(self, pd) result(fissionFrac)
         class(solver),intent(in) :: self
-        real(dp), intent(in) :: pd(:) !probability density
+        real(sp), intent(in) :: pd(:) !probability density
         real :: fissionFrac
         fissionFrac = (1.0 - fusion_frac_method(self, pd))
     end function fission_frac_method
 
     subroutine add_result_method(self, pd, time, multiplications, startCoord, energy)
         class(solver), intent(inout) :: self
-        real(dp), intent(in) :: pd(:)
+        real(sp), intent(in) :: pd(:)
         real, intent(in) :: time, energy
         integer, intent(in) :: multiplications
         real, intent(in) :: startCoord(:)
@@ -161,7 +161,7 @@ end module solver_module
 
 module dense_solver_module
     use solver_module
-    use iso_fortran_env, only: dp => real64
+    use iso_fortran_env, only: dp => real64, sp=>real32
     use markovSparse, only: norm, convergence
     implicit none
 
@@ -176,7 +176,7 @@ module dense_solver_module
 
     subroutine dense_init_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize)
         class(dense_solver), intent(inout) :: self
-        real(dp), dimension(:,:), intent(inout) :: denseMat
+        real(sp), dimension(:,:), intent(inout) :: denseMat
         integer, intent(inout) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dimSize(:)
         real, intent(inout) :: grid(:,:), energies(:)
         call create_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize)
@@ -184,10 +184,10 @@ module dense_solver_module
     
     subroutine dense_solve_method(self)
         class(dense_solver), intent(inout) :: self
-        real(dp), dimension(:,:), allocatable :: denseMat
+        real(sp), dimension(:,:), allocatable :: denseMat
         integer :: i, startIdx, matMultiplications
         real :: T1, T2, elapsedTime, fusionFrac, fissionFrac
-        real(dp), allocatable :: startPd(:), endPd(:)
+        real(sp), allocatable :: startPd(:), endPd(:)
         allocate(startPd(self%numberOfGridPoints()))
         allocate(endPd(self%numberOfGridPoints()))
         allocate(denseMat(self%numberOfGridPoints(), self%numberOfGridPoints()))
@@ -212,9 +212,9 @@ module dense_solver_module
     function time_step_method(self, matrix, probabilityCoeffs, steps)result (timeStep) !This computes repeated matrix multiplication (A*(A*...*(A*V)
         class(dense_solver), intent(inout) :: self
         integer, intent(in) :: steps                     !In order to only have to store one matrix
-        double precision, dimension(:), intent(in) :: probabilityCoeffs
-        double precision, dimension(SIZE(probabilityCoeffs)) :: timeStep
-        double precision, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
+        real, dimension(:), intent(in) :: probabilityCoeffs
+        real, dimension(SIZE(probabilityCoeffs)) :: timeStep
+        real, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
         integer :: i
         timeStep = probabilityCoeffs
         do i = 1, steps
@@ -224,12 +224,12 @@ module dense_solver_module
     end function time_step_method
     subroutine run_until_converged_method(self, denseMat, startPd, endPd, numberOfMultiplications)
         class(dense_solver), intent(inout) :: self
-        real(dp), dimension(:,:), intent(in) :: denseMat
-        real(dp), dimension(:), intent(in) :: startPd
-        real(dp), dimension(:), intent(inout) :: endPd
-        real(dp), dimension(SIZE(startPd)) :: prevPd, diff
+        real(sp), dimension(:,:), intent(in) :: denseMat
+        real(sp), dimension(:), intent(in) :: startPd
+        real(sp), dimension(:), intent(inout) :: endPd
+        real(sp), dimension(SIZE(startPd)) :: prevPd, diff
         integer, intent(inout) :: numberOfMultiplications
-        real(dp) :: tol, normVal
+        real(sp) :: tol, normVal
         integer :: multiplicationSteps
         logical :: converged
         character (len = 2):: normType = "L2"
@@ -265,13 +265,13 @@ module sparse_solver_module
     use fsparse
     use markovSparse, only: norm, convergence
     use sparseMatrix
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
     implicit none
     public :: sparse_solver
 
     ! Define a subclass for sparse sparseMat solver
     type, extends(solver) :: sparse_solver
-        type(COO_dp) :: sparseMatrix
+        type(COO_sp) :: sparseMatrix
     contains
         procedure :: solve => sparse_solve_method
         procedure :: init => sparse_init_solver
@@ -284,7 +284,7 @@ module sparse_solver_module
 contains
     subroutine sparse_init_solver(self, input_sparseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dim_size)
         class (sparse_solver), intent(inout) :: self
-        type(COO_dp), intent(in) :: input_sparseMat
+        type(COO_sp), intent(in) :: input_sparseMat
         integer, intent(in) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dim_size(:)
         real, intent(in) :: grid(:,:), energies(:)
 
@@ -300,9 +300,9 @@ contains
     function time_step_sparse_method(self, matrixSparse, probabilityCoeffs, steps) result (timeStepSparse)
         integer, intent(in) :: steps
         class(sparse_solver) :: self
-        real(dp), dimension(:), intent(in) :: probabilityCoeffs
-        real(dp), dimension(SIZE(probabilityCoeffs)) :: timeStepSparse, temp
-        type(COO_dp) :: matrixSparse
+        real(sp), dimension(:), intent(in) :: probabilityCoeffs
+        real(sp), dimension(SIZE(probabilityCoeffs)) :: timeStepSparse, temp
+        type(COO_sp) :: matrixSparse
         integer :: i
         timeStepSparse = probabilityCoeffs
         do i = 1, steps
@@ -322,9 +322,9 @@ contains
         class (sparse_solver), intent(inout) :: self
         integer, intent(in) :: start_idx
         integer :: i, j, fusionIdx, neighbourIdx, fissionIdx
-        type(COO_dp) :: sparseMat
-        real(dp) :: fusionFrac = 0.25_dp !Prob to fusion
-        real(dp) :: fissionFrac = 0.25_dp !prob to fission
+        type(COO_sp) :: sparseMat
+        real(sp) :: fusionFrac = 0.25_dp !Prob to fusion
+        real(sp) :: fissionFrac = 0.25_dp !prob to fission
 
         call sparseMat%malloc(self%sparseMatrix%nrows, self%sparseMatrix%ncols, self%sparseMatrix%nnz)
         sparseMat%index = self%sparseMatrix%index
@@ -355,10 +355,10 @@ contains
     ! Sparse sparseMat solver method
     subroutine sparse_solve_method(self)
         class(sparse_solver), intent(inout) :: self
-        type(COO_dp) :: sparseMat
+        type(COO_sp) :: sparseMat
         integer :: i, startIdx, sparseMatMultiplications
         real :: T1, T2, elapsedTime, fusionFrac, fissionFrac
-        real(dp), allocatable :: startPd(:), endPd(:)
+        real(sp), allocatable :: startPd(:), endPd(:)
         allocate(startPd(self%numberOfGridPoints()))
         allocate(endPd(self%numberOfGridPoints()))
         startPd = 0.0_dp
@@ -383,12 +383,12 @@ contains
 
     subroutine run_until_converged_method(self, sparseMat, startPd, endPd, numberOfMultiplications)
         class(sparse_solver), intent(inout) :: self
-        type(COO_dp) :: sparseMat
-        real(dp), dimension(:), intent(in) :: startPd
-        real(dp), dimension(:), intent(inout) :: endPd
-        real(dp), dimension(SIZE(startPd)) :: prevPd, diff
+        type(COO_sp) :: sparseMat
+        real(sp), dimension(:), intent(in) :: startPd
+        real(sp), dimension(:), intent(inout) :: endPd
+        real(sp), dimension(SIZE(startPd)) :: prevPd, diff
         integer, intent(inout) :: numberOfMultiplications
-        real(dp) :: tol, normVal
+        real(sp) :: tol, normVal
         integer :: multiplicationSteps
         logical :: converged
         character (len = 2):: normType = "L2"
@@ -426,7 +426,7 @@ module sparse_solver_linear_interpolator_module
     use markovSparse
     use denseMatrix
     use linearInterpolation
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
 
     type, extends(sparse_solver) :: sparse_linearint_solver
     contains
@@ -436,7 +436,7 @@ module sparse_solver_linear_interpolator_module
     contains
         function starting_guess_linear_interpolation_method(self) result(guess)
             class(sparse_linearint_solver), intent(inout) :: self
-            real(dp), allocatable :: guess(:)
+            real(sp), allocatable :: guess(:)
             integer :: storedResults, i, E0idx, E1idx, tempidx
             real :: energy, E0, E1, diff, potentialClosest, tempE
             real, allocatable :: pdf0(:), pdf1(:) 
@@ -499,9 +499,8 @@ end module sparse_solver_linear_interpolator_module
 module sparse_solver_arnoldi_module
     use sparse_solver_linear_interpolator_module
     use fsparse
-    use markovSparse
     use linearInterpolation
-    use iso_fortran_env, only: dp=> real64
+    use iso_fortran_env, only: dp=> real64, sp=>real32
 
     type, extends(sparse_linearint_solver) :: sparse_arnoldi_solver
     contains
@@ -513,44 +512,49 @@ module sparse_solver_arnoldi_module
         subroutine run_until_converged_method_arnoldi(self, sparseMat, startPd, endPd, numberOfMultiplications)
             implicit none
             class(sparse_arnoldi_solver), intent(inout) :: self
-            type(COO_dp) :: sparseMat
-            real(dp), dimension(:), intent(in) :: startPd
-            real(dp), dimension(:), intent(inout) :: endPd
-            real(dp), dimension(SIZE(startPd)) :: temp
+            type(COO_sp) :: sparseMat
+            real(sp), dimension(:), intent(in) :: startPd
+            real(sp), dimension(:), intent(inout) :: endPd
+            real(sp), dimension(SIZE(startPd)) :: temp
             integer, intent(inout) :: numberOfMultiplications
             
 
             external :: dnaupd
             external ::dneupd
-            integer :: IDO = 0
+            integer :: IDO
             character(len = 1) :: BMAT = 'I'
             integer :: N
             character(len = 2) ::  WHICH = 'LM'
             integer :: NEV = 1!number of eigenvalues comptued
-            double precision :: TOL = 1e-6
-            double precision,allocatable :: RESID(:)
+            real :: TOL 
+            real,allocatable :: RESID(:)
             integer :: NCV !number of vectors in calculation. computation scales as N * NCV²
-            double precision, allocatable :: V(:,:)
+            real, allocatable :: V(:,:)
             integer :: IPARAM(11)
-            integer :: ishfts = 1
+            integer :: ishfts
             integer :: maxitr = 50000 !max iterations?
             integer :: mode = 1
             integer :: LDV
-            double precision, allocatable :: workd(:), workl(:), workev(:)
+            real, allocatable :: workd(:), workl(:), workev(:)
             integer :: LWORKL
-            integer :: INFO = 1
-            integer :: INFO2 = 0 !0 = randomized initial vector, 1 = resid initial vector (use starting guess)
-            logical :: converged = .FALSE.
+            integer :: INFO
+            integer :: INFO2 !0 = randomized initial vector, 1 = resid initial vector (use starting guess)
+            logical :: converged
             integer :: IPNTR(14)
-            double precision, dimension(:,:), allocatable :: A
             LOGICAL :: RVEC
             character(len = 1) :: HOWMNY = 'A'
             logical, allocatable :: SELECT(:)
-            double precision, dimension(:), allocatable :: DR, DI
-            double precision, dimension(:,:), allocatable :: Z, SIGMAR, SIGMAI
+            real, dimension(:), allocatable :: DR, DI
+            real, dimension(:,:), allocatable :: Z, SIGMAR, SIGMAI
             integer :: LDZ
+            ishfts = 1
+            TOL = 1e-5
+            IDO = 0
+            INFO = 1 !info for dnaupd
+            INFO2 = 1 !info for dneupd 
             N = self%numberOfGridPoints()
-            NCV = N/2
+            NCV = MAX(2*NEV + 1,int((N)**(1.0/5.0)))
+            print*, "N: ", N, "   NCV: ", NCV
             LDZ = N
             allocate(Z(N, NEV + 1))
             allocate(DR(NEV + 1), DI(NEV + 1))
@@ -560,11 +564,10 @@ module sparse_solver_arnoldi_module
             allocate(workl(LWORKL))
             allocate(workd(3*N), workev(3*NCV))
             allocate(RESID(N))
-            allocate(A(N,N))
             allocate(V(N,NCV))
             IPARAM = 0
             IPARAM(1) = ishfts
-            IPARAM(3) = maxitr !Number of arnoldi update iterations
+            IPARAM(3) = maxitr !Number of arnoldi = .FALSE.update iterations
             IPARAM (4) = 1 !needs to be 1
             IPARAM(7) = mode !specifies eigenvalue problem A*x = lambda*x
 
@@ -572,9 +575,10 @@ module sparse_solver_arnoldi_module
             LDV = N
             RESID = startPd!starting guess
             numberOfMultiplications = 0
+            converged = .FALSE.
             do while(.not. converged)
                 call dnaupd(IDO, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, LDV,IPARAM,IPNTR, workd, workl, lworkl,info)
-
+                
                 if(IDO .eq. -1 .or. IDO .eq. 1) then
                     temp = 0
                     call matvec(sparseMat, workd(ipntr(1):ipntr(1) + N - 1),temp)
@@ -584,6 +588,7 @@ module sparse_solver_arnoldi_module
                     converged = .TRUE.
                 end if
             end do
+            print*, "Number of dnaupd calls: ", numberOfMultiplications
             if ( info .lt. 0 ) then
                 print *, ' '
                 print *, ' Error with _naupd, info = ', info
@@ -609,3 +614,134 @@ module sparse_solver_arnoldi_module
             continue
         end subroutine run_until_converged_method_arnoldi
 end module sparse_solver_arnoldi_module
+
+module sparse_solver_arnoldi_shift_invert_module
+    use sparse_solver_linear_interpolator_module
+    use fsparse
+    use linearInterpolation
+    use iso_fortran_env, only: dp=> real64, sp=>real32
+
+    type, extends(sparse_linearint_solver) :: sparse_arnoldi_shift_invert_solver
+    contains
+        procedure :: runUntilConverged => run_until_converged_method_arnoldi_shift_invert
+        
+    end type sparse_arnoldi_shift_invert_solver
+
+    contains
+        subroutine run_until_converged_method_arnoldi_shift_invert(self, sparseMat, startPd, endPd, numberOfMultiplications)
+            implicit none
+            class(sparse_arnoldi_shift_invert_solver), intent(inout) :: self
+            type(COO_sp) :: sparseMat
+            real(sp), dimension(:), intent(in) :: startPd
+            real(sp), dimension(:), intent(inout) :: endPd
+            real(sp), dimension(SIZE(startPd)) :: temp
+            integer, intent(inout) :: numberOfMultiplications
+            
+
+            external :: snaupd
+            external ::sneupd
+            integer :: IDO
+            character(len = 1) :: BMAT = 'I'
+            integer :: N
+            character(len = 2) ::  WHICH = 'LM' 
+            integer :: NEV!number of eigenvalues comptued
+            real :: TOL 
+            real,allocatable :: RESID(:)
+            integer :: NCV !number of vectors in calculation. computation scales as N * NCV²
+            real, allocatable :: V(:,:)
+            integer :: IPARAM(11)
+            integer :: ishfts
+            integer :: maxitr !max iterations?
+            integer :: mode = 3 !SIGMA SHIFT OF 1
+            integer :: LDV
+            real, allocatable :: workd(:), workl(:), workev(:)
+            integer :: LWORKL
+            integer :: INFO
+            integer :: INFO2 !0 = randomized initial vector, 1 = resid initial vector (use starting guess)
+            logical :: converged
+            integer :: IPNTR(14)
+            LOGICAL :: RVEC
+            character(len = 1) :: HOWMNY = 'A'
+            logical, allocatable :: SELECT(:)
+            real, dimension(:), allocatable :: DR, DI
+            real, dimension(:,:), allocatable :: Z
+            real :: SIGMAR, SIGMAI
+            integer :: LDZ
+            N = self%numberOfGridPoints()
+            !!USER SETTINGS.
+            maxitr = 50000
+            NEV = 1 !number of eigenvalues calculated. test to change this
+            TOL = 1./self%numberOfGridPoints()!seems to only converge to true value if low enough. Should maybe be of order 1/number of grid points For 501x501
+            NCV = MAX(2*NEV + 1,int((N)**(1.0/5.0))) !set at least to 2*NEV. Lower number = more matrix * vector operations.
+            !!!!!!
+            SIGMAR = 1 !shift of one.
+            SIGMAI = 0
+            INFO = 1 !info for dnaupd          1 = user specified vector
+            INFO2 = 1 !info for dneupd         1 = user specified vector
+            IDO = 0
+            ishfts = 1
+            print*, "N: ", N, "   NCV: ", NCV
+            LDZ = N
+            allocate(Z(N, NEV + 1))
+            allocate(DR(NEV + 1), DI(NEV + 1))
+            allocate(SELECT(NCV))
+
+            LWORKL = 3*NCV**2 + 6 *NCV
+            allocate(workl(LWORKL))
+            allocate(workd(3*N), workev(3*NCV))
+            allocate(RESID(N))
+            allocate(V(N,NCV))
+            IPARAM = 0
+            IPARAM(1) = ishfts
+            IPARAM(3) = maxitr !Number of arnoldi = .FALSE.update iterations
+            IPARAM (4) = 1 !needs to be 1
+            IPARAM(7) = mode !specifies eigenvalue problem A*x = lambda*x
+
+            
+            LDV = N
+            RESID = startPd!starting guess
+            numberOfMultiplications = 0
+            converged = .FALSE.
+            do while(.not. converged)
+                call snaupd(IDO, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, LDV,IPARAM,IPNTR, workd, workl, lworkl,info)
+                
+                if(IDO .eq. -1 .or. IDO .eq. 1) then
+                    temp = 0
+
+
+                    !call matvec(sparseMat, workd(ipntr(1):ipntr(1) + N - 1),temp)             NOT USED ANYMORE
+
+
+
+                    workd(ipntr(2) : ipntr(2) + N - 1) = temp
+                    numberOfMultiplications = numberOfMultiplications + 1
+                else 
+                    converged = .TRUE.
+                end if
+            end do
+            print*, "Number of dnaupd calls: ", numberOfMultiplications
+            if ( info .lt. 0 ) then
+                print *, ' '
+                print *, ' Error with _naupd, info = ', info
+                print *, ' Check the documentation of _naupd'
+                print *, ' '
+            else
+                RVEC = .TRUE. !Calculate eigenvector.
+                call sneupd(RVEC,HOWMNY, SELECT, DR, DI, Z, LDZ, SIGMAR, SIGMAI, WORKEV, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, &
+                            LDV, IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO2)
+
+
+                if(INFO2 .ne. 0) then
+                    print *, ' '
+                    print *, ' Error with _neupd, info = ', INFO2
+                    print *, ' Check the documentation of _neupd. '
+                    print *, ' '
+                else
+                    print *, 'Found eigenvector. Eigenvalue:'
+                    print *, 'Eigenvalues:', DR
+                    endPd = Z(:,1)
+                endif
+            endif
+            continue
+        end subroutine run_until_converged_method_arnoldi_shift_invert
+end module sparse_solver_arnoldi_shift_invert_module

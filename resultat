@@ -1,0 +1,19 @@
+GRID SIZE: 501 x 501. 15 iterations
+
+Arpack + linear interpolation. 
+TOL = 1e-6
+NCV = 7 (N ^ 1/5)
+Total time: 541.4s
+Total matrix multiplications: 32232
+
+Arpack + linear interpolation. 
+TOL = 1e-5
+NCV = 7 (N ^ 1/5)
+Total time: 74.38
+Total matrix multiplications: 3543
+
+Standard:
+Tol= 1e-8
+Total time: 786.4s
+Matrix multiplications: 83300
+

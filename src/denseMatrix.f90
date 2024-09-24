@@ -1,15 +1,15 @@
 module denseMatrix
     
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
     implicit none
     contains    
         subroutine printMatrixToFile(fileName, A)
             !Prints two dimensional matrix A to file.
-            real(dp), dimension(:,:), intent(in) :: A
+            real(sp), dimension(:,:), intent(in) :: A
             integer :: i,j
             character (len = *), intent(in) :: fileName
-            character (len = 5) :: folderPath
-            folderPath = 'data/' !Name cannot have prefix /
+            character (len = 8) :: folderPath
+            folderPath = '../data/' !Name cannot have prefix /
             folderPath = trim(folderPath) 
 
             open(unit = 9, file = trim(folderPath//trim(fileName)))
@@ -39,7 +39,7 @@ module denseMatrix
 
         subroutine printMatrixD(A)
             !Prints two dimensional matrix A to console output.
-            real(dp), dimension(:,:), intent(in) :: A
+            real(sp), dimension(:,:), intent(in) :: A
             integer :: i, j
             print*, 'Matrix: '
             do i = 1,SIZE(A,1)
@@ -74,7 +74,7 @@ module denseMatrix
             !Creates matrix containing transition probabilities for every state
             !Gives equal probability for each neighbour 
             integer, intent(in), dimension(:) :: dimSize
-            real(dp), dimension(:,:), allocatable :: walkMatrix
+            real(sp), dimension(:,:), allocatable :: walkMatrix
             integer :: d, i, numberOfCoords, idx
             integer, dimension(:), allocatable :: coord
             integer, dimension(:,:), allocatable :: neighbours
@@ -157,11 +157,11 @@ module denseMatrix
         subroutine linkStates(A, fromCoord, toCoord, dimSize)
             !Links two states for matrix A. Returns nothing, A is directly modified.
             !Modifies probability such that total probability to leave fromCoord is still equal 1.
-            real(dp), dimension(:,:) :: A
+            real(sp), dimension(:,:) :: A
             integer, dimension(:) , intent(in) :: fromCoord, toCoord, dimSize
             integer :: fromIdx, toIdx, i, idx
             integer, dimension(:,:), allocatable :: neighbours
-            real(dp) :: prob
+            real(sp) :: prob
             
             fromIdx = linearIdxFromCoord(fromCoord, dimSize)
             toIdx = linearIdxFromCoord(toCoord, dimSize)
@@ -231,11 +231,11 @@ module denseMatrix
         end function linearIdxFromCoord
         
         function gridFromColumnVector(colVector, dimSize) !Creates a grid of states from a column vector of states. ONly works for two dimensions
-            real(dp), dimension(:), intent(in) :: colVector
+            real(sp), dimension(:), intent(in) :: colVector
             integer, dimension(2), intent(in) :: dimSize
             integer :: i
             integer, dimension(2) :: coord
-            real(dp), dimension(dimSize(1),dimSize(2)) :: gridFromColumnVector
+            real(sp), dimension(dimSize(1),dimSize(2)) :: gridFromColumnVector
             
             do i = 1, SIZE(colVector)
                 coord = coordFromLinearIdx(i, dimSize)

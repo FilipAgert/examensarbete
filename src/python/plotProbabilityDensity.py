@@ -9,6 +9,6 @@ def plotMatrix(matrix):
     plt.ylabel("Rows")
     plt.show()
 
-fileName = r'data/guess1'
+fileName = r'data/5'
 A = readMatrixFromFile(fileName)
 plotMatrix(A)

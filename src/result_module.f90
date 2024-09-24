@@ -5,7 +5,7 @@ module result_module
     public :: convergedResult
 
     type convergedResult
-        real(dp), allocatable :: probabilityDensity(:,:)
+        real, allocatable :: probabilityDensity(:,:)
         real, allocatable :: solveTime(:)
         integer, allocatable :: matrixMultiplications(:)
         real, allocatable :: fusionFraction(:)
@@ -31,14 +31,14 @@ contains
 
     subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionFrac)
         class(convergedResult), intent(inout) :: self
-        real(dp), intent(in) :: pd(:)
+        real, intent(in) :: pd(:)
         real, intent(in) :: time, energy
         integer, intent(in) :: multiplications
         real, intent(in) :: fusionFrac
         real, intent(in) :: fissionFrac
         real, intent(in) :: startCoord(:)
 
-        real(dp), allocatable :: tempPd(:,:)
+        real, allocatable :: tempPd(:,:)
         real, allocatable :: tempReal(:)
         integer, allocatable :: tempInt(:)
         real, allocatable :: tempCoord(:,:)
@@ -173,7 +173,7 @@ contains
 
     function get_probability_density_method(self, index) result(pd)
         class(convergedResult), intent(in) :: self
-        real(dp), allocatable :: pd(:)
+        real, allocatable :: pd(:)
         integer :: index
 
         if (index < 1 .or. index > self%numResults) then

@@ -1,6 +1,6 @@
 module sparseMatrix
     use fsparse
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
     use denseMatrix, only: linearIdxFromCoord, coordFromLinearIdx, pruneNeighbours, getNeighbours
     implicit none
     private
@@ -10,10 +10,10 @@ module sparseMatrix
 
     function sparseWalkMatrix(dimSize)result(sparse)
         integer, dimension(:) :: dimSize
-        type(COO_dp) :: sparse
+        type(COO_sp) :: sparse
         integer :: numCoords, i, j, neighboursPerState, coord(SIZE(dimSize)), neighbourIdx, idx
         integer, dimension(:,:), allocatable :: neighbours
-        real(dp) :: prob
+        real(sp) :: prob
         
         neighboursPerState = 1 + 2*SIZE(dimSize)
 
@@ -41,11 +41,11 @@ module sparseMatrix
     end function sparseWalkMatrix
 
     subroutine changeSize(sparseMat, new_nnz)
-        type(COO_dp) :: sparseMat
+        type(COO_sp) :: sparseMat
         integer, intent(in) :: new_nnz
         integer :: current_nnz
         integer, allocatable :: temp_idx(:,:)
-        real(dp), allocatable :: temp(:)
+        real(sp), allocatable :: temp(:)
         current_nnz = sparseMat%nnz
 
         if (current_nnz < new_nnz) then
@@ -62,7 +62,7 @@ module sparseMatrix
         
             ! Optionally initialize the new entries
             temp_idx(:, current_nnz+1:new_nnz) = 0
-            temp(current_nnz+1:new_nnz) = 0.0_dp
+            temp(current_nnz+1:new_nnz) = 0.0_sp
         
             ! Assign the new arrays back to the COO matrix
             sparseMat%index = temp_idx
@@ -78,9 +78,9 @@ module sparseMatrix
     end subroutine changeSize
 
     subroutine addVal(sparseMat, i, j, idx, val)
-        type(COO_dp):: sparseMat
+        type(COO_sp):: sparseMat
         integer :: i,j, idx
-        real(dp) :: val
+        real(sp) :: val
 
         sparseMat%index(1,idx) = i
         sparseMat%index(2,idx) = j
@@ -88,12 +88,12 @@ module sparseMatrix
     end subroutine addVal
         
     subroutine linkStates(sparseMat, fromCoord, toCoord, dimSize) 
-        type(COO_dp), intent(inout) :: sparseMat
+        type(COO_sp), intent(inout) :: sparseMat
         integer, dimension(:),intent(in) :: fromCoord, toCoord
         integer, dimension(:), intent(in) :: dimSize
         integer :: nnz, numRows, numCols, fromIdx, toIdx, i
         integer, dimension(:,:), allocatable :: neighbours
-        real(dp) :: prob
+        real(sp) :: prob
         numRows = sparseMat%nrows
         numCols = sparseMat%ncols
         nnz = sparseMat%nnz
@@ -119,13 +119,13 @@ module sparseMatrix
     end subroutine linkStates
 
     subroutine linkStatesIdx(sparseMat, fromIdx, toIdx, val)
-        type(COO_dp), intent(inout) :: sparseMat
+        type(COO_sp), intent(inout) :: sparseMat
         integer, intent(in) :: fromIdx, toIdx
-        real(dp) :: out, val
+        real(sp) :: out, val
     
-        out = 0.0_dp
+        out = 0.0_sp
         call sparseMat%get(out, toIdx, fromIdx)
-        if(out /= 0.0_dp) then !if already linked, do nothing
+        if(out /= 0.0_sp) then !if already linked, do nothing
             return
         end if
         call changeSize(sparseMat, sparseMat%nnz + 1)

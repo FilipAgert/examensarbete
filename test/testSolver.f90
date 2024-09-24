@@ -1,5 +1,5 @@
 program testSolver
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
     use sparse_solver_linear_interpolator_module
     use sparse_solver_arnoldi_module
     use dense_solver_module
@@ -9,11 +9,11 @@ program testSolver
     implicit none
 
     integer :: dimSize(2), fusionCoord(2), fissionCoord(2), fissionIdx(1), fusionIdx(1)
-    real(dp), allocatable :: pd(:,:)
+    real, allocatable :: pd(:,:)
     real, allocatable :: grid(:,:)
     integer, allocatable :: startCoord(:,:), startIdxs(:)
-    type(sparse_arnoldi_solver) :: solverLin
-    type(COO_dp) :: sparseMat
+    type(sparse_linearint_solver) :: solverLin
+    type(COO_sp) :: sparseMat
     integer :: i, startNumber
     real, allocatable :: Es(:)
     character(len=8) :: filetext
@@ -21,7 +21,7 @@ program testSolver
     allocate(startCoord(2, startNumber))
     allocate(startIdxs(startNumber))
     allocate(Es(startNumber))
-    dimSize = [25,25]
+    dimSize = [501,501]
     allocate(pd(dimSize(2)*dimSize(1), startNumber))
     allocate(grid(SIZE(dimSize),dimSize(1)*dimSize(2)))
     sparseMat = sparseWalkMatrix(dimSize)
@@ -52,8 +52,8 @@ program testSolver
     do i = 1,solverLin%result%numResults
         grid = gridFromColumnVector(solverLin%result%getProbabilityDensity(i),dimSize)
         filetext = "file"
-        write(filetext, '(I1)')i
-        call printMatrixToFile(filetext, real(grid,8))
+        write(filetext, '(I2)')i
+        call printMatrixToFile(filetext, grid)
     end do
 
     
