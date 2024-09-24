@@ -9,6 +9,7 @@ program testResult
     real, dimension(2) :: fusionFraction
     real, dimension(2) :: fissionFraction
     real, dimension(3,2) :: startCoordinate
+    real, dimension(2) :: energies
     type(convergedResult) :: res
     ! Initialize arrays
     probabilityDensity = reshape( (/ 1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp, 5.0_dp, &
@@ -22,10 +23,11 @@ program testResult
     startCoordinate = reshape( (/ 1.0, 2.0, 3.0, 4.0, 5.0, &
                                  5.0, 4.0, 3.0, 2.0, 1.0 /), &
                                shape(startCoordinate) )
+    energies = (/ 1.0, 2.0/)
 
-    call res%addResult(probabilityDensity(:,1), startCoordinate(:,1), solveTime(1),&
+    call res%addResult(probabilityDensity(:,1), startCoordinate(:,1), energies(1), solveTime(1),&
                 matrixMultiplications(1), fusionFraction(1), fissionFraction(1))
-    call res%addResult(probabilityDensity(:,2), startCoordinate(:,2), solveTime(2),& 
+    call res%addResult(probabilityDensity(:,2), startCoordinate(:,2), energies (2), solveTime(2),& 
                 matrixMultiplications(2), fusionFraction(2), fissionFraction(2))
 
     call res%printResult()

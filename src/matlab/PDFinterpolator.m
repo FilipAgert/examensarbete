@@ -1,21 +1,23 @@
 close all;
 clear all;
 1;
-file0 = '../../data/RUN-4';
-file1 = '../../data/RUN-15';
-fileActual = '../../data/RUN-10';
+file0 = '../../data/1';
+file1 = '../../data/2';
+fileActual = '../../data/guess1';
 dat0 = readmatrix(file0, 'Delimiter', ';');
 dat1 = readmatrix(file1, 'Delimiter', ';');
 datActual = readmatrix(fileActual, 'Delimiter', ';');
-
+fileTest = '../../data/RUN-15';
+datTest = readmatrix(fileTest, 'Delimiter', ';');
+sum(dat0, "all")
 Ncoords = size(dat0,1)*size(dat0,2);
 x = zeros(2,Ncoords);
 pdf0 = zeros(1,Ncoords);
 pdf1 = zeros(1,Ncoords);
 pdf2 = zeros(1,Ncoords);
 idx = 1;
-for i = 1:size(dat0,1)
-    for j = 1:size(dat1,2)
+for j = 1:size(dat0,2)
+    for i = 1:size(dat1,1)
         x(1,idx) = i;
         x(2,idx) = j;%allocate coordinates.
         pdf0(idx) = dat0(i,j);
@@ -26,9 +28,9 @@ for i = 1:size(dat0,1)
 end
 
 s = eye(2);
-E0 = 4/21;
-E1 = 15/21;
-E = 12/21;
+E0 = 0.25;
+E1 = 0.5;
+E = 0.75;
 pdf0 = pdf0/sum(pdf0);%assure normalized
 pdf1 = pdf1/sum(pdf1);%assure normalized
 pdf2 = pdf2/sum(pdf2);
@@ -37,14 +39,15 @@ plotheatmap(x,pdf0);
 subplot(1,5,2)
 plotheatmap(x,pdf1);
 subplot(1,5,3)
-plotheatmap(x,pdf2);
-subplot(1,5,4)
+
 
 pdFast = guessPdfFast(x,E,E0,E1,pdf0,pdf1);
 plotheatmap(x,pdFast);
-subplot(1,5,5)
+subplot(1,5,4)
 pd = guessPdf(x,E,E0,E1,pdf0,pdf1);
 plotheatmap(x,pd);
+subplot(1,5,5)
+plotheatmap(x,pdf2);
 %scatter3(x(1,:), x(2,:), pdf0);
 %hold on;
 %scatter3(x(1,:), x(2,:), pdf1);
@@ -78,13 +81,13 @@ pdf2=pdf2/sum(pdf2);
 
 Ncoords = size(dat0,1)*size(dat0,2);
 
-E0 = 2
-E1 = 6;
-E = 4;
+E0 = 0.25
+E1 = 0.5;
+E = 0.75;
 plot(x,pdf0, 'b--');
 hold on;
 plot(x,pdf1, 'b--');
-plot(x,pdf2, 'r--');
+%plot(x,pdf2, 'r--');
 pdFast = guessPdfFast(x,E,E0,E1,pdf0,pdf1);
 pd = guessPdf(x,E,E0,E1,pdf0,pdf1);
 plot(x,pd, 'g')
@@ -95,6 +98,7 @@ function plotheatmap(X, values)
     x = X(1,:); % Example x-coordinates
     y = X(2,:); % Example y-coordinates
     numbins = sqrt(length(values));
+    
     % Define the grid resolution (e.g., 100x100 grid)
     x_edges = linspace(min(x), max(x), 0.5*round(numbins)); % x-axis grid
     y_edges = linspace(min(y), max(y), 0.5*round(numbins)); % y-axis grid
@@ -110,7 +114,11 @@ function plotheatmap(X, values)
     % Loop through each point and add the value to the corresponding grid cell
     for i = 1:length(values)
         if x_bin(i) > 0 && y_bin(i) > 0  % Ensure the bin index is valid
-            heatmap_grid(y_bin(i), x_bin(i)) = nansum([heatmap_grid(y_bin(i), x_bin(i)), values(i)]);
+            if isnan(heatmap_grid(y_bin(i), x_bin(i))) % If NaN, initialize with the value
+                heatmap_grid(y_bin(i), x_bin(i)) = values(i);
+            else % Otherwise, add the value to the existing one
+                heatmap_grid(y_bin(i), x_bin(i)) = heatmap_grid(y_bin(i), x_bin(i)) + values(i);
+            end
             counts(y_bin(i), x_bin(i)) = counts(y_bin(i), x_bin(i)) + 1;
         end
     end
@@ -125,8 +133,8 @@ function plotheatmap(X, values)
     title('Heatmap of values over 2D space');
     xlabel('X-axis');
     ylabel('Y-axis')
-
 end
+
 function GUESS = guessPdfFast(x,E,E0,E1,pdf0,pdf1) %can use when E close to E0, E1.
     a = alpha(E, [E0, E1]);
     GUESS = (1-a)*pdf0 + a*pdf1;
@@ -146,7 +154,7 @@ function GUESS = guessPdf(x, E, E0, E1, pdf0, pdf1)
     mu = (1-a)*mu0 + a*mu1;
     K = (1-a)*K0 + a*K1;
     
-    deltaMu = abs(mu0-mu1);
+        deltaMu = abs(mu0-mu1);
     muMult = deltaMu*deltaMu';
     Kval = det(K);
     disp("muval: " + max(muMult));
@@ -159,8 +167,8 @@ function GUESS = guessPdf(x, E, E0, E1, pdf0, pdf1)
     x0 = sqrtm(K0Kinv)*(x-mu) + mu0; %K0/K = K0 * inv(K)
     x1 = sqrtm(K1Kinv)*(x-mu) + mu1;
     pd = 0;
-    gamma0 = genGammaMatrix(x,x0,1);
-    gamma1 = genGammaMatrix(x,x1,1);
+    gamma0 = genGammaMatrix(x,x0,10);
+    gamma1 = genGammaMatrix(x,x1,10);
     for i = 1:size(x,2)
         pd = pd + (1-a)*gamma0(i,:)*pdf0(i) + a*gamma1(i,:)*pdf1(i);
     end

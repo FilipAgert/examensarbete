@@ -11,12 +11,14 @@ module result_module
         real, allocatable :: fusionFraction(:)
         real, allocatable :: fissionFraction(:)
         real, allocatable :: startCoordinate(:,:)
+        real, allocatable :: energies(:)
         integer :: numResults = 0
     contains 
         procedure, public :: addResult => add_result_method
         procedure, public :: printResult => print_result_method
         procedure, public :: getProbabilityDensity => get_probability_density_method
         procedure, public :: getStartCoord => get_coordinate_method
+        procedure, public :: getEnergy => get_energy_method
         procedure, public :: hasResult => has_result_method
     end type convergedResult
 
@@ -27,10 +29,10 @@ contains
         res = self%numResults > 0
     end function has_result_method
 
-    subroutine add_result_method(self, pd, startCoord, time, multiplications, fusionFrac, fissionFrac)
+    subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionFrac)
         class(convergedResult), intent(inout) :: self
         real(dp), intent(in) :: pd(:)
-        real, intent(in) :: time
+        real, intent(in) :: time, energy
         integer, intent(in) :: multiplications
         real, intent(in) :: fusionFrac
         real, intent(in) :: fissionFrac
@@ -49,6 +51,7 @@ contains
             allocate(self%probabilityDensity(size(pd), 1))
             allocate(self%solveTime(1))
             allocate(self%matrixMultiplications(1))
+            allocate(self%energies(1))
             allocate(self%fusionFraction(1))
             allocate(self%fissionFraction(1))
             allocate(self%startCoordinate(size(startCoord), 1))
@@ -94,6 +97,13 @@ contains
             self%fissionFraction(1:n) = tempReal
             deallocate(tempReal)
 
+            allocate(tempReal(n))
+            tempReal = self%energies
+            deallocate(self%energies)
+            allocate(self%energies(n+1))
+            self%energies(1:n) = tempReal
+            deallocate(tempReal)
+
             ! Resize startCoordinate with a temporary array
             allocate(tempCoord(size(startCoord), n))
             tempCoord = self%startCoordinate
@@ -113,13 +123,17 @@ contains
         self%fusionFraction(n) = fusionFrac
         self%fissionFraction(n) = fissionFrac
         self%startCoordinate(:, n) = startCoord
+        self%energies(n) = energy
     end subroutine add_result_method
 
     subroutine print_result_method(self)
         class(convergedResult), intent(in) :: self
-        integer :: i, j
+        integer :: i
         integer :: coordDim
-        integer :: coordWidth
+        integer :: coordWidth, totMults
+        real :: totS
+        totS = 0
+        totMults = 0
     
         if (self%numResults == 0) then
             print *, "No results available"
@@ -133,9 +147,7 @@ contains
         ! Print the table headers
         print *, "Results: "
         print *, "--------------------------------------------------------------"
-        print *, "Index | ", &
-            'Coords (', coordDim, 'D)', &
-            " | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults"
+        print *, "Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults"
         print *, "--------------------------------------------------------------"
         
         ! Print each result
@@ -143,24 +155,19 @@ contains
             ! Print the index and vertical bar
             write(*, '(I5, 1X, A)', advance="no") i, " |"
     
-            ! Print the coordinates with proper alignment
-            write(*, '(A)', advance="no") " "
-            do j = 1, coordDim
-                if (j > 1) then
-                    write(*, '(A)', advance="no") " |"
-                end if
-                write(*, '(F5.2, A)', advance="no") self%startCoordinate(j, i), " "
-            end do
             write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(A, F4.2, 15X, F4.2, 15X, F5.2, 12X, I5)', advance="no") &
-                " |  ", self%fusionFraction(i), self%fissionFraction(i), &
+            write(*, '(A,F4.2, 15X, F4.2, 15X, F4.2, 15X, F5.2, 12X, I5)', advance="no") &
+                " |  ", self%energies(i), self%fusionFraction(i), self%fissionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
-            
+            totS = totS + self%solveTime(i)
+            totMults = totMults + self%matrixMultiplications(i)
             print *, "" ! Move to the next line
         end do
-    
+        print *, "--------------------------------------------------------------"
+        print *, "TOTAL TIME [s]: ", totS
+        print *, "TOTAL MATRIX MULTIPLICATIONS: ", totMults
         print *, "--------------------------------------------------------------"
     end subroutine print_result_method
 
@@ -189,5 +196,18 @@ contains
 
         coord = self%startCoordinate(:, index)
     end function get_coordinate_method
+
+    function get_energy_method(self,index) result(energy)
+        class(convergedResult), intent(in) :: self
+        real :: energy
+        integer :: index
+
+        if (index < 1 .or. index > self%numResults) then
+            print *, "Error: Index out of range."
+            error stop
+        end if
+
+        energy = self%energies(index)
+    end function get_energy_method
 
 end module result_module

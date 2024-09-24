@@ -1,17 +1,10 @@
 program testLinearInterpolation
-    use linearInterpolation, only: linear1D
+    use linearInterpolation
 
     implicit none
-    real :: x0, x1, y0, y1, prevPoint(2),x, y, prevValue(2)
-    x0 = 1
-    y0 = 2
-    x1 = 2
-    y1= 4
-    prevPoint(1) = x0
-    prevValue(1) = y0
-    prevPoint(2) = x1
-    prevValue(2) = y1
-    x = 4
-    y = linear1D(x, prevPoint, prevValue)
-    print*, "Interpolation: ", y, "Expected result: 8"
+    real :: x0, x1, pdf0, pdf1, prevPoint(2),x, y, prevValue(2)
+    character(len= 12) :: filePath1 = '../../data/1'
+    character(len= 12) :: filePath2 = '../../data/2'
+    character(len= 12) :: filePath3 = '../../data/3'
+
 end program testLinearInterpolation

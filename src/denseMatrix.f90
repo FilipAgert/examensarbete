@@ -37,7 +37,7 @@ module denseMatrix
             end do
         end function getMiddleCell
 
-        subroutine printMatrix(A)
+        subroutine printMatrixD(A)
             !Prints two dimensional matrix A to console output.
             real(dp), dimension(:,:), intent(in) :: A
             integer :: i, j
@@ -50,8 +50,22 @@ module denseMatrix
                 print*
             end do
             return
-        end subroutine printMatrix
-        
+        end subroutine printMatrixD
+
+        subroutine printMatrixS(A)
+        !Prints two dimensional matrix A to console output.
+            real, dimension(:,:), intent(in) :: A
+            integer :: i, j
+            print*, 'Matrix: '
+            do i = 1,SIZE(A,1)
+                do j = 1,SIZE(A,2)
+                    write(*,'(E12.4)', advance='no') A(i,j)
+                    write(*,'(A)', advance='no') '  '  ! Add space between elements
+                end do
+                print*
+            end do
+            return
+        end subroutine printMatrixS
         
         
         
