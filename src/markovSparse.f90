@@ -9,9 +9,9 @@ module markovSparse
 
         function timeStepSparse(matrixSparse, probabilityCoeffs, steps)
             integer, intent(in) :: steps
-            real(sp), dimension(:), intent(in) :: probabilityCoeffs
-            real(sp), dimension(SIZE(probabilityCoeffs)) :: timeStepSparse, temp
-            type(COO_sp) :: matrixSparse
+            real(dp), dimension(:), intent(in) :: probabilityCoeffs
+            real(dp), dimension(SIZE(probabilityCoeffs)) :: timeStepSparse, temp
+            type(COO_dp) :: matrixSparse
             integer :: i
             timeStepSparse = probabilityCoeffs
             do i = 1, steps
@@ -23,10 +23,10 @@ module markovSparse
         
         
         function timeStepUntilConvergenceSparse(matrix, probabilityCoeffs)
-            real(sp), dimension(:), intent(in) :: probabilityCoeffs
-            type(COO_sp) :: matrix
-            real(sp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergenceSparse, diff
-            real(sp) :: tol, normVal
+            real(dp), dimension(:), intent(in) :: probabilityCoeffs
+            type(COO_dp) :: matrix
+            real(dp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergenceSparse, diff
+            real(dp) :: tol, normVal
             logical converged
             integer :: timeSteps, matrixMultiplications
             character (len = 2):: normType = "L2"
@@ -57,9 +57,9 @@ module markovSparse
 
         function timeStep(matrix, probabilityCoeffs, steps) !This computes repeated matrix multiplication (A*(A*...*(A*V)
             integer, intent(in) :: steps                     !In order to only have to store one matrix
-            real, dimension(:), intent(in) :: probabilityCoeffs
-            real, dimension(SIZE(probabilityCoeffs)) :: timeStep
-            real, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
+            real(dp), dimension(:), intent(in) :: probabilityCoeffs
+            real(dp), dimension(SIZE(probabilityCoeffs)) :: timeStep
+            real(dp), dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
             integer :: i
             timeStep = probabilityCoeffs
             do i = 1, steps
@@ -69,10 +69,10 @@ module markovSparse
         end function timeStep
 
         function timeStepUntilConvergence(matrix, probabilityCoeffs)
-            real(sp), dimension(:), intent(in) :: probabilityCoeffs
-            real(sp), dimension(SIZE(probabilityCoeffs),SIZE(probabilityCoeffs)), intent(in):: matrix
-            real(sp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergence, diff
-            real(sp) :: tol, normVal
+            real(dp), dimension(:), intent(in) :: probabilityCoeffs
+            real(dp), dimension(SIZE(probabilityCoeffs),SIZE(probabilityCoeffs)), intent(in):: matrix
+            real(dp), dimension(SIZE(probabilityCoeffs)) :: prevProbCoeffs, timeStepUntilConvergence, diff
+            real(dp) :: tol, normVal
             logical converged
             integer :: timeSteps, matrixMultiplications
             character (len = 2):: normType = "L2"
@@ -104,10 +104,10 @@ module markovSparse
         
         function convergence(newCoeff, oldCoeff, tol, normType)
             !Checks if all elements in two same sized vectors are close neough given a tolerance
-            real(sp), dimension(:), intent(in) :: newCoeff, oldCoeff
-            real(sp), dimension(SIZE(newCoeff)) :: difference
-            real(sp), intent(in) :: tol
-            real(sp) :: normVal
+            real(dp), dimension(:), intent(in) :: newCoeff, oldCoeff
+            real(dp), dimension(SIZE(newCoeff)) :: difference
+            real(dp), intent(in) :: tol
+            real(dp) :: normVal
             LOGICAL :: convergence
             character (len = *), intent(in), optional :: normType
             convergence = .TRUE.
@@ -117,9 +117,9 @@ module markovSparse
         end function convergence
 
         function norm(vec, type)
-            real(sp), dimension(:), intent(in) :: vec
+            real(dp), dimension(:), intent(in) :: vec
             character (len = *), optional :: type !Set Linf if you want L_inf norm. Default is L2 norm
-            real(sp) :: norm
+            real(dp) :: norm
             select case (type)
                 case ('Linf')
                     norm = MAXVAL(abs(vec)) !L_infinity norm. Returns max value of vector

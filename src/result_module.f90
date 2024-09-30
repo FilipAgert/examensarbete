@@ -5,7 +5,7 @@ module result_module
     public :: convergedResult
 
     type convergedResult
-        real, allocatable :: probabilityDensity(:,:)
+        real(dp), allocatable :: probabilityDensity(:,:)
         real, allocatable :: solveTime(:)
         integer, allocatable :: matrixMultiplications(:)
         real, allocatable :: fusionFraction(:)
@@ -31,14 +31,14 @@ contains
 
     subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionFrac)
         class(convergedResult), intent(inout) :: self
-        real, intent(in) :: pd(:)
+        real(dp), intent(in) :: pd(:)
         real, intent(in) :: time, energy
         integer, intent(in) :: multiplications
         real, intent(in) :: fusionFrac
         real, intent(in) :: fissionFrac
         real, intent(in) :: startCoord(:)
 
-        real, allocatable :: tempPd(:,:)
+        real(dp), allocatable :: tempPd(:,:)
         real, allocatable :: tempReal(:)
         integer, allocatable :: tempInt(:)
         real, allocatable :: tempCoord(:,:)
@@ -158,7 +158,7 @@ contains
             write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(A,F4.2, 15X, F4.2, 15X, F4.2, 15X, F5.2, 12X, I5)', advance="no") &
+            write(*, '(A,F4.2, 15X, F4.2, 15X, F4.2, 15X, F0.2, 12X, I5)', advance="no") &
                 " |  ", self%energies(i), self%fusionFraction(i), self%fissionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
             totS = totS + self%solveTime(i)
@@ -173,7 +173,7 @@ contains
 
     function get_probability_density_method(self, index) result(pd)
         class(convergedResult), intent(in) :: self
-        real, allocatable :: pd(:)
+        real(dp), allocatable :: pd(:)
         integer :: index
 
         if (index < 1 .or. index > self%numResults) then

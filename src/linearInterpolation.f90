@@ -1,6 +1,6 @@
 module linearInterpolation
     ! use stdlib_linalg, only: Operator(.det.), Operator(.inv.), eig
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: dp=>real64, sp=>real32
     !use stdlib_kinds, only: sp
     use denseMatrix, only: printMatrixS, printMatrixToFile
     implicit none
@@ -98,9 +98,10 @@ contains
     ! end function guessPdfSlow
 
     function guessPdfFast(coord, E,E0,E1, pdf0, pdf1) result(interpolation)
-        real, intent(in) :: coord(:,:), E, E0, E1, pdf0(:), pdf1(:)
-        real :: interpolation(size(pdf0))
-        real :: alpha, sumInt
+        real(sp), intent(in) :: coord(:,:), E, E0, E1
+        real(dp), intent(in) :: pdf0(:), pdf1(:)
+        real(dp) :: interpolation(size(pdf0))
+        real(dp) :: alpha, sumInt
         alpha = (E-E0)/(E1-E0)
         interpolation = (1-alpha)*pdf0 + alpha*pdf1
         sumInt= sum(interpolation)
