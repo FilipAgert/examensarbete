@@ -1,0 +1,133 @@
+GRID SIZE: 501 x 501. 15 iterations
+
+Arpack + linear interpolation. 
+TOL = 1e-6
+NCV = 7 (N ^ 1/5)
+Total time: 541.4s
+Total matrix multiplications: 32232
+
+Arpack + linear interpolation.  (double precision)
+TOL = 1e-5
+NEV = ?
+NCV = 7 (N ^ 1/5)
+Total time: 74.38
+Total matrix multiplications: 3543
+
+Arpack + linear interpolation.  (single precision)
+TOL = 1e-5
+NEV = 1
+NCV = 7 (N ^ 1/5)
+Total time: 67.62s
+Total matrix multiplications: 4776
+
+
+Arpack + linear interpolation
+TOL = 1/N (4*10⁻6)
+NEV = 1
+NCV = 12:  
+Total time: 143.33s
+Matrix multiplications:7827
+
+Standard:
+Tol= 1e-8
+Total time: 786.4s
+Matrix multiplications: 83300
+
+
+
+-------------------------------------------------------------------
+Tol = 1/N, NEV = 1, N = 201x201
+ Number of restarts (energies): 30
+ Tol means calculated eigenvalue is within tolerance of actual eigenvalue (lambda- lambda_c) < tol where lambda_c calculated eigenvalue and lambda real eigenvalue
+
+1st solve: 2.06s          (equal prob in all states)
+2nd solve: .87s           (re-use 1st solution)     (using previous solution does help)
+3rd solve: .77s           (lin-comb of 1st and second sultion) (linear interpolation does not help)
+
+ARPACK: TIME = 24.5s
+Matrix multiplications: 3553  
+__________________________________________
+Iterative: TIME = 98.06 (approx 4 times slower)
+Matrix multiplications: 58800 (5.9e4)
+
+1st solve: 28.19s  (equal probability in all states)
+2nd solve: 5.39s   (re-use 1st solution)
+3rd solve  3.03s   (lin-comb of 1st and 2nd solution)
+
+For iterative solver: TOL = 1/(N*1e2), where tol>|phi_n - phi_n+1|_{L2} leads to iteration stop .
+
+-----------------------------------------------------
+Same as above but for 401x401 matrix.
+
+ARPACK: TIME = 225s
+Matrix multiplications: 8955
+1st solve:16.16s
+2nd solve: 8.58s
+3rd solve: 9.94s
+
+Iterative:
+Time = 981.35s
+Matrix multiplications: 152720 (1.5e5)
+1st solve: 226.55s
+2nd solve: 58.47s
+3rd solve: 23.81s
+
+
+
+ARNOLDI VS LINEAR SYSTEM. 
+N = 2.5e5: 500x500:
+Linsys: 17s
+Arnoldi:
+
+
+N = 3.5e5 (600x600)
+Arnoldi: 41s
+Linsys: 28s
+
+N = 1e6 (1000x1000)
+Arnoldi: 192s
+Linsys: 130s
+
+
+
+
+----------- REAL DATA:
+ARPACK
+
+Tol: 1/N
+Fusion/Fission frac: 0.25
+Time: 1100s
+Fusion chance: 19%
+
+
+Tol: 1/(10N)
+Fusion/Fission frac: 0.25
+Time: 1141s
+Fusion chance: 19%
+
+
+Tol : 1/(10N)
+Fusion/Fission frac: 0.5
+Time:1185 s (20 min)
+Fusion chance: 19%
+
+Tol : 1/(10N)
+Fusion frac: 0.5
+Fission frac: 0.25
+Time: 1165s (20 min)
+Fusion chance: 11%
+Contains negative numbers.
+
+
+Tol : 1/(100N)
+Fusion/Fission frac: 0.5
+Time: 1384s ()
+Fusion chance: 19%
+Does not contain negative numbers.
+
+---------DATA WITH FULL MM COORD:
+Tol : 1/(10N)
+Fusion frac: 0.5
+Fission frac: 0.5
+Time: 2800s (45 min)
+Fusion chance: 19% (Same as with halfed MM cord)

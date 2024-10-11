@@ -17,6 +17,7 @@ module solver_module
         integer, allocatable :: fusionIdxs(:)
         integer, allocatable :: dimSize(:)
         real, allocatable :: grid(:,:) !List of all coordinate points
+        real(dp) :: fusionProb, fissionProb
     contains
         procedure(solve_interface), deferred, public :: solve  ! Define abstract method 'solve'
         procedure, public :: printResult => print_result_method
@@ -61,10 +62,12 @@ module solver_module
         coordinateN = SIZE(self%matrix,1)
     end function get_number_of_coordinates
     ! Constructor to initialize the sparseMat in the solver base class
-    subroutine init_solver(self, input_matrix, grid, start_idxs, energies, fusion_idxs, fission_idxs, dim_size)
+    subroutine init_solver(self, input_matrix, grid, start_idxs, energies, fusion_idxs, fission_idxs, dim_size, &
+                                fusion_prob, fission_prob)
         class(solver), intent(inout) :: self
         real(sp), intent(in) :: input_matrix(:,:)
         real, intent(in) :: energies(:), grid(:,:)
+        real(dp), intent(in):: fusion_prob, fission_prob
         integer, intent(in) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dim_size(:)
         
         self%matrix = input_matrix  ! Store the sparseMat
@@ -74,6 +77,8 @@ module solver_module
         self%fissionIdxs = fission_idxs
         self%dimSize = dim_size
         self%grid = grid
+        self%fusionProb = fusion_prob
+        self%fissionProb = fission_prob
     end subroutine init_solver
 
     subroutine print_result_method(self) !Prints result
@@ -174,12 +179,15 @@ module dense_solver_module
     end type dense_solver
     contains
 
-    subroutine dense_init_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize)
+    subroutine dense_init_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize, &
+                                    fusion_prob, fission_prob)
         class(dense_solver), intent(inout) :: self
         real(sp), dimension(:,:), intent(inout) :: denseMat
         integer, intent(inout) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dimSize(:)
         real, intent(inout) :: grid(:,:), energies(:)
-        call create_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize)
+        real(dp), intent(in):: fusion_prob, fission_prob
+        call create_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize, &
+                            fusion_prob, fission_prob)
     end subroutine dense_init_solver
     
     subroutine dense_solve_method(self)
@@ -276,22 +284,26 @@ module sparse_solver_module
     ! Define a subclass for sparse sparseMat solver
     type, extends(solver) :: sparse_solver
         type(COO_dp) :: sparseMatrix
+        logical :: generatedConnections
+        integer, allocatable :: connectionIndicies(:)
     contains
         procedure :: solve => sparse_solve_method
         procedure :: init => sparse_init_solver
-        procedure :: sparseGenerateConnections => sparse_generate_connections_method
+        procedure :: sparseGenerateConnections => sparse_modify_connections_method_preset_fission_fusion_probs
         procedure :: runUntilConverged => run_until_converged_method
         procedure, public :: numberOfGridPoints => sparse_number_of_grid_points_method
         procedure :: timeStep => time_step_dparse_method
     end type sparse_solver
 
     contains
-    subroutine sparse_init_solver(self, input_dparseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dim_size)
+    subroutine sparse_init_solver(self, input_dparseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dim_size, &
+                                fusion_prob, fission_prob)
         class (sparse_solver), intent(inout) :: self
         type(COO_dp), intent(in) :: input_dparseMat
         integer, intent(in) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dim_size(:)
         real, intent(in) :: grid(:,:), energies(:)
-
+        real(dp), intent(in):: fusion_prob, fission_prob
+        integer :: tempConnections(SIZE(fusion_idxs) + size(fission_idxs))
         self%sparseMatrix = input_dparseMat
         self%startIdxs = start_idxs
         self%fusionIdxs = fusion_idxs
@@ -299,6 +311,10 @@ module sparse_solver_module
         self%dimSize = dim_size
         self%energies = energies
         self%grid = grid
+        self%generatedConnections = .FALSE.
+        self%connectionIndicies = tempConnections
+        self%fusionProb = fusion_prob
+        self%fissionProb = fission_prob
     end subroutine sparse_init_solver
 
     function time_step_dparse_method(self, matrixSparse, probabilityCoeffs, steps) result (timeStepSparse)
@@ -322,39 +338,118 @@ module sparse_solver_module
         nGridPoints = self%sparseMatrix%nrows
     end function sparse_number_of_grid_points_method
 
-    function sparse_generate_connections_method(self, start_idx) result(sparseMat) !creates copy of base sparsematrix and links fusion/fission to start_idx chosen
+    subroutine sparse_modify_connections_method(self, start_idx) !modifies existing matrix instead of creating a copy. Much faster
+        !!TODO: DOES NOT WORK AS INTENDED IF FUSION OR FISSION INDEX NEIGHBOUR TO START_IDX
         class (sparse_solver), intent(inout) :: self
         integer, intent(in) :: start_idx
-        integer :: i, j, fusionIdx, neighbourIdx, fissionIdx
-        type(COO_dp) :: sparseMat
-        real(sp) :: fusionFrac = 0.25_sp !Prob to fusion
-        real(sp) :: fissionFrac = 0.25_sp !prob to fission
+        integer :: i, j, fusionIdx, fissionIdx
+        integer :: connectionCounter, connectionIndex
+        
+        logical :: alreadyConnected
 
-        call sparseMat%malloc(self%sparseMatrix%nrows, self%sparseMatrix%ncols, self%sparseMatrix%nnz)
-        sparseMat%index = self%sparseMatrix%index
-        sparseMat%data = self%sparseMatrix%data
-        do i = 1,size(self%fusionIdxs)
-            fusionIdx = self%fusionIdxs(i)
-            do j = 1, sparseMat%nnz
-                if(sparseMat%index(2, j) == fusionIdx) then
-                    neighbourIdx = sparseMat%index(1,j)
-                    call sparseMat%set(sparseMat%data(j)*(1-fusionFrac), neighbourIdx , fusionIdx) !Reduce probability for all existing neighbours
-                end if
-            end do
-            call linkStatesIdx(sparseMat, fusionIdx, start_idx, real(fusionFrac,8)) !Add link between fusion coord to starting coordinate.
-        end do
 
-        do i = 1,size(self%fissionIdxs)
-            fissionIdx = self%fissionIdxs(i)
-            do j = 1, sparseMat%nnz
-                if(sparseMat%index(2, j) == fissionIdx) then
-                    neighbourIdx = sparseMat%index(1,j)
-                    call sparseMat%set(sparseMat%data(j)*(1-fissionFrac), neighbourIdx , fissionIdx) !Reduce probability for all existing neighbours
-                end if
+        connectionCounter = 0
+        connectionIndex = self%sparseMatrix%NNZ
+
+        if(.NOT. self%generatedConnections) then  !Generate new connections
+            !Extend size of sparsematrix data and index arrays.
+            call changeSize(self%sparseMatrix, self%sparseMatrix%nnz + size(self%connectionIndicies))
+
+            do i = 1, size(self%fusionIdxs) 
+                fusionIdx = self%fusionIdxs(i)
+                alreadyConnected = .FALSE.
+                do j = 1, self%sparseMatrix%NNZ
+                    if(self%sparseMatrix%index(2,j) == fusionIdx) then !Assume fusion is not next to starting space
+
+                        self%sparseMatrix%data(j) = self%sparseMatrix%data(j) * (1-self%fusionProb) !iterate over all neighbours, reduce prob.
+                    endif
+                end do
+                !!!!GENERATE CONNECTION TO START_IDX
+                connectionCounter = connectionCounter + 1
+                connectionIndex = connectionIndex + 1
+                self%connectionIndicies(connectionCounter) = connectionIndex
+                self%sparseMatrix%index(1,connectionIndex) = start_idx
+                self%sparseMatrix%index(2,connectionIndex) = fusionIdx
+                self%sparseMatrix%data(connectionIndex) = self%fusionProb
             end do
-            call linkStatesIdx(sparseMat, fissionIdx, start_idx, real(fissionFrac,8))
-        end do
-    end function sparse_generate_connections_method
+            do i = 1,size(self%fissionIdxs)
+                fissionIdx = self%fissionIdxs(i)
+                alreadyConnected = .FALSE.
+                do j = 1, self%sparseMatrix%NNZ
+                    if(self%sparseMatrix%index(2,j) == fissionIdx) then !Assume fusion is not next to starting space
+                        self%sparseMatrix%data(j) = self%sparseMatrix%data(j) * (1-self%fissionProb) !iterate over all neighbours, reduce prob.
+                    endif
+                end do
+
+                !!!!GENERATE CONNECTION TO START_IDX
+                connectionCounter = connectionCounter + 1
+                connectionIndex = connectionIndex + 1
+                self%connectionIndicies(connectionCounter) = connectionIndex
+                self%sparseMatrix%index(1,connectionIndex) = start_idx
+                self%sparseMatrix%index(2,connectionIndex) = fissionIdx
+                self%sparseMatrix%data(connectionIndex) = self%fissionProb
+            end do
+            self%generatedConnections = .TRUE.
+        else!modify 
+            do i = 1,size(self%connectionIndicies)
+                self%sparseMatrix%index(1, self%connectionIndicies(i)) = start_idx
+            end do
+        endif
+    end subroutine sparse_modify_connections_method
+
+    subroutine sparse_modify_connections_method_preset_fission_fusion_probs(self, start_idx) !modifies existing matrix instead of creating a copy. Much faster
+        !!TODO: DOES NOT WORK AS INTENDED IF FUSION OR FISSION INDEX NEIGHBOUR TO START_IDX
+        class (sparse_solver), intent(inout) :: self
+        integer, intent(in) :: start_idx
+        integer :: i, j, fusionIdx, fissionIdx
+        integer :: connectionCounter, connectionIndex
+        
+        logical :: alreadyConnected
+
+
+        connectionCounter = 0
+        connectionIndex = self%sparseMatrix%NNZ
+
+        if(.NOT. self%generatedConnections) then  !Generate new connections
+            !Extend size of sparsematrix data and index arrays.
+            call changeSize(self%sparseMatrix, self%sparseMatrix%nnz + size(self%connectionIndicies))
+
+            do i = 1, size(self%fusionIdxs) 
+                fusionIdx = self%fusionIdxs(i)
+                alreadyConnected = .FALSE.
+                !!!!GENERATE CONNECTION TO START_IDX
+                connectionCounter = connectionCounter + 1
+                connectionIndex = connectionIndex + 1
+                self%connectionIndicies(connectionCounter) = connectionIndex
+                self%sparseMatrix%index(1,connectionIndex) = start_idx
+                self%sparseMatrix%index(2,connectionIndex) = fusionIdx
+                self%sparseMatrix%data(connectionIndex) = self%fusionProb
+            end do
+            do i = 1,size(self%fissionIdxs)
+                fissionIdx = self%fissionIdxs(i)
+                alreadyConnected = .FALSE.
+
+                !!!!GENERATE CONNECTION TO START_IDX
+                connectionCounter = connectionCounter + 1
+                connectionIndex = connectionIndex + 1
+                self%connectionIndicies(connectionCounter) = connectionIndex
+                self%sparseMatrix%index(1,connectionIndex) = start_idx
+                self%sparseMatrix%index(2,connectionIndex) = fissionIdx
+                self%sparseMatrix%data(connectionIndex) = self%fissionProb
+            end do
+            self%generatedConnections = .TRUE.
+        else!modify 
+            do i = 1,size(self%connectionIndicies)
+                self%sparseMatrix%index(1, self%connectionIndicies(i)) = start_idx
+            end do
+        endif
+    end subroutine sparse_modify_connections_method_preset_fission_fusion_probs
+
+
+
+
+
+
 
     ! Sparse sparseMat solver method
     subroutine sparse_solve_method(self)
@@ -373,14 +468,17 @@ module sparse_solver_module
             print*, "Running calculation for energy: ", self%energies(i)
             call cpu_time(T1)
             startIdx = self%startIdxs(i)
-            sparseMat = self%sparseGenerateConnections(startIdx) !Connects fission and fusion points to starting index
+            call self%sparseGenerateConnections(startIdx) !Connects fission and fusion points to starting index
+            sparseMat = self%sparseMatrix
             call cpu_time(T2)
             startPd = self%startingGuess() !starting guess
+            print*, "Running converge method, time spent on generating matrix: ", T2-T1, " seconds."
             call self%runUntilConverged(sparseMat, startPd, endPd, sparseMatMultiplications)
-            call cpu_time(T3)
+            
 
             fusionFrac = self%fusionFrac(endPd)
             fissionFrac = self%fissionFrac(endPd)
+            call cpu_time(T3)
             elapsedTime = T3-T1
             print*, "Time taken: ", elapsedTime, "s", " Of which ", 100*(T2-T1)/(T3-T1), "percent spent on generating matrix."
             print*, "Number of matrix multiplications: ", sparseMatMultiplications
@@ -404,7 +502,7 @@ module sparse_solver_module
 
         numberOfMultiplications = 0
         tol = 1.0/(SIZE(startPd)*1e2) !This tolerance is one part in one hundered assuming even spread of probability.
-        multiplicationSteps = 20
+        multiplicationSteps = 10
         tol = tol * multiplicationSteps / 10 !Dynamically change tolerance based on number of sparseMat multiplications in a row
         print*, "Tolerance: ",tol
         
@@ -415,13 +513,14 @@ module sparse_solver_module
             converged = convergence(endPd, prevPd, tol, normType)
             
             
-            if(mod(numberOfMultiplications, 500) == 0) then
+            numberOfMultiplications = numberOfMultiplications + multiplicationSteps
+            if(mod(numberOfMultiplications, 10) == 0) then
                 diff = endPd - prevPd
                 normVal = norm(diff, normType)
                 print *, 'Matrix multiplications: ', numberOfMultiplications, " ", normType, " norm: ", normVal
+                print*, 'FusionProb: ', self%fusionFrac(endPd)
             end if
             prevPd = endPd
-            numberOfMultiplications = numberOfMultiplications + multiplicationSteps
         end do
     end subroutine run_until_converged_method
 end module sparse_solver_module
@@ -432,7 +531,7 @@ module sparse_solver_linear_interpolator_module
     use sparse_solver_module
     use fsparse
     use markovSparse
-    use denseMatrix
+    !use denseMatrix, only
     use linearInterpolation
     use iso_fortran_env, only: dp=>real64, sp=>real32
 
@@ -513,10 +612,12 @@ module sparse_solver_linear_interpolator_module
 end module sparse_solver_linear_interpolator_module
 
 module sparse_solver_arnoldi_module
+    
     use sparse_solver_linear_interpolator_module
     use fsparse
     use linearInterpolation
     use iso_fortran_env, only: dp=> real64, sp=>real32
+    
 
     type, extends(sparse_linearint_solver) :: sparse_arnoldi_solver
     contains
@@ -526,6 +627,7 @@ module sparse_solver_arnoldi_module
 
     contains
         subroutine run_until_converged_method_arnoldi(self, sparseMat, startPd, endPd, numberOfMultiplications)
+            
             implicit none
             class(sparse_arnoldi_solver), intent(inout) :: self
             type(COO_dp) :: sparseMat
@@ -533,11 +635,13 @@ module sparse_solver_arnoldi_module
             real(dp), dimension(:), intent(inout) :: endPd
             real(dp), dimension(SIZE(startPd)) :: temp
             integer, intent(inout) :: numberOfMultiplications
-            
+            logical :: hasNegative
+            real(dp) :: negP, posP
 
             external :: dnaupd
             external :: dneupd
-            integer :: IDO
+            
+            integer :: IDO, i
             character(len = 1) :: BMAT = 'I'
             integer :: N
             character(len = 2) ::  WHICH = 'LR'  !since multiple eigenvalues can have abs(lambda)=1, we need to choose only largest real part
@@ -562,8 +666,186 @@ module sparse_solver_arnoldi_module
             logical, allocatable :: SELECT(:)
             real(dp), dimension(:), allocatable :: DR, DI
             real(dp), dimension(:,:), allocatable :: Z
-            real(dp) :: SIGMAR, SIGMAI, TIME1, TIME2
+            real(dp) :: SIGMAR, SIGMAI
+            real :: TIME1, TIME2, TIME3, TIME0
             integer :: LDZ
+            N = self%numberOfGridPoints()
+            !!USER SETTINGS.
+            maxitr = 50000
+            NEV = 1 !number of eigenvalues calculated. test to change this
+            TOL = 1./(self%numberOfGridPoints()*10)!Tolerance is: how close to true eigenvalue can the calculated one be?
+            !Tolerance means that you expect no eigenvalues to be closer to eachother than tolerance.
+            !seems to only converge to true value if low enough. Should maybe be of order 1/number of grid points For 501x501
+            NCV = MAX(2*NEV + 1,int((N)**(1.0/8.0))) !set at least to 2*NEV. Lower number = more matrix * vector operations.
+            !!!!!!
+            SIGMAR = 0 
+            SIGMAI = 0
+            INFO = 1 !info for dnaupd          1 = user specified vector
+            INFO2 = 0 !info for dneupd         1 = user specified vector
+            IDO = 0
+            ishfts = 1
+            LDZ = N
+            allocate(Z(N, NEV + 1))
+            allocate(DR(NEV + 1), DI(NEV + 1))
+            allocate(SELECT(NCV))
+
+            LWORKL = 3*NCV**2 + 6 *NCV
+            allocate(workl(LWORKL))
+            allocate(workd(3*N), workev(3*NCV))
+            allocate(RESID(N))
+            allocate(V(N,NCV))
+            IPARAM = 0
+            IPARAM(1) = ishfts
+            IPARAM(3) = maxitr !Number of arnoldi = .FALSE.update iterations
+            IPARAM (4) = 1 !needs to be 1
+            IPARAM(7) = mode !specifies eigenvalue problem A*x = lambda*x
+
+            
+            LDV = N
+            RESID = startPd!starting guess
+            numberOfMultiplications = 0
+            converged = .FALSE.
+            call cpu_time(TIME0)
+            do while(.not. converged)
+                CALL cpu_time(TIME1)
+                call dnaupd(IDO, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, LDV,IPARAM,IPNTR, workd, workl, lworkl,info)
+                
+                if(IDO .eq. -1 .or. IDO .eq. 1) then
+                    temp = 0
+
+                    call cpu_time(TIME2)
+
+                    call matvec(sparseMat, workd(ipntr(1):ipntr(1) + N - 1),temp)
+                    workd(ipntr(2) : ipntr(2) + N - 1) = temp
+                    numberOfMultiplications = numberOfMultiplications + 1
+
+                    call cpu_time(TIME3)
+                    if(mod(numberOfMultiplications,10) == 0) then
+                        print*, " "
+                        print*, "Number of matvec calls so far : ", numberOfMultiplications
+                        print*, "Elapsed time so far: ", TIME3-TIME0, " seconds."
+                        print*, "Latest arnoldi iteration time: ", TIME2-TIME1, " seconds. "
+                        print*, "Latest matvec time: ", TIME3-TIME2, " seconds. ", 100*(TIME3-TIME2)/(TIME3-TIME1), "% of total"
+                    endif
+                else 
+                    converged = .TRUE.
+                end if
+            end do
+            if ( info .lt. 0 ) then
+                print *, ' '
+                print *, ' Error with _naupd, info = ', info
+                print *, ' Check the documentation of _naupd'
+                print *, ' '
+            else
+                RVEC = .TRUE. !Calculate eigenvector.
+                call dneupd(RVEC,HOWMNY, SELECT, DR, DI, Z, LDZ, SIGMAR, SIGMAI, WORKEV, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, &
+                            LDV, IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO2)
+
+                if(INFO2 .ne. 0) then
+                    print *, ' '
+                    print *, ' Error with _neupd, info = ', INFO2
+                    print *, ' Check the documentation of _neupd. '
+                    print *, ' '
+                else
+                    endPd = Z(:,1)/sum(Z(:,1))! !Ensure correct phase and amplitude
+
+                    !Check if eigenvector has negative and positive values. Should only have positive values.
+                    hasNegative = .FALSE.
+                    do i = 1, SIZE(endPd)
+                        if(endPd(i) < 0.0_dp) then
+                            hasNegative = .TRUE.
+                            exit
+                        endif
+                    end do
+                    if(hasNegative) then
+                        negP = 0.0_dp
+                        posP = 0.0_dp
+                        do i = 1,SIZE(endPd)
+                            if(endPd(i) < 0.0_dp) then
+                                negP = negP + endPd(i)
+                            else
+                                posP = posP + endPd(i)
+                            endif
+                        end do
+                        print*, " "
+                        print*, "--------------------------------------------------------------------------------------------------"
+                        print*, "ERROR: Eigenvector contains both negative and positive probability values."
+                        print*, "Tolerance is likely too large."
+                        print*, "Sum probability positive entries (should be 1): ", posP
+                        print*, "Sum probability negative entries: ", negP
+                        print*, "--------------------------------------------------------------------------------------------------"
+                        print*, " "
+                    endif
+                    print *, 'Found eigenvector'
+                    print *, 'Eigenvalue:', DR(1)
+                    print*, "Minimum value of eigenvector: ", minval(endPd)
+                    print*, "Maximum value of eigenvector: ", maxval(endPd)
+                    
+                endif
+            endif
+            continue
+        end subroutine run_until_converged_method_arnoldi
+end module sparse_solver_arnoldi_module
+
+module sparse_solver_arnoldi_shift_module
+    use sparse_solver_linear_interpolator_module
+    use fsparse
+    use linearInterpolation
+    use iso_fortran_env, only: dp=> real64, sp=>real32
+    use dlap
+
+    type, extends(sparse_linearint_solver) :: sparse_arnoldi_shift_solver
+    contains
+        procedure :: runUntilConverged => run_until_converged_method_arnoldi_shift
+        
+    end type sparse_arnoldi_shift_solver
+
+    contains
+        subroutine run_until_converged_method_arnoldi_shift(self, sparseMat, startPd, endPd, numberOfMultiplications)
+            implicit none
+            class(sparse_arnoldi_shift_solver), intent(inout) :: self
+            type(COO_dp) :: sparseMat
+            real(dp), dimension(:), intent(in) :: startPd
+            real(dp), dimension(:), intent(inout) :: endPd
+            real(dp), dimension(SIZE(startPd)) :: temp
+            integer, intent(inout) :: numberOfMultiplications
+            
+
+            external :: dnaupd
+            external :: dneupd
+            integer :: IDO
+            character(len = 1) :: BMAT = 'I'
+            integer :: N
+            character(len = 2) ::  WHICH = 'LM'  !since multiple eigenvalues can have abs(lambda)=1, we need to choose only largest real part
+            integer :: NEV!number of eigenvalues comptued
+            real(dp) :: TOL 
+            real(dp),allocatable :: RESID(:)
+            integer :: NCV !number of vectors in calculation. computation scales as N * NCV²
+            real(dp), allocatable :: V(:,:)
+            integer :: IPARAM(11)
+            integer :: ishfts
+            integer :: maxitr !max iterations?
+            integer :: mode = 3 !1 = no sigma shift. 3 = sigma shift of one
+            integer :: LDV
+            Real(dp), allocatable :: workd(:), workl(:), workev(:)
+            integer :: LWORKL
+            integer :: INFO
+            integer :: INFO2 !0 = randomized initial vector, 1 = resid initial vector (use starting guess)
+            logical :: converged
+            integer :: IPNTR(14)
+            LOGICAL :: RVEC
+            character(len = 1) :: HOWMNY = 'A'
+            logical, allocatable :: SELECT(:)
+            real(dp), dimension(:), allocatable :: DR, DI
+            real(dp), dimension(:,:), allocatable :: Z
+            real(dp) :: SIGMAR, SIGMAI
+            integer :: LDZ
+            integer :: i,  j, newN, ISYM, ITOL
+            integer, allocatable :: IA(:), JA(:), IWORK(:)
+            real(dp), allocatable :: A(:), X1(:),  X(:), SOL(:), a12(:), a21(:), B(:), RWORK(:)
+            integer :: row, col, numchanges, NELT, ITMAX, ITER, IERR, IUNIT, LENW, LENIW
+            real(dp) :: val, alpha, ERR, TIME1, TIME2
+            SIGMAR = 1 + 1e-6
             N = self%numberOfGridPoints()
             !!USER SETTINGS.
             maxitr = 50000
@@ -600,14 +882,68 @@ module sparse_solver_arnoldi_module
             RESID = startPd!starting guess
             numberOfMultiplications = 0
             converged = .FALSE.
+
+
+            !SHIFT INVERT
+
+            
+            
+            numberOfMultiplications = 0
+            
+            
+            numChanges = 0
+    
+            do i = 1,sparseMat%nnz !iterate over all nonzero elements, if diagonal element, subtract one from it.
+                row = sparseMat%index(1,i)
+                col = sparseMat%index(2,i)
+                if(row == col) then
+                    val = sparseMat%data(i)
+                    sparseMat%data(i) = val - SIGMAR
+                    numChanges = numChanges + 1
+                end if
+            end do
+            if(numChanges /= N) then !
+                print*, "WARNING: MATRIX NOT SET UP CORRECTLY, DID NOT SUBTRACT -1 FROM ALL DIAGONAL ELEMENTS"
+                print*, "N: ", N
+                print*, "Diagonal elements found: ", numchanges
+            end if
+
+
+            NELT = sparseMat%nnz
+            allocate(B(N), X(N), IA(NELT), JA(NELT), A(NELT))
+
+
+           
+            IA = sparseMat%index(1,:)
+            JA = sparseMat%index(2,:)
+            A = sparseMat%data
+            ISYM = 0
+            ITOL = 1
+            TOL = 10e-4        !Breaks iteration when tol > ||Ax - RHS||/ ||RHS||         For A = matrix, X = guess.
+            ITMAX = 10000
+            IUNIT = 0
+            LENW = (9*N + NELT*2)
+            allocate(RWORK(LENW))
+            LENIW = (12 + 2*NELT + 5*N)
+            allocate(IWORK(LENIW))
+
+            if( IERR > 0) then
+                print*, ' '
+                print*, "IERR: look up: ", IERR
+                print*, " "
+            endif
+
+
+            !END SHIFT INVERT
             do while(.not. converged)
                 call dnaupd(IDO, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, LDV,IPARAM,IPNTR, workd, workl, lworkl,info)
                 
                 if(IDO .eq. -1 .or. IDO .eq. 1) then
                     temp = 0
 
-                    
-                    call matvec(sparseMat, workd(ipntr(1):ipntr(1) + N - 1),temp)
+                    B = workd(ipntr(1):ipntr(1) + N - 1)  !RHS
+                    call DSLUBC(N, B, temp, NELT, IA, JA, A, ISYM, ITOL, 1e-3_dp, ITMAX, ITER, ERR, &
+                                 IERR, IUNIT, RWORK, LENW, IWORK, LENIW)
                     workd(ipntr(2) : ipntr(2) + N - 1) = temp
                     numberOfMultiplications = numberOfMultiplications + 1
                 else 
@@ -624,7 +960,6 @@ module sparse_solver_arnoldi_module
                 call dneupd(RVEC,HOWMNY, SELECT, DR, DI, Z, LDZ, SIGMAR, SIGMAI, WORKEV, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, &
                             LDV, IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO2)
 
-
                 if(INFO2 .ne. 0) then
                     print *, ' '
                     print *, ' Error with _neupd, info = ', INFO2
@@ -633,17 +968,17 @@ module sparse_solver_arnoldi_module
                 else
                     print *, 'Found eigenvector'
                     print *, 'Eigenvalue(s):', DR
-                    endPd = Z(:,1)/sum(Z(:,1)) !Ensure correct phase.
+                    endPd = Z(:,1)/sum(Z(:,1))! !Ensure correct phase.
                 endif
             endif
             continue
-        end subroutine run_until_converged_method_arnoldi
-end module sparse_solver_arnoldi_module
+        end subroutine run_until_converged_method_arnoldi_shift
+end module sparse_solver_arnoldi_shift_module
 
 module sparse_linear_system_solver_module
     use sparse_solver_linear_interpolator_module
     use fsparse
-    use denseMatrix
+    !use denseMatrix
     use mgmres
     use iso_fortran_env, only: dp=> real64, sp=>real32
     
@@ -794,7 +1129,7 @@ module sparse_linear_system_solver_bicg_module
     !https://mathoverflow.net/questions/410566/matrix-free-linear-solve-for-nullspace
     use sparse_solver_linear_interpolator_module
     use fsparse
-    use denseMatrix
+    !use denseMatrix
     use dlap
     use iso_fortran_env, only: dp=> real64, sp=>real32
     
@@ -816,7 +1151,7 @@ module sparse_linear_system_solver_bicg_module
             integer, allocatable :: IA(:), JA(:), IWORK(:)
             real(dp), allocatable :: A(:), X1(:),  X(:), SOL(:), a12(:), a21(:), B(:), RWORK(:)
             integer :: row, col, numchanges, NELT, ITMAX, ITER, IERR, IUNIT, LENW, LENIW
-            real(dp) :: val, alpha, TOL, ERR
+            real(dp) :: val, alpha, TOL, ERR, TIME1, TIME2
             
             
             numberOfMultiplications = 0
@@ -949,14 +1284,18 @@ module sparse_linear_system_solver_bicg_module
             A = sparseMatFinal%data
             ISYM = 0
             ITOL = 1
-            TOL = 1e-3
+            TOL = 10e-4        !Breaks iteration when tol > ||Ax - RHS||/ ||RHS||         For A = matrix, X = guess.
             ITMAX = 10000
             IUNIT = 0
             LENW = (9*newN + NELT*2)
             allocate(RWORK(LENW))
             LENIW = (12 + 2*NELT + 5*newN)
             allocate(IWORK(LENIW))
+            print*, "call subroutine"
+            call CPU_TIME(TIME1)
             call DSLUBC(newN, B, X, NELT, IA, JA, A, ISYM, ITOL, TOL, ITMAX, ITER, ERR, IERR, IUNIT, RWORK, LENW, IWORK, LENIW)
+            CALL CPU_TIME(TIME2)
+            print*, "End call subroutine: Time: ", TIME2-TIME1, " seconds"
             if( IERR > 0) then
                 print*, ' '
                 print*, "IERR: look up: ", IERR
@@ -966,7 +1305,7 @@ module sparse_linear_system_solver_bicg_module
             print*, "norm: x", norm2(X)
             print*, "sum: x"
             endPd(1:newN) = x
-            if(1>maxval(endPd)) then
+            if(1>maxval(endPd) .or. minval(endPd) < 0) then
                 print*, "Tolerance likely too high. Decrease tolerance."
             end if
             endPd(N) = 1

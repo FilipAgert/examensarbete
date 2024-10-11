@@ -1,0 +1,18 @@
+Kapa punkter beroende på variabel. i koordinaten. Dvs låt inte i vandra hela vägen ut.
+Definera fission & fusion
+
+
+
+Problem:
+Det finns grid points som man inte kan gå ut ur. Det kommer ge problem när man ska hitta egenvektorn.
+Det är möjligt att man gå in i en grid point som man sen inte kan gå ut ur.
+Det betyder att sannolikheten kommer förstöras när man itererar sannolikhetsvektorn.
+
+Koordinaten MM. Kan jag kapa den på hälften? Om vi kapar åt vänster:
+    Isåfall faktor 2 sannolikhet att gå åt höger
+    Är det bara vid vikningen den sannolikheten ska vara dubbel?
+    Borde det inte vara alla sannolikheter som ökar/minskar MM?
+
+
+First:
+ssh filip@merlot.matfys.lth.se

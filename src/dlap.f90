@@ -800,7 +800,7 @@ module dlap
     IMPLICIT DOUBLE PRECISION(A-H,O-Z)
     INTEGER N, NELT, IA(NELT), JA(NELT), ISYM, ITOL, ITMAX, ITER
     INTEGER IERR, IUNIT, LENW, IWORK(LENIW), LENIW
-    DOUBLE PRECISION B(N), X(N), A(NELT), TOL, ERR, RWORK(LENW)
+    DOUBLE PRECISION B(N), X(N), A(NELT), TOL, ERR, RWORK(LENW), T1,T2
     PARAMETER (LOCRB=1, LOCIB=11)
     !
     !         Change the SLAP input matrix IA, JA, A to SLAP-Column format.
@@ -810,7 +810,10 @@ module dlap
     IERR = 3
     RETURN
     end if
+    call CPU_TIME(T1)
     CALL DS2Y( N, NELT, IA, JA, A, ISYM )
+    call CPU_TIME(T2)
+    print*, "MATRIX CONVERSION TIME: ", T2-T1 
     !
     !         Count number of Non-Zero elements preconditioner ILU matrix.
     !         Then set up the work arrays.

@@ -1,5 +1,0 @@
-first create .o file linking library fsparselib. gfortran -c  testArpack.f90 -I  ../build/dependencies/fsparse/src
-then link larpack: gfortran -o testArpack testArpack.o -larpack ../build/dependencies/fsparse/fsparselib.a
-
-compile one file: gfortran https://fortran-lang.org/learn/building_programs/managing_libraries/
-gfortran -c to create -o file.

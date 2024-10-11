@@ -29,6 +29,33 @@ module denseMatrix
             
             close(unit = 9)
         end subroutine printMatrixToFile
+
+        subroutine printMatrixToFileDp(fileName, A)
+            !Prints two dimensional matrix A to file.
+            real(dp), dimension(:,:), intent(in) :: A
+            integer :: i,j
+            character (len = *), intent(in) :: fileName
+            character (len = 8) :: folderPath
+            character (len = 100) :: fullName
+            folderPath = '../data/' !Name cannot have prefix /
+            folderPath = trim(folderPath) 
+            fullName = trim(folderPath//trim(fileName))
+
+            open(unit = 9, file = fullName)
+            
+            do i = 1,SIZE(A,1)
+                do j = 1,SIZE(A,2)
+                    write(9,'(E24.16)', advance='no') A(i,j)
+                    
+                    if (j /= SIZE(A,2)) then !Dont write semicolon after last element
+                        write(9,'(A)', advance='no') '; '  ! Add space between elements except last element
+                    end if
+                end do
+                write(9,*)
+            end do
+            
+            close(unit = 9)
+        end subroutine printMatrixToFileDp
         
         function getMiddleCell(dimSize)
             integer, intent(in), dimension(:) :: dimSize

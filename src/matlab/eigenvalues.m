@@ -3,7 +3,26 @@
 %plot(eig)
 
 %for N = 90601
-N = [200*200, 400*400, 600*600, 1000*1000];
-t = [2 16 50 227];
+clear
+close all
+Ns = [600*600, 1000*1000, 2000*2000];%, 1000*1000];
+t = [28, 130, 1128];
+t2 = [41, 192,2315];
+x0 = [1, 1];
+x1 = [1, 1.5];
+F = @(x, N) x(1)*N + x(2)*N.^2;
+G = @(x,N) x(1)*N.^x(2);
+linsys = lsqcurvefit(F, x0, Ns, t);
+arnoldi = lsqcurvefit(F, x0, Ns, t2);
+linsys2 = lsqcurvefit(G,x1, Ns,t);
 
-plot(N,t, '.')
+Nspace = linspace(100*100,10e6,100);
+loglog(Nspace, F(linsys,Nspace), 'b');
+hold on
+loglog(Nspace, F(arnoldi,Nspace), 'r')
+loglog(Ns, t, 'ob')
+loglog(Ns, t2, 'or')
+loglog(Nspace, G(linsys2, Nspace), 'g')
+
+ExpectedTimeLinsys = F(linsys, 8e6)
+ExpectedLinsys2 = G(linsys2,8e6)

@@ -9,6 +9,6 @@ def plotMatrix(matrix):
     plt.ylabel("Rows")
     plt.show()
 
-fileName = r'data/arnoldiBIG-4'
+fileName = r'data/Fullsize'
 A = readMatrixFromFile(fileName)
 plotMatrix(A)

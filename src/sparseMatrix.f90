@@ -5,7 +5,7 @@ module sparseMatrix
     implicit none
     private
 
-    public :: sparseWalkMatrix, linkStates, linkStatesIdx, addVal
+    public :: sparseWalkMatrix, linkStates, linkStatesIdx, addVal, changeSize
     contains
 
     function sparseWalkMatrix(dimSize)result(sparse)

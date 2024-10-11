@@ -2,6 +2,7 @@ program testSolver
     use iso_fortran_env, only: dp=>real64, sp=>real32
     use sparse_solver_linear_interpolator_module
     use sparse_solver_arnoldi_module
+    use sparse_solver_arnoldi_shift_module
     use sparse_linear_system_solver_module
     use sparse_linear_system_solver_bicg_module
     use dense_solver_module
@@ -14,7 +15,7 @@ program testSolver
     integer, allocatable :: fusionCoord(:,:), fissionCoord(:,:), fissionIdx(:), fusionIdx(:)
     real, allocatable :: grid(:,:)
     integer, allocatable :: startCoord(:,:), startIdxs(:)
-    type(sparse_linear_system_solver_bicg) :: solverLin
+    type(sparse_arnoldi_shift_solver) :: solverLin
     type(sparse_arnoldi_solver) :: solverArnoldi
     type(COO_dp) :: sparseMat
     integer :: i, startNumber
@@ -23,11 +24,11 @@ program testSolver
     integer :: fusionPoints, fissionPoints
     
     
-    startNumber = 5
+    startNumber = 10
     allocate(startCoord(2, startNumber))
     allocate(startIdxs(startNumber))
     allocate(Es(startNumber))
-    dimSize = [1000,1000]
+    dimSize = [100,100]
     fusionPoints = dimSize(1)/10
     fissionPoints = dimSize(1)/10
     allocate(fusionCoord(2,2*fusionPoints - 1), fissionCoord(2,2*fissionPoints - 1))

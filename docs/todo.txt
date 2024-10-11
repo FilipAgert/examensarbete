@@ -1,0 +1,4 @@
+Improvements: Parallelise
+Other improvements: Due to way I solve linear system, starting guess will have wrong magnitude (but point in right direction) this makes starting guess useless.
+
+Problems: Fusion/Fission fraction depends on the probablity to return to starting point. (DOES NOT MATTER.)

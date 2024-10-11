@@ -1,3 +1,8 @@
+
+#Ignore extensionless files
+*
+!*/
+!*.*
 # Prerequisites
 *.d
 
@@ -438,3 +443,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .venv/
+
+
+#Output data
+data/*
+

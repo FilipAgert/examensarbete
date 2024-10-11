@@ -1,7 +1,7 @@
 clear;
 close all;
-rows = 40;
-cols = 40;
+rows = 5;
+cols = 5;
 n = rows*cols;
 tol = 1/(n*1e3);
 steps = 0;
@@ -20,6 +20,17 @@ A = linkCells(A, [round(rows/2+1), 1], getMiddleCell(rows, cols), rows, cols);
 A = linkCells(A, [round(rows/2-1), cols], getMiddleCell(rows, cols), rows, cols); 
 A = linkCells(A, [round(rows/2), cols], getMiddleCell(rows, cols), rows, cols); 
 A = linkCells(A, [round(rows/2+1), cols], getMiddleCell(rows, cols), rows, cols); 
+
+[V,D] = eigs(A,6);
+B = A;
+B(5,:) = 0;
+[V2, D2] = eigs(B,6);
+C = A;
+C(:,5) = 0;
+[V3, D3] = eigs(C,6);
+
+
+%%
 converged = false;
 T1 = datetime;
 while ~(converged)
