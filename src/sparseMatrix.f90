@@ -15,8 +15,8 @@ module sparseMatrix
         real(kind=r_kind), intent(in) :: fusion_prob, fission_prob, Rneck_fission
         REAL(kind=r_kind), intent(inout) :: Etot
         integer :: coord(5)
-        integer :: II, JJ, KK, LL, MM, IDX, i, neighbourIDX, NNZ, N, NNZstart, CANTEXIT
-        integer(kind=8) :: INITNNZ
+        integer :: II, JJ, KK, LL, MM, IDX, i, neighbourIDX, N
+        integer(kind=8) :: INITNNZ, NNZ, NNZstart, CANTEXIT
         integer, dimension(:,:), allocatable :: neighbours, INDEX
         real(kind=r_kind), dimension(:), allocatable :: dat
         real(kind=r_kind)  :: prob, psum
