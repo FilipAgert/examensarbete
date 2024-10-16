@@ -253,6 +253,7 @@ module sparseMatrix
         else
             allocate(pruned(numDims, 0))
         end if
+        deallocate(tempNeighbours)
     end function pruneNeighbours
 
     subroutine matvecpar(matrix, vec_x, vec_y, num_threads)!Modified verson of fsparses matvec to include parallel computing.
@@ -266,20 +267,17 @@ module sparseMatrix
         ! dat = matrix%data
         ! col = matrix%col
         ! rowptr = matrix%rowptr
-        associate(data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, nnz => matrix%nnz, nrows => matrix%nrows, &
-            &ncols => matrix%ncols)
 
-            !$omp parallel shared(matrix, vec_y, vec_x) private(i,j)
-            !$omp do schedule(static)
-            do i = 1, nrows
-                do j = matrix%rowptr(i), matrix%rowptr(i+1)-1
-                    vec_y(i) = vec_y(i) + matrix%data(j) * vec_x(matrix%col(j))
-                end do
+        !$omp parallel shared(matrix, vec_y, vec_x) private(i,j)
+        !$omp do schedule(static)
+        do i = 1, matrix%nrows
+            do j = matrix%rowptr(i), matrix%rowptr(i+1)-1
+                vec_y(i) = vec_y(i) + matrix%data(j) * vec_x(matrix%col(j))
             end do
-            !$omp end do
-            !$omp end parallel
+        end do
+        !$omp end do
+        !$omp end parallel
 
-        end associate
     end subroutine matvecpar
 
 

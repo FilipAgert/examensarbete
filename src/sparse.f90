@@ -226,27 +226,27 @@ module sparse
             type(CSR_dp), intent(inout) :: CSR
             integer(wpi) :: i
     
-            associate( nnz=>COO%nnz, num_rows=>COO%nrows, num_cols=>COO%ncols)
-            CSR%NNZ = nnz; CSR%nrows = num_rows; CSR%ncols = num_cols
+            CSR%NNZ = COO%nnz; 
+            CSR%nrows = COO%nrows; 
+            CSR%ncols = COO%ncols
 
             if( allocated(CSR%col) ) then
-                CSR%col(1:nnz)  = COO%index(2,1:nnz)
-                CSR%rowptr(1:num_rows) = 0
-                CSR%data(1:nnz) = COO%data(1:nnz)
+                CSR%col(1:COO%nnz)  = COO%index(2,1:COO%nnz)
+                CSR%rowptr(1:COO%nrows) = 0
+                CSR%data(1:COO%nnz) = COO%data(1:COO%nnz)
             else 
-                allocate( CSR%col(nnz)  , source = COO%index(2,1:nnz) )
-                allocate( CSR%rowptr(num_rows+1) , source = 0 )
-                allocate( CSR%data(nnz) , source = COO%data(1:nnz) )
+                allocate( CSR%col(COO%nnz)  , source = COO%index(2,1:COO%nnz) )
+                allocate( CSR%rowptr(COO%nrows+1) , source = 0 )
+                allocate( CSR%data(COO%nnz) , source = COO%data(1:COO%nnz) )
             end if
     
             CSR%rowptr(1) = 1
-            do i = 1, nnz
+            do i = 1, COO%nnz
                 CSR%rowptr( COO%index(1,i)+1 ) = CSR%rowptr( COO%index(1,i)+1 ) + 1
             end do
-            do i = 1, num_rows
+            do i = 1, COO%nrows
                 CSR%rowptr( i+1 ) = CSR%rowptr( i+1 ) + CSR%rowptr( i )
             end do
-            end associate
         end subroutine
         
 end module sparse
