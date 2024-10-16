@@ -301,11 +301,14 @@ module markovSolver
         print*, "Calculate matrix from potential... "
         COO = sparseFromPotential(AZ, AA, Etot, II_fusion, fusionChance, Rneck_fission, fissionChance, dimSize, &
                                             MIN_MAX_DIM, useFullMMCoordinates)
-        !Sets upp connection between fusion/fission coordinates to startnig coordinate
+        !Sets upp connection between fusion/fission coordinates to starting coordinate.
+        !This is a seperate method incase we want the ability to try multiple starting coordinates with the same energy
+        !This way we dont have to recalculate all matrix elements when re-generating matrix. This is not used yet however.
         call connectToStartingCoord(COO, startingCoord, connectedToStartingCoord, fusionIdxs, fissionIdxs, &
                                     fissionFusionIndices, fusionChance, fissionChance, dimSize, MIN_MAX_DIM) 
-        call coo2ordered(COO, .TRUE.)
-        call coo2csr(COO, CSR)
+
+        call coo2ordered(COO, .TRUE.) !Sort entries in matrix.
+        call coo2csr(COO, CSR)!Convert from COO format to CSR format for easier time parallelising matrix * vector multiplication
         markovMatCSR = CSR
 
         print*, "Calculated matrix from potential..."

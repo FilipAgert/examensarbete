@@ -30,7 +30,7 @@ module sparseMatrix
         do i = 1,SIZE(dimSize)
             N = N * dimSize(i) !Number of grid points.
         end do
-        INITNNZ = N * 243_8!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
+        INITNNZ = N * 11_8!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
         NNZ = 0 !
         print*, "N = ", N
         print*, "NNZ guess: ", INITNNZ
@@ -48,7 +48,7 @@ module sparseMatrix
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoord(coord, dimSize, MIN_MAX_DIM) !Convert five dimensional coordinate into one dimensional index
-                            neighbours = pruneNeighbours(getNeighboursDiag(coord),dimSize, MIN_MAX_DIM)
+                            neighbours = pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
                             psum = 0.0_r_kind
                             NNZstart = NNZ
 
@@ -110,7 +110,7 @@ module sparseMatrix
                     end do
                 end do
             end do
-            !print*, "Percentage complete: ", 100*II/dimSize(1), "%"
+            print*, "Percentage complete: ", 100*II/dimSize(1), "%"
 
         end do
         call COO%malloc(N,N, NNZ)
