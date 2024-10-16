@@ -111,6 +111,7 @@ module sparseMatrix
                 end do
             end do
             print*, "Percentage complete: ", 100*II/dimSize(1), "%"
+            print*, "Percentage of guess already allocated: ", 100*real(NNZ/INITNNZ,4)
 
         end do
         call COO%malloc(N,N, NNZ)

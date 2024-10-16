@@ -304,9 +304,11 @@ module markovSolver
         !Sets upp connection between fusion/fission coordinates to starting coordinate.
         !This is a seperate method incase we want the ability to try multiple starting coordinates with the same energy
         !This way we dont have to recalculate all matrix elements when re-generating matrix. This is not used yet however.
+        print*, "Probabilities calculated. Setup starting coordinate..."
         call connectToStartingCoord(COO, startingCoord, connectedToStartingCoord, fusionIdxs, fissionIdxs, &
                                     fissionFusionIndices, fusionChance, fissionChance, dimSize, MIN_MAX_DIM) 
 
+        print*, "Starting coordinate setup. Sort and convert matrix to CSR data format."
         call coo2ordered(COO, .TRUE.) !Sort entries in matrix.
         call coo2csr(COO, CSR)!Convert from COO format to CSR format for easier time parallelising matrix * vector multiplication
         markovMatCSR = CSR
