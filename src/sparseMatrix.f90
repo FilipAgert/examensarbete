@@ -30,7 +30,7 @@ module sparseMatrix
         do i = 1,SIZE(dimSize)
             N = N * dimSize(i) !Number of grid points.
         end do
-        INITNNZ = N * 243!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
+        INITNNZ = N * 243_8!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
         NNZ = 0 !
         print*, "N = ", N
         print*, "NNZ guess: ", INITNNZ

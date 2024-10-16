@@ -267,9 +267,7 @@ module markovSolver
         CHARACTER(100) :: filename_pot5D                   ! Total potential energy (Emac + Emic)
         CHARACTER(100) :: filename_emac5D                     ! Macroscopic potential energy Emac
         CHARACTER(100) :: filename_rneck5D
-
         call setMMsymmetryMode(useFullMM)
-
         Egs = Eg
         TOL = tolerance
         NCV = arnoldiNCV
