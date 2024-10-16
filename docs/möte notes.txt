@@ -1,18 +1,3 @@
-dörrar åt motsats riktning
-titta felet för varje iteration när vi printar
-välj toleransen så att bilden ser likadan ut.
-
-börja nära dörren (teleportering nära ena dörren)
-variera avståndent till dörrarna. (kanske 10 stycken)?
-
-Använd ena avståndets slutgiltiga sannolikhetsfördelning som start för nästa för snabbare konvergering. Även linjärkombination/linjärinterpolering/extrapolering
-
-summera fusionsrutorna för att få fusion
-summera fissionsrutorna för att få sannolikhet fission
-
-plotta felet som funktion av matrismultiplikationer
-
-
 try to come up with method for fewer operations
 look at gaussian process simulation for inspiration
 

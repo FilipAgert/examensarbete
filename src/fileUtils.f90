@@ -1,10 +1,10 @@
 module fileUtils
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: r_kind=>real64
     implicit none
     contains
     subroutine printMatrixToFile(fileName, A)
         !Prints two dimensional matrix A to file.
-        real(dp), dimension(:,:), intent(in) :: A
+        real(r_kind), dimension(:,:), intent(in) :: A
         integer :: i,j
         character (len = *), intent(in) :: fileName
         character (len = 5) :: folderPath
@@ -30,12 +30,12 @@ module fileUtils
     subroutine readMatrixFromFile(fileName, matrix)
         ! Reads a matrix from a file where values are separated by semicolons
         character(len=*), intent(in) :: fileName
-        real(dp), allocatable, dimension(:,:) :: matrix
+        real(r_kind), allocatable, dimension(:,:) :: matrix
         character(len=1000) :: line
         character(len=5) :: folderPath
         character(len=20), dimension(:), allocatable :: elements
         integer :: i, j, rowCount, colCount
-        real(dp) :: value
+        real(r_kind) :: value
     
         folderPath = 'data/'
         folderPath = trim(folderPath)

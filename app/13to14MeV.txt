@@ -1,0 +1,708 @@
+ 
+ 
+ ************************************************************
+                      Input data                             
+ ************************************************************
+ 
+  Compound nucleus: (Z,A) = (102, 256)
+ filename_pot5D = ../input/pot5D102256.dat                                                                            
+ filename_emac5D = ../input/emacr102256.dat                                                                            
+ filename_rneck5D = ../input/neck5D2024-09-11.dat                                                                       
+ 
+ 
+ Reading macroscopic energies from file ../input/emacr102256.dat                                                                            
+ Done reading, read      7512750  points
+ 
+ Reading energies from file ../input/pot5D102256.dat                                                                            
+ Done reading, read      7512750  points
+ 
+ Reading neck radii from file ../input/neck5D2024-09-11.dat                                                                       
+ Done reading, read      7512750  points
+ number of fission indicies     1116706
+ Energy:    13.000000000000000       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    31.468538196000001       seconds
+ GUESS = even distribution
+ Size:   0.99999997238064964     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    105.195999      seconds.
+ Latest arnoldi iteration time:   0.528999984      seconds. 
+ Latest matvec time:   0.105999999      seconds.    16.6929131     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    219.125000      seconds.
+ Latest arnoldi iteration time:   0.564000010      seconds. 
+ Latest matvec time:   0.107000001      seconds.    15.9463482     % of total
+  
+ Number of matvec calls so far :          300
+ Elapsed time so far:    336.424011      seconds.
+ Latest arnoldi iteration time:   0.634000003      seconds. 
+ Latest matvec time:   0.104999997      seconds.    14.2083893     % of total
+  
+ Number of matvec calls so far :          400
+ Elapsed time so far:    446.881989      seconds.
+ Latest arnoldi iteration time:   0.878000021      seconds. 
+ Latest matvec time:   0.108000003      seconds.    10.9533472     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000081309820739     
+ Sum probability negative entries:   -8.1309852777377729E-006
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:   1.0000000000000042     
+ Minimum value of eigenvector:   -2.8390896781096156E-008
+ Maximum value of eigenvector:   0.26113256598748663     
+ Sum of fusionprob:    2.5464248375146983E-008
+ Sum of fissionprob:   -8.2068500099900195E-008
+ Finding eigenvector took    515.44284210199999       seconds
+ Setup matrix:    5.7538642145009824       % of total time
+ Total time:    546.91138029800004       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    546.911377    
+ TOTAL MATRIX MULTIPLICATIONS:          450
+ --------------------------------------------------------------
+ Energy:    13.100000381469727       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    31.561277720000000       seconds
+ GUESS = RE-USE 1st solution
+ Size:   0.99999999999862921     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    107.018997      seconds.
+ Latest arnoldi iteration time:   0.802999973      seconds. 
+ Latest matvec time:   0.108000003      seconds.    11.8551054     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    206.106995      seconds.
+ Latest arnoldi iteration time:   0.418000013      seconds. 
+ Latest matvec time:   0.108000003      seconds.    20.5323181     % of total
+  
+ Number of matvec calls so far :          300
+ Elapsed time so far:    305.703003      seconds.
+ Latest arnoldi iteration time:    1.08200002      seconds. 
+ Latest matvec time:   0.111000001      seconds.    9.30427456     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000005600     
+ Sum probability negative entries:   -2.6153872397677453E-018
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99960600113077525     
+ Minimum value of eigenvector:   -9.7325631459124282E-019
+ Maximum value of eigenvector:    3.9399807032588461E-004
+ Sum of fusionprob:    1.9954732528577468E-006
+ Sum of fissionprob:    7.8569019601241552E-004
+ Finding eigenvector took    417.87521492899998       seconds
+ Setup matrix:    7.0224110049400599       % of total time
+ Total time:    449.43649264900000       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    996.347839    
+ TOTAL MATRIX MULTIPLICATIONS:          839
+ --------------------------------------------------------------
+ Energy:    13.199999809265137       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    31.460196442000001       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:   0.99999999999994493     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    107.478996      seconds.
+ Latest arnoldi iteration time:   0.592999995      seconds. 
+ Latest matvec time:   0.104999997      seconds.    15.0429792     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    214.220001      seconds.
+ Latest arnoldi iteration time:    2.37400007      seconds. 
+ Latest matvec time:   0.108999997      seconds.    4.38985062     % of total
+  
+ Number of matvec calls so far :          300
+ Elapsed time so far:    338.562012      seconds.
+ Latest arnoldi iteration time:    1.09300005      seconds. 
+ Latest matvec time:   0.108999997      seconds.    9.06821918     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000533533     
+ Sum probability negative entries:   -5.3204174182784226E-011
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99959820548590828     
+ Minimum value of eigenvector:   -2.1334379138445993E-012
+ Maximum value of eigenvector:    4.0179600334020333E-004
+ Sum of fusionprob:    2.1547476409391248E-006
+ Sum of fissionprob:    8.0111437945860355E-004
+ Finding eigenvector took    350.84152616500000       seconds
+ Setup matrix:    8.2291537237828702       % of total time
+ Total time:    382.30172260699999       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    1378.64954    
+ TOTAL MATRIX MULTIPLICATIONS:         1140
+ --------------------------------------------------------------
+ Energy:    13.300000190734863       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    34.391586722000000       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:    1.0000000000022646     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    117.791000      seconds.
+ Latest arnoldi iteration time:   0.642000020      seconds. 
+ Latest matvec time:   0.108999997      seconds.    14.5139799     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    233.472000      seconds.
+ Latest arnoldi iteration time:    2.62500000      seconds. 
+ Latest matvec time:   0.112000003      seconds.    4.09207201     % of total
+  
+ Number of matvec calls so far :          300
+ Elapsed time so far:    347.052002      seconds.
+ Latest arnoldi iteration time:   0.536000013      seconds. 
+ Latest matvec time:   0.109999999      seconds.    17.0278625     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000001191613     
+ Sum probability negative entries:   -1.1917234557411260E-010
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99959036939849732     
+ Minimum value of eigenvector:   -4.1720532245474769E-012
+ Maximum value of eigenvector:    4.0963201143377629E-004
+ Sum of fusionprob:    2.3236813289659868E-006
+ Sum of fissionprob:    8.1660474532297333E-004
+ Finding eigenvector took    362.83035120300002       seconds
+ Setup matrix:    8.6580280287775846       % of total time
+ Total time:    397.22193792500002       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    1775.87146    
+ TOTAL MATRIX MULTIPLICATIONS:         1443
+ --------------------------------------------------------------
+ Energy:    13.399999618530273       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    37.633915057000003       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:    1.0000000000003233     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    119.404999      seconds.
+ Latest arnoldi iteration time:   0.646000028      seconds. 
+ Latest matvec time:   0.108999997      seconds.    14.4370861     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    236.518005      seconds.
+ Latest arnoldi iteration time:    2.46199989      seconds. 
+ Latest matvec time:   0.136000007      seconds.    5.23479652     % of total
+  
+ Number of matvec calls so far :          300
+ Elapsed time so far:    351.608002      seconds.
+ Latest arnoldi iteration time:   0.541000009      seconds. 
+ Latest matvec time:   0.105999999      seconds.    16.3833065     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000058065     
+ Sum probability negative entries:   -5.5951029352063650E-012
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99958249368337182     
+ Minimum value of eigenvector:   -1.7946812736021341E-013
+ Maximum value of eigenvector:    4.1750734061405097E-004
+ Sum of fusionprob:    2.5016133179758995E-006
+ Sum of fissionprob:    8.3216444361062082E-004
+ Finding eigenvector took    366.12948066199999       seconds
+ Setup matrix:    9.3207842652461252       % of total time
+ Total time:    403.76339571900002       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    2179.63477    
+ TOTAL MATRIX MULTIPLICATIONS:         1746
+ --------------------------------------------------------------
+ Energy:    13.500000000000000       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    34.816912801999997       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:   0.99999999999888556     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    124.290001      seconds.
+ Latest arnoldi iteration time:   0.683000028      seconds. 
+ Latest matvec time:   0.123999998      seconds.    15.3655500     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    241.932007      seconds.
+ Latest arnoldi iteration time:   0.578000009      seconds. 
+ Latest matvec time:   0.104999997      seconds.    15.3733521     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):   0.99999999999986644     
+ Sum probability negative entries:   -5.8007563559591531E-019
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99957457958260620     
+ Minimum value of eigenvector:   -5.7100809029126400E-020
+ Maximum value of eigenvector:    4.2542030314762699E-004
+ Sum of fusionprob:    2.6894262296459882E-006
+ Sum of fissionprob:    8.4778921470614289E-004
+ Finding eigenvector took    370.38981505800001       seconds
+ Setup matrix:    8.5923827044721062       % of total time
+ Total time:    405.20672786000000       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    2584.84155    
+ TOTAL MATRIX MULTIPLICATIONS:         2044
+ --------------------------------------------------------------
+ Energy:    13.600000381469727       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    43.324017765999997       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:    1.0000000000004585     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    134.335999      seconds.
+ Latest arnoldi iteration time:   0.773000002      seconds. 
+ Latest matvec time:   0.127000004      seconds.    14.1111126     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    273.277008      seconds.
+ Latest arnoldi iteration time:   0.739000022      seconds. 
+ Latest matvec time:   0.126000002      seconds.    14.5664740     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000002304945     
+ Sum probability negative entries:   -2.3062301089526750E-010
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99956662778676886     
+ Minimum value of eigenvector:   -5.7765363354157329E-012
+ Maximum value of eigenvector:    4.3337177099003071E-004
+ Sum of fusionprob:    2.8870898370325609E-006
+ Sum of fissionprob:    8.6348082928156607E-004
+ Finding eigenvector took    412.24883039299999       seconds
+ Setup matrix:    9.5097892556756225       % of total time
+ Total time:    455.57284815899999       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+    7  |    13.6                 0.003            0.997          455.57              289 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    3040.41431    
+ TOTAL MATRIX MULTIPLICATIONS:         2333
+ --------------------------------------------------------------
+ Energy:    13.699999809265137       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    42.028783251000000       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:    1.0000000000010998     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    138.186005      seconds.
+ Latest arnoldi iteration time:    3.96900010      seconds. 
+ Latest matvec time:   0.131999999      seconds.    3.21872687     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    245.852005      seconds.
+ Latest arnoldi iteration time:   0.607999980      seconds. 
+ Latest matvec time:   0.108000003      seconds.    15.0838003     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000060878     
+ Sum probability negative entries:   -6.0194507944317346E-012
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99955863931402378     
+ Minimum value of eigenvector:   -1.3330523645538089E-013
+ Maximum value of eigenvector:    4.4136077139525536E-004
+ Sum of fusionprob:    3.0950244456872504E-006
+ Sum of fissionprob:    8.7923691958638657E-004
+ Finding eigenvector took    367.06099997899997       seconds
+ Setup matrix:    10.273730846846993       % of total time
+ Total time:    409.08978322999997       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+    7  |    13.6                 0.003            0.997          455.57              289 
+    8  |    13.7                 0.004            0.996          409.09              297 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    3449.50415    
+ TOTAL MATRIX MULTIPLICATIONS:         2630
+ --------------------------------------------------------------
+ Energy:    13.800000190734863       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    32.986638468999999       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:    1.0000000000004439     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    112.978996      seconds.
+ Latest arnoldi iteration time:    3.19199991      seconds. 
+ Latest matvec time:   0.109999999      seconds.    3.33131456     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    212.944000      seconds.
+ Latest arnoldi iteration time:   0.632000029      seconds. 
+ Latest matvec time:   0.108999997      seconds.    14.7098503     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000000238     
+ Sum probability negative entries:   -1.3986463763251668E-019
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99955061495119868     
+ Minimum value of eigenvector:   -4.8615915722697180E-020
+ Maximum value of eigenvector:    4.4938525394366228E-004
+ Sum of fusionprob:    3.3136424207138362E-006
+ Sum of fissionprob:    8.9505297134512252E-004
+ Finding eigenvector took    326.52516043499998       seconds
+ Setup matrix:    9.1753980174120464       % of total time
+ Total time:    359.51179890399999       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+    7  |    13.6                 0.003            0.997          455.57              289 
+    8  |    13.7                 0.004            0.996          409.09              297 
+    9  |    13.8                 0.004            0.996          359.51              296 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    3809.01587    
+ TOTAL MATRIX MULTIPLICATIONS:         2926
+ --------------------------------------------------------------
+ Energy:    13.899999618530273       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    32.835489414000001       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:   0.99999999999999800     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    109.845001      seconds.
+ Latest arnoldi iteration time:   0.634000003      seconds. 
+ Latest matvec time:   0.111000001      seconds.    14.8993292     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    209.921997      seconds.
+ Latest arnoldi iteration time:   0.597000003      seconds. 
+ Latest matvec time:   0.108000003      seconds.    15.3191500     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000002183     
+ Sum probability negative entries:   -1.8038787803790455E-018
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99954255568908945     
+ Minimum value of eigenvector:   -8.2996199694884286E-019
+ Maximum value of eigenvector:    4.5744516250343048E-004
+ Sum of fusionprob:    3.5432473465758314E-006
+ Sum of fissionprob:    9.1092856648236934E-004
+ Finding eigenvector took    309.52882656399998       seconds
+ Setup matrix:    9.5908036794669869       % of total time
+ Total time:    342.36431597799998       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+    7  |    13.6                 0.003            0.997          455.57              289 
+    8  |    13.7                 0.004            0.996          409.09              297 
+    9  |    13.8                 0.004            0.996          359.51              296 
+   10  |    13.9                 0.004            0.996          342.36              289 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    4151.38037    
+ TOTAL MATRIX MULTIPLICATIONS:         3215
+ --------------------------------------------------------------
+ Energy:    14.000000000000000       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =     14488875
+ NNZ guess:             159377625
+ Generated sparse matrix.
+ Calculated matrix from potential...
+  
+ Matrix setup took    34.513563128999998       seconds
+ Guess = LINCOMB of energies:   13.100000381469727       and    13.000000000000000       MeV
+ Size:   0.99999999999982458     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    6.90184709E-09
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    138.557999      seconds.
+ Latest arnoldi iteration time:   0.707000017      seconds. 
+ Latest matvec time:   0.145999998      seconds.    17.1160603     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    254.584000      seconds.
+ Latest arnoldi iteration time:   0.629999995      seconds. 
+ Latest matvec time:   0.108000003      seconds.    14.6341467     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000020342     
+ Sum probability negative entries:   -1.4950893972773804E-019
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99953446225274967     
+ Minimum value of eigenvector:   -5.0942880509000935E-020
+ Maximum value of eigenvector:    4.6553895519362714E-004
+ Sum of fusionprob:    3.7841876024031151E-006
+ Sum of fissionprob:    9.2686027106390174E-004
+ Finding eigenvector took    369.96032477699998       seconds
+ Setup matrix:    8.5329521041963972       % of total time
+ Total time:    404.47388790599996       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+    7  |    13.6                 0.003            0.997          455.57              289 
+    8  |    13.7                 0.004            0.996          409.09              297 
+    9  |    13.8                 0.004            0.996          359.51              296 
+   10  |    13.9                 0.004            0.996          342.36              289 
+   11  |    14.0                 0.004            0.996          404.47              288 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    4555.85449    
+ TOTAL MATRIX MULTIPLICATIONS:         3503
+ --------------------------------------------------------------
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                -0.450            1.450          546.91              450 
+    2  |    13.1                 0.003            0.997          449.44              389 
+    3  |    13.2                 0.003            0.997          382.30              301 
+    4  |    13.3                 0.003            0.997          397.22              303 
+    5  |    13.4                 0.003            0.997          403.76              303 
+    6  |    13.5                 0.003            0.997          405.21              298 
+    7  |    13.6                 0.003            0.997          455.57              289 
+    8  |    13.7                 0.004            0.996          409.09              297 
+    9  |    13.8                 0.004            0.996          359.51              296 
+   10  |    13.9                 0.004            0.996          342.36              289 
+   11  |    14.0                 0.004            0.996          404.47              288 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    4555.85449    
+ TOTAL MATRIX MULTIPLICATIONS:         3503
+ --------------------------------------------------------------

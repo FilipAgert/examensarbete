@@ -15,4 +15,15 @@ Koordinaten MM. Kan jag kapa den på hälften? Om vi kapar åt vänster:
 
 
 First:
-ssh filip@merlot.matfys.lth.se
+ssh filipa@merlot.matfys.lth.se
+
+Connect to gillis cpmuter
+ssh filipa@e121.matfys.lth.se
+
+copy file:
+download arpack
+install
+Put all libraries in home directory ~/lib/
+
+check mkl
+then compile via -L~/lib/

@@ -3,15 +3,15 @@ module sparseFromPotSurf
     use fsparse
     implicit none
     integer, dimension(5,2) :: MIN_MAX_DIM = reshape([MIN_II, MIN_JJ, MIN_KK, MIN_LL, 0, & !MIN_MM, & REMOVE COMMENT IF INCLUDE SYMMETRY
-                                                      MAX_II, MAX_JJ, MAX_KK, MAX_LL, MAX_MM], [5,2]) !Array containing min and max of coordinates.
+                                                     MAX_II, MAX_JJ, MAX_KK, MAX_LL, MAX_MM], [5,2]) !Array containing min and max of coordinates.
 
-    !integer, dimension(5,2) :: MIN_MAX_DIM = reshape([MIN_II, MIN_JJ, MIN_KK, MIN_LL, MIN_MM, & !REMOVE COMMENT IF INCLUDE SYMMETRY
-    !                                                  MAX_II, MAX_JJ, MAX_KK, MAX_LL, MAX_MM], [5,2]) !Array containing min and max of coordinates.
+    ! integer, dimension(5,2) :: MIN_MAX_DIM = reshape([MIN_II, MIN_JJ, MIN_KK, MIN_LL, MIN_MM, & !REMOVE COMMENT IF INCLUDE SYMMETRY
+    !                                                   MAX_II, MAX_JJ, MAX_KK, MAX_LL, MAX_MM], [5,2]) !Array containing min and max of coordinates.
 
     integer, dimension(5) :: dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ,&
-                                         1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM]!-MIN_MM] remove comment if including symmetry
-    !integer, dimension(5) :: dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ,&
-    !                                     1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM - MIN_MM]!-MIN_MM] remove comment if including symmetry
+                                        1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM]!-MIN_MM] remove comment if including symmetry
+    ! integer, dimension(5) :: dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ,&
+    !                                      1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM - MIN_MM]!-MIN_MM] remove comment if including symmetry
 
 
 contains
@@ -36,7 +36,7 @@ contains
         do i = 1,SIZE(dimSize)
             N = N * dimSize(i) !Number of grid points.
         end do
-        INITNNZ = N * 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
+        INITNNZ = N * 11!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
         NNZ = 0 !
         print*, "N = ", N
         print*, "NNZ guess: ", INITNNZ
@@ -54,7 +54,7 @@ contains
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoordShifted(coord, dimSize) !Convert five dimensional coordinate into one dimensional index
-                            neighbours = pruneNeighbours5D(getNeighboursDiag5D(coord))
+                            neighbours = pruneNeighbours5D(getNeighbours(coord))
                             psum = 0.0_r_kind
                             NNZstart = NNZ
 
@@ -171,7 +171,7 @@ contains
         end do
     end function getNeighbours
 
-    function getNeighboursDiag5D(coord) result(neighbours)
+    function getNeighboursDiag5D(coord) result(neighbours) !Gets all neighbours including diagonals and self.
         integer, intent(in), dimension(5) :: coord
         integer, dimension(5, 3**5) :: neighbours !Includes self
         integer :: i,j,k,l,m, startIdx
@@ -193,7 +193,7 @@ contains
     end function getNeighboursDiag5D
 
     function pruneNeighbours5D(neighbours)  result(pruned)
-        !Removes all neighbours outside the bounds
+        !Removes all neighbours outside the bounds given by MIN_MAX_DIM
         integer, intent(in), dimension(:, :) :: neighbours
         integer, dimension(:, :), allocatable :: pruned, tempNeighbours     
         
@@ -203,7 +203,7 @@ contains
 
         
         validCount = 0
-        numDims = 5
+        numDims = size(dimSize)
         numCols = size(neighbours, 2)
         allocate(tempNeighbours(numDims, numCols))
         
@@ -298,6 +298,7 @@ contains
 
         NumberOfFusionIndices = (MAX_MM- MIN_MAX_DIM(5,1) + 1)*(MAX_LL-MIN_LL + 1)*(MAX_KK-MIN_KK + 1)*(MAX_JJ-MIN_JJ + 1)
         NumberOfFusionIndices = NumberOfFusionIndices * (II_fusion - MIN_II + 1) !Calculates number of fusion indices
+
         allocate(fusionIndices(NumberOfFusionIndices))
         i = 1
         do II = MIN_II, II_fusion
@@ -353,24 +354,4 @@ contains
             end do
         end do
     end function getFissionIndices
-
-    function gridFromColumnVectorSliced(colVector, dimSize, KK, LL, MM) result(slicedGrid)!Creates a grid of states from a column vector of states.
-        !Grid only for two dimensions.
-        real(kind=r_kind), dimension(:), intent(in) :: colVector
-        integer, dimension(5), intent(in) :: dimSize
-        integer, intent(in) :: KK, LL, MM
-        integer :: i, nAssignments
-        integer, dimension(5) :: coord
-        real(kind=r_kind), dimension(dimSize(1),dimSize(2)) :: slicedGrid
-        slicedGrid = 0
-        do i = 1, SIZE(colVector)
-            coord = coordFromLinearIdxShifted(i, dimSize)
-            if((coord(3) .eq. KK ).and. (coord(4) .eq. LL) .and. (coord(5) .eq. MM)) then
-                slicedGrid(coord(1), coord(2)) = colVector(i)
-            endif
-        end do
-    end function gridFromColumnVectorSliced
-
-
-
 end module sparseFromPotSurf

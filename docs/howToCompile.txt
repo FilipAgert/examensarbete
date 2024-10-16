@@ -5,8 +5,30 @@ then link larpack: gfortran -o testArpack testArpack.o -larpack ../build/depende
 compile one file: gfortran https://fortran-lang.org/learn/building_programs/managing_libraries/
 gfortran -c to create .o file.
 
+Recompile fsparse: 
+cd ../build/dependencies/fsparse/src
+gfortran -O3 -c matvec/fsparse_matvec.f90 -fopenmp
+cd ..
+ar r fsparselibpar.a src/fsparse_cells2sparse.o src/fsparse_constants.o src/fsparse_matrix_gallery.o src/fsparse_matvec.o src/fsparse_sort.o src/fsparse.o
+cd ../../../test
+gfortran -O3 -c testParMat.f90 -I../build/dependencies/fsparse/src
+gfortran -O3 -o testParMat testParMat.o ../build/dependencies/fsparse/fsparselibpar.a -fopenmp
 
 
+Recompile main:
+gfortran -O3 -c ../src/solverBase.f90 -o ../src/solverBase.o -I../src -I../build/dependencies/fsparse/src
+gfortran -O3 -c ../src/sparseFromPotSurf.f90 -o ../src/sparseFromPotSurf.o -I../src -I../build/dependencies/fsparse/src
+gfortran -O3 -c ../app/main.f90 -o ../app/main.o -I../src -I../build/dependencies/fsparse/src
+gfortran -O3 -o main ../app/main.o ../src/dlap.o ../src/potsurf.o ../src/sparseFromPotSurf.o ../src/sparseMatrix.o ../src/mgmres.o ../src/denseMatrix.o ../src/linearInterpolation.o ../src/markovSparse.o ../src/result_module.o ../src/solverBase.o ../build/dependencies/fsparse/fsparselib.a -larpack -O3
 
-gfortran -o testSolver -Wall ../test/testSolver.o ../src/sparseMatrix.o ../src/mgmres.o ../src/denseMatrix.o ../src/linearInterpolation.o ../src/markovSparse.o ../src/result_module.o ../src/solverBase.o -larpack ../build/dependencies/fsparse/fsparselib.a
-gfortran -c ../src/solverBase.f90 -o ../src/solverBase.o -I../src -I../build/dependencies/fsparse/src
+
+testParMat:
+gfortran -O3 -c testParMat.f90 -I../src -I../build/dependencies/fsparse/src -fopenmp
+gfortran -O3 -o testParMat testParMat.o ../build/dependencies/fsparse/fsparselib.a ../src/sparseFromPotSurf.o ../src/potsurf.o -fopenmp
+
+new main:
+gfortran -O3 -o ../src/markovSolver.o -c ../src/markovSolver.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
+gfortran -O3 -o ../src/sparseMatrix.o -c ../src/sparseMatrix.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
+gfortran -O3 -o ../src/result_module.o -c ../src/result_module.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
+gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
+gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/denseMatrix.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../build/dependencies/fsparse/fsparselibpar.a -larpack -fopenmp

@@ -24,9 +24,9 @@ PROGRAM main
   ! Input files
   ! --------------------------------------------------------------------
 
-  CHARACTER(100) :: filename_pot5D = '../data/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
-  CHARACTER(100) :: filename_emac5D = '../data/emacr102256.dat'                     ! Macroscopic potential energy Emac
-  CHARACTER(100) :: filename_rneck5D = '../data/neck5D2024-09-11.dat'               ! Neck radii
+  CHARACTER(100) :: filename_pot5D = '../input/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
+  CHARACTER(100) :: filename_emac5D = '../input/emacr102256.dat'                     ! Macroscopic potential energy Emac
+  CHARACTER(100) :: filename_rneck5D = '../input/neck5D2024-09-11.dat'               ! Neck radii
 
   ! --------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ PROGRAM main
     ! Read neck radii
   ! Stored in matrix Rneck(I,J,K,L,M)
   CALL read_5d_rneck(Z,A,filename_rneck5D)
-
+  
   fusion_prob = 0.5_r_kind
   fission_prob = 0.5_r_kind
   !Set probability to fusion/fission if landed on fusion/fission grid point
@@ -107,7 +107,6 @@ PROGRAM main
   printPd(:,1) = solv%result%getProbabilityDensity(1)
   call printMatrixToFileDp('PD', printPd)
   plotGrid = gridFromColumnVectorSliced(solv%result%getProbabilityDensity(1), dimSize, startCoord(3), startCoord(4), startCoord(5))
-  print*, "maxprob: ", maxval(plotGrid)
   call printMatrixToFileDp('Fullsize', plotGrid)
 
 

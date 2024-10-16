@@ -164,114 +164,6 @@ module solver_module
 
 end module solver_module
 
-module dense_solver_module
-    use solver_module
-    use iso_fortran_env, only: dp => real64, sp=>real32
-    use markovSparse, only: norm, convergence
-    implicit none
-
-    type, extends(solver) :: dense_solver
-    contains
-        procedure :: solve => dense_solve_method
-        procedure :: runUntilConverged => run_until_converged_method
-        procedure :: timeStep => time_step_method
-        procedure :: init => dense_init_solver
-    end type dense_solver
-    contains
-
-    subroutine dense_init_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize, &
-                                    fusion_prob, fission_prob)
-        class(dense_solver), intent(inout) :: self
-        real(sp), dimension(:,:), intent(inout) :: denseMat
-        integer, intent(inout) :: start_idxs(:), fusion_idxs(:), fission_idxs(:), dimSize(:)
-        real, intent(inout) :: grid(:,:), energies(:)
-        real(dp), intent(in):: fusion_prob, fission_prob
-        call create_solver(self, denseMat, grid, start_idxs, energies, fusion_idxs, fission_idxs, dimSize, &
-                            fusion_prob, fission_prob)
-    end subroutine dense_init_solver
-    
-    subroutine dense_solve_method(self)
-        class(dense_solver), intent(inout) :: self
-        real(sp), dimension(:,:), allocatable :: denseMat
-        integer :: i, startIdx, matMultiplications
-        real :: T1, T2, elapsedTime, fusionFrac, fissionFrac
-        real(dp), allocatable :: startPd(:), endPd(:)
-        allocate(startPd(self%numberOfGridPoints()))
-        allocate(endPd(self%numberOfGridPoints()))
-        allocate(denseMat(self%numberOfGridPoints(), self%numberOfGridPoints()))
-        startPd = 0.0_dp
-        endPd = 0.0_dp
-
-        do i = 1, SIZE(self%startIdxs)
-            print* , ' '
-            print*, "Running calculation for energy: ", self%energies(i)
-            call cpu_time(T1)
-            startIdx = self%startIdxs(i)
-            denseMat = self%generateConnections(startIdx) !Connects fission and fusion points to starting index
-            startPd = self%startingGuess() !starting guess
-            call self%runUntilConverged(denseMat, startPd, endPd, matMultiplications)
-            call cpu_time(T2)
-
-            fusionFrac = self%fusionFrac(endPd)
-            fissionFrac = self%fissionFrac(endPd)
-            elapsedTime = T2-T1
-            print*, ' '
-            print*, "Time taken: ", elapsedTime, "s"
-            print*, "Number of matrix multiplications: ", matMultiplications
-            call self%addResult(endPd, elapsedTime, matMultiplications, self%idxToCoords(startIdx), self%energies(i))
-        end do
-    end subroutine dense_solve_method
-
-    function time_step_method(self, matrix, probabilityCoeffs, steps)result (timeStep) !This computes repeated matrix multiplication (A*(A*...*(A*V)
-        class(dense_solver), intent(inout) :: self
-        integer, intent(in) :: steps                     !In order to only have to store one matrix
-        real(dp), dimension(:), intent(in) :: probabilityCoeffs
-        real(dp), dimension(SIZE(probabilityCoeffs)) :: timeStep
-        real, dimension(SIZE(probabilityCoeffs), SIZE(probabilityCoeffs)), intent(in):: matrix 
-        integer :: i
-        timeStep = probabilityCoeffs
-        do i = 1, steps
-            timeStep = MATMUL(matrix, timeStep)
-        end do
-        
-    end function time_step_method
-    subroutine run_until_converged_method(self, denseMat, startPd, endPd, numberOfMultiplications)
-        class(dense_solver), intent(inout) :: self
-        real(sp), dimension(:,:), intent(in) :: denseMat
-        real(dp), dimension(:), intent(in) :: startPd
-        real(dp), dimension(:), intent(inout) :: endPd
-        real(dp), dimension(SIZE(startPd)) :: prevPd, diff
-        integer, intent(inout) :: numberOfMultiplications
-        real(dp) :: tol, normVal
-        integer :: multiplicationSteps
-        logical :: converged
-        character (len = 2):: normType = "L2"
-
-        numberOfMultiplications = 0
-        tol = 1.0/(1e2*SIZE(startPd)) !This tolerance is one part in one hundered assuming even spread of probability.
-        multiplicationSteps = 10
-        tol = tol * multiplicationSteps / 10 !Dynamically change tolerance based on number of sparseMat multiplications in a row
-        print*, "Tolerance: ", tol
-        
-        converged = .FALSE.
-        prevPd = startPd
-        do while (.not. converged)
-            endPd = self%timeStep(denseMat, prevPd, multiplicationSteps) !Dont check for convergence after every step, rather take a few time steps at a time.
-            converged = convergence(endPd, prevPd, tol, normType)
-            
-            if(mod(numberOfMultiplications, 5000) == 0) then
-
-                diff = endPd - prevPd
-                normVal = norm(diff, normType)
-                print *, 'Matrix multiplications: ', numberOfMultiplications, " ", normType, " norm: ", normVal
-            end if
-            prevPd = endPd
-            numberOfMultiplications = numberOfMultiplications + multiplicationSteps
-        end do
-    end subroutine run_until_converged_method
-
-end module dense_solver_module
-
 module sparse_solver_module
     use solver_module
     use fsparse
@@ -446,11 +338,6 @@ module sparse_solver_module
     end subroutine sparse_modify_connections_method_preset_fission_fusion_probs
 
 
-
-
-
-
-
     ! Sparse sparseMat solver method
     subroutine sparse_solve_method(self)
         class(sparse_solver), intent(inout) :: self
@@ -530,8 +417,6 @@ end module sparse_solver_module
 module sparse_solver_linear_interpolator_module
     use sparse_solver_module
     use fsparse
-    use markovSparse
-    !use denseMatrix, only
     use linearInterpolation
     use iso_fortran_env, only: dp=>real64, sp=>real32
 
@@ -605,7 +490,7 @@ module sparse_solver_linear_interpolator_module
                 pdf0 = real(self%result%getProbabilityDensity(E0idx),4)
                 pdf1 = real(self%result%getProbabilityDensity(E1idx),4)
                 guess = guessPdfFast(self%grid, energy, E0, E1, pdf0, pdf1)!
-                print*, "Guess = LINCOMB of IDX:", E0idx, " and ", E1idx
+                print*, "Guess = LINCOMB of energies:", E0, " and ", E1, " MeV"
                 
             endif
         end function starting_guess_linear_interpolation_method
@@ -676,12 +561,14 @@ module sparse_solver_arnoldi_module
             TOL = 1./(self%numberOfGridPoints()*10)!Tolerance is: how close to true eigenvalue can the calculated one be?
             !Tolerance means that you expect no eigenvalues to be closer to eachother than tolerance.
             !seems to only converge to true value if low enough. Should maybe be of order 1/number of grid points For 501x501
-            NCV = MAX(2*NEV + 1,int((N)**(1.0/8.0))) !set at least to 2*NEV. Lower number = more matrix * vector operations.
+
+            NCV = MAX(2*NEV + 1,int((N)**(1.0/8))) !set at least to 2*NEV + 1. Lower number = more matrix * vector operations.
+            print*, "NCV: ", NCV
             !!!!!!
             SIGMAR = 0 
             SIGMAI = 0
             INFO = 1 !info for dnaupd          1 = user specified vector
-            INFO2 = 0 !info for dneupd         1 = user specified vector
+            INFO2 = 0 !info for dneupd         
             IDO = 0
             ishfts = 1
             LDZ = N
@@ -786,194 +673,6 @@ module sparse_solver_arnoldi_module
             continue
         end subroutine run_until_converged_method_arnoldi
 end module sparse_solver_arnoldi_module
-
-module sparse_solver_arnoldi_shift_module
-    use sparse_solver_linear_interpolator_module
-    use fsparse
-    use linearInterpolation
-    use iso_fortran_env, only: dp=> real64, sp=>real32
-    use dlap
-
-    type, extends(sparse_linearint_solver) :: sparse_arnoldi_shift_solver
-    contains
-        procedure :: runUntilConverged => run_until_converged_method_arnoldi_shift
-        
-    end type sparse_arnoldi_shift_solver
-
-    contains
-        subroutine run_until_converged_method_arnoldi_shift(self, sparseMat, startPd, endPd, numberOfMultiplications)
-            implicit none
-            class(sparse_arnoldi_shift_solver), intent(inout) :: self
-            type(COO_dp) :: sparseMat
-            real(dp), dimension(:), intent(in) :: startPd
-            real(dp), dimension(:), intent(inout) :: endPd
-            real(dp), dimension(SIZE(startPd)) :: temp
-            integer, intent(inout) :: numberOfMultiplications
-            
-
-            external :: dnaupd
-            external :: dneupd
-            integer :: IDO
-            character(len = 1) :: BMAT = 'I'
-            integer :: N
-            character(len = 2) ::  WHICH = 'LM'  !since multiple eigenvalues can have abs(lambda)=1, we need to choose only largest real part
-            integer :: NEV!number of eigenvalues comptued
-            real(dp) :: TOL 
-            real(dp),allocatable :: RESID(:)
-            integer :: NCV !number of vectors in calculation. computation scales as N * NCV²
-            real(dp), allocatable :: V(:,:)
-            integer :: IPARAM(11)
-            integer :: ishfts
-            integer :: maxitr !max iterations?
-            integer :: mode = 3 !1 = no sigma shift. 3 = sigma shift of one
-            integer :: LDV
-            Real(dp), allocatable :: workd(:), workl(:), workev(:)
-            integer :: LWORKL
-            integer :: INFO
-            integer :: INFO2 !0 = randomized initial vector, 1 = resid initial vector (use starting guess)
-            logical :: converged
-            integer :: IPNTR(14)
-            LOGICAL :: RVEC
-            character(len = 1) :: HOWMNY = 'A'
-            logical, allocatable :: SELECT(:)
-            real(dp), dimension(:), allocatable :: DR, DI
-            real(dp), dimension(:,:), allocatable :: Z
-            real(dp) :: SIGMAR, SIGMAI
-            integer :: LDZ
-            integer :: i,  j, newN, ISYM, ITOL
-            integer, allocatable :: IA(:), JA(:), IWORK(:)
-            real(dp), allocatable :: A(:), X1(:),  X(:), SOL(:), a12(:), a21(:), B(:), RWORK(:)
-            integer :: row, col, numchanges, NELT, ITMAX, ITER, IERR, IUNIT, LENW, LENIW
-            real(dp) :: val, alpha, ERR, TIME1, TIME2
-            SIGMAR = 1 + 1e-6
-            N = self%numberOfGridPoints()
-            !!USER SETTINGS.
-            maxitr = 50000
-            NEV = 1 !number of eigenvalues calculated. test to change this
-            TOL = 1./(self%numberOfGridPoints())!Tolerance is: how close to true eigenvalue can the calculated one be?
-            !Tolerance means that you expect no eigenvalues to be closer to eachother than tolerance.
-            !seems to only converge to true value if low enough. Should maybe be of order 1/number of grid points For 501x501
-            NCV = MAX(2*NEV + 1,int((N)**(1.0/5.0))) !set at least to 2*NEV. Lower number = more matrix * vector operations.
-            !!!!!!
-            SIGMAR = 0 
-            SIGMAI = 0
-            INFO = 1 !info for dnaupd          1 = user specified vector
-            INFO2 = 0 !info for dneupd         1 = user specified vector
-            IDO = 0
-            ishfts = 1
-            LDZ = N
-            allocate(Z(N, NEV + 1))
-            allocate(DR(NEV + 1), DI(NEV + 1))
-            allocate(SELECT(NCV))
-
-            LWORKL = 3*NCV**2 + 6 *NCV
-            allocate(workl(LWORKL))
-            allocate(workd(3*N), workev(3*NCV))
-            allocate(RESID(N))
-            allocate(V(N,NCV))
-            IPARAM = 0
-            IPARAM(1) = ishfts
-            IPARAM(3) = maxitr !Number of arnoldi = .FALSE.update iterations
-            IPARAM (4) = 1 !needs to be 1
-            IPARAM(7) = mode !specifies eigenvalue problem A*x = lambda*x
-
-            
-            LDV = N
-            RESID = startPd!starting guess
-            numberOfMultiplications = 0
-            converged = .FALSE.
-
-
-            !SHIFT INVERT
-
-            
-            
-            numberOfMultiplications = 0
-            
-            
-            numChanges = 0
-    
-            do i = 1,sparseMat%nnz !iterate over all nonzero elements, if diagonal element, subtract one from it.
-                row = sparseMat%index(1,i)
-                col = sparseMat%index(2,i)
-                if(row == col) then
-                    val = sparseMat%data(i)
-                    sparseMat%data(i) = val - SIGMAR
-                    numChanges = numChanges + 1
-                end if
-            end do
-            if(numChanges /= N) then !
-                print*, "WARNING: MATRIX NOT SET UP CORRECTLY, DID NOT SUBTRACT -1 FROM ALL DIAGONAL ELEMENTS"
-                print*, "N: ", N
-                print*, "Diagonal elements found: ", numchanges
-            end if
-
-
-            NELT = sparseMat%nnz
-            allocate(B(N), X(N), IA(NELT), JA(NELT), A(NELT))
-
-
-           
-            IA = sparseMat%index(1,:)
-            JA = sparseMat%index(2,:)
-            A = sparseMat%data
-            ISYM = 0
-            ITOL = 1
-            TOL = 10e-4        !Breaks iteration when tol > ||Ax - RHS||/ ||RHS||         For A = matrix, X = guess.
-            ITMAX = 10000
-            IUNIT = 0
-            LENW = (9*N + NELT*2)
-            allocate(RWORK(LENW))
-            LENIW = (12 + 2*NELT + 5*N)
-            allocate(IWORK(LENIW))
-
-            if( IERR > 0) then
-                print*, ' '
-                print*, "IERR: look up: ", IERR
-                print*, " "
-            endif
-
-
-            !END SHIFT INVERT
-            do while(.not. converged)
-                call dnaupd(IDO, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, LDV,IPARAM,IPNTR, workd, workl, lworkl,info)
-                
-                if(IDO .eq. -1 .or. IDO .eq. 1) then
-                    temp = 0
-
-                    B = workd(ipntr(1):ipntr(1) + N - 1)  !RHS
-                    call DSLUBC(N, B, temp, NELT, IA, JA, A, ISYM, ITOL, 1e-3_dp, ITMAX, ITER, ERR, &
-                                 IERR, IUNIT, RWORK, LENW, IWORK, LENIW)
-                    workd(ipntr(2) : ipntr(2) + N - 1) = temp
-                    numberOfMultiplications = numberOfMultiplications + 1
-                else 
-                    converged = .TRUE.
-                end if
-            end do
-            if ( info .lt. 0 ) then
-                print *, ' '
-                print *, ' Error with _naupd, info = ', info
-                print *, ' Check the documentation of _naupd'
-                print *, ' '
-            else
-                RVEC = .TRUE. !Calculate eigenvector.
-                call dneupd(RVEC,HOWMNY, SELECT, DR, DI, Z, LDZ, SIGMAR, SIGMAI, WORKEV, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, &
-                            LDV, IPARAM, IPNTR, WORKD, WORKL, LWORKL, INFO2)
-
-                if(INFO2 .ne. 0) then
-                    print *, ' '
-                    print *, ' Error with _neupd, info = ', INFO2
-                    print *, ' Check the documentation of _neupd. '
-                    print *, ' '
-                else
-                    print *, 'Found eigenvector'
-                    print *, 'Eigenvalue(s):', DR
-                    endPd = Z(:,1)/sum(Z(:,1))! !Ensure correct phase.
-                endif
-            endif
-            continue
-        end subroutine run_until_converged_method_arnoldi_shift
-end module sparse_solver_arnoldi_shift_module
 
 module sparse_linear_system_solver_module
     use sparse_solver_linear_interpolator_module
@@ -1179,99 +878,99 @@ module sparse_linear_system_solver_bicg_module
             
             call remove_last_row_and_col_COO(sparseMat, sparseMatFinal, a21, a12, alpha)
             
-            ! *Arguments:
-! N      :IN       Integer.
-!         Order of the Matrix.
-! B      :IN       Double Precision B(N).
-!         Right-hand side vector.
-! X      :INOUT    Double Precision X(N).
-!         On input X is your initial guess for solution vector.
-!         On output X is the final approximate solution.
-! NELT   :IN       Integer.
-!         Number of Non-Zeros stored in A.
-! IA     :INOUT    Integer IA(NELT).
-! JA     :INOUT    Integer JA(NELT).
-! A      :INOUT    Double Precision A(NELT).
-!         These arrays should hold the matrix A in either the SLAP
-!         Triad format or the SLAP Column format.  See "Description",
-!         below.  If the SLAP Triad format is chosen it is changed
-!         internally to the SLAP Column format.
-! ISYM   :IN       Integer.
-!         Flag to indicate symmetric storage format.
-!         If ISYM=0, all nonzero entries of the matrix are stored.
-!         If ISYM=1, the matrix is symmetric, and only the upper
-!         or lower triangle of the matrix is stored.
-! ITOL   :IN       Integer.
-!         Flag to indicate type of convergence criterion.
-!         If ITOL=1, iteration stops when the 2-norm of the residual
-!         divided by the 2-norm of the right-hand side is less than TOL.
-!         If ITOL=2, iteration stops when the 2-norm of M-inv times the
-!         residual divided by the 2-norm of M-inv times the right hand
-!         side is less than TOL, where M-inv is the inverse of the
-!         diagonal of A.
-!         ITOL=11 is often useful for checking and comparing different
-!         routines.  For this case, the user must supply the "exact"
-!         solution or a very accurate approximation (one with an error
-!         much less than TOL) through a common block,
-!         COMMON /SOLBLK/ SOLN( )
-!         if ITOL=11, iteration stops when the 2-norm of the difference
-!         between the iterative approximation and the user-supplied
-!         solution divided by the 2-norm of the user-supplied solution
-!         is less than TOL.
-! TOL    :IN       Double Precision.
-!         Convergence criterion, as described above.
-! ITMAX  :IN       Integer.
-!         Maximum number of iterations.
-! ITER   :OUT      Integer.
-!         Number of iterations required to reach convergence, or
-!         ITMAX+1 if convergence criterion could not be achieved in
-!         ITMAX iterations.
-! ERR    :OUT      Double Precision.
-!         Error estimate of error in final approximate solution, as
-!         defined by ITOL.
-! IERR   :OUT      Integer.
-!         Return error flag.
-!           IERR = 0 => All went well.
-!           IERR = 1 => Insufficient storage allocated
-!                       for WORK or IWORK.
-!           IERR = 2 => Method failed to converge in
-!                       ITMAX steps.
-!           IERR = 3 => Error in user input.  Check input
-!                       value of N, ITOL.
-!           IERR = 4 => User error tolerance set too tight.
-!                       Reset to 500.0*D1MACH(3).  Iteration proceeded.
-!           IERR = 5 => Preconditioning matrix, M,  is not
-!                       Positive Definite.  $(r,z) < 0.0$.
-!           IERR = 6 => Matrix A is not Positive Definite.
-!                       $(p,Ap) < 0.0$.
-!           IERR = 7 => Incomplete factorization broke down
-!                       and was fudged.  Resulting preconditioning may
-!                       be less than the best.
-! IUNIT  :IN       Integer.
-!         Unit number on which to write the error at each iteration,
-!         if this is desired for monitoring convergence.  If unit
-!         number is 0, no writing will occur.
-! RWORK  :WORK     Double Precision RWORK(LENW).
-!         Double Precision array used for workspace.  NEL is the
-!         number of non-
-!         zeros in the lower triangle of the matrix (including the
-!         diagonal).  NU is the number of nonzeros in the upper
-!         triangle of the matrix (including the diagonal).
-! LENW   :IN       Integer.
-!         Length of the double precision workspace, RWORK.
-!         LENW >= NEL+NU+8*N.
-! IWORK  :WORK     Integer IWORK(LENIW).
-!         Integer array used for workspace.  NEL is the number of non-
-!         zeros in the lower triangle of the matrix (including the
-!         diagonal).  NU is the number of nonzeros in the upper
-!         triangle of the matrix (including the diagonal).
-!         Upon return the following locations of IWORK hold information
-!         which may be of use to the user:
-!         IWORK(9)  Amount of Integer workspace actually used.
-!         IWORK(10) Amount of Double Precision workspace actually used.
-! LENIW  :IN       Integer.
-!         Length of the integer workspace, IWORK.
-!         LENIW >= NEL+NU+4*N+12.
+                        ! *Arguments:
+            ! N      :IN       Integer.
+            !         Order of the Matrix.
+            ! B      :IN       Double Precision B(N).
+            !         Right-hand side vector.
+            ! X      :INOUT    Double Precision X(N).
+            !         On input X is your initial guess for solution vector.
+            !         On output X is the final approximate solution.
+            ! NELT   :IN       Integer.
+            !         Number of Non-Zeros stored in A.
+            ! IA     :INOUT    Integer IA(NELT).
+            ! JA     :INOUT    Integer JA(NELT).
+            ! A      :INOUT    Double Precision A(NELT).
+            !         These arrays should hold the matrix A in either the SLAP
+            !         Triad format or the SLAP Column format.  See "Description",
+            !         below.  If the SLAP Triad format is chosen it is changed
+            !         internally to the SLAP Column format.
+            ! ISYM   :IN       Integer.
+            !         Flag to indicate symmetric storage format.
+            !         If ISYM=0, all nonzero entries of the matrix are stored.
+            !         If ISYM=1, the matrix is symmetric, and only the upper
+            !         or lower triangle of the matrix is stored.
+            ! ITOL   :IN       Integer.
+            !         Flag to indicate type of convergence criterion.
+            !         If ITOL=1, iteration stops when the 2-norm of the residual
+            !         divided by the 2-norm of the right-hand side is less than TOL.
+            !         If ITOL=2, iteration stops when the 2-norm of M-inv times the
+            !         residual divided by the 2-norm of M-inv times the right hand
+            !         side is less than TOL, where M-inv is the inverse of the
+            !         diagonal of A.
+            !         ITOL=11 is often useful for checking and comparing different
+            !         routines.  For this case, the user must supply the "exact"
+            !         solution or a very accurate approximation (one with an error
+            !         much less than TOL) through a common block,
+            !         COMMON /SOLBLK/ SOLN( )
+            !         if ITOL=11, iteration stops when the 2-norm of the difference
+            !         between the iterative approximation and the user-supplied
+            !         solution divided by the 2-norm of the user-supplied solution
+            !         is less than TOL.
+            ! TOL    :IN       Double Precision.
+            !         Convergence criterion, as described above.
+            ! ITMAX  :IN       Integer.
+            !         Maximum number of iterations.
+            ! ITER   :OUT      Integer.
+            !         Number of iterations required to reach convergence, or
+            !         ITMAX+1 if convergence criterion could not be achieved in
+            !         ITMAX iterations.
+            ! ERR    :OUT      Double Precision.
+            !         Error estimate of error in final approximate solution, as
+            !         defined by ITOL.
+            ! IERR   :OUT      Integer.
+            !         Return error flag.
+            !           IERR = 0 => All went well.
+            !           IERR = 1 => Insufficient storage allocated
+            !                       for WORK or IWORK.
+            !           IERR = 2 => Method failed to converge in
+            !                       ITMAX steps.
+            !           IERR = 3 => Error in user input.  Check input
+            !                       value of N, ITOL.
+            !           IERR = 4 => User error tolerance set too tight.
+            !                       Reset to 500.0*D1MACH(3).  Iteration proceeded.
+            !           IERR = 5 => Preconditioning matrix, M,  is not
+            !                       Positive Definite.  $(r,z) < 0.0$.
+            !           IERR = 6 => Matrix A is not Positive Definite.
+            !                       $(p,Ap) < 0.0$.
+            !           IERR = 7 => Incomplete factorization broke down
+            !                       and was fudged.  Resulting preconditioning may
+            !                       be less than the best.
+            ! IUNIT  :IN       Integer.
+            !         Unit number on which to write the error at each iteration,
+            !         if this is desired for monitoring convergence.  If unit
+            !         number is 0, no writing will occur.
+            ! RWORK  :WORK     Double Precision RWORK(LENW).
+            !         Double Precision array used for workspace.  NEL is the
+            !         number of non-
+            !         zeros in the lower triangle of the matrix (including the
+            !         diagonal).  NU is the number of nonzeros in the upper
+            !         triangle of the matrix (including the diagonal).
+            ! LENW   :IN       Integer.
+            !         Length of the double precision workspace, RWORK.
+            !         LENW >= NEL+NU+8*N.
+            ! IWORK  :WORK     Integer IWORK(LENIW).
+            !         Integer array used for workspace.  NEL is the number of non-
+            !         zeros in the lower triangle of the matrix (including the
+            !         diagonal).  NU is the number of nonzeros in the upper
+            !         triangle of the matrix (including the diagonal).
+            !         Upon return the following locations of IWORK hold information
+            !         which may be of use to the user:
+            !         IWORK(9)  Amount of Integer workspace actually used.
+            !         IWORK(10) Amount of Double Precision workspace actually used.
+            ! LENIW  :IN       Integer.
+            !         Length of the integer workspace, IWORK.
+            !         LENIW >= NEL+NU+4*N+12.
             newN = N - 1
             NELT = sparseMatFinal%nnz
             allocate(B(newN), X(newN), IA(NELT), JA(NELT), A(NELT))

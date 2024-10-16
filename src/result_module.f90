@@ -1,17 +1,17 @@
 module result_module
-    use iso_fortran_env, only: dp=>real64
+    use iso_fortran_env, only: r_kind=>real64
     implicit none
     private
     public :: convergedResult
 
     type convergedResult
-        real(dp), allocatable :: probabilityDensity(:,:)
-        real, allocatable :: solveTime(:)
+        real(kind = r_kind), allocatable :: probabilityDensity(:,:)
+        real(kind=r_kind), allocatable :: solveTime(:)
         integer, allocatable :: matrixMultiplications(:)
-        real, allocatable :: fusionFraction(:)
-        real, allocatable :: fissionFraction(:)
-        real, allocatable :: startCoordinate(:,:)
-        real, allocatable :: energies(:)
+        real(kind=r_kind), allocatable :: fusionFraction(:)
+        real(kind=r_kind), allocatable :: fissionFraction(:)
+        real(kind=r_kind), allocatable :: startCoordinate(:,:)
+        real(kind=r_kind), allocatable :: energies(:)
         integer :: numResults = 0
     contains 
         procedure, public :: addResult => add_result_method
@@ -20,6 +20,7 @@ module result_module
         procedure, public :: getStartCoord => get_coordinate_method
         procedure, public :: getEnergy => get_energy_method
         procedure, public :: hasResult => has_result_method
+        procedure, public :: printResultToFile => print_results_to_file
     end type convergedResult
 
 contains
@@ -31,17 +32,17 @@ contains
 
     subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionFrac)
         class(convergedResult), intent(inout) :: self
-        real(dp), intent(in) :: pd(:)
-        real, intent(in) :: time, energy
+        real(kind=r_kind), intent(in) :: pd(:)
+        real(kind=r_kind), intent(in) :: time, energy
         integer, intent(in) :: multiplications
-        real, intent(in) :: fusionFrac
-        real, intent(in) :: fissionFrac
-        real, intent(in) :: startCoord(:)
+        real(kind=r_kind), intent(in) :: fusionFrac
+        real(kind=r_kind), intent(in) :: fissionFrac
+        real(kind=r_kind), intent(in) :: startCoord(:)
 
-        real(dp), allocatable :: tempPd(:,:)
-        real, allocatable :: tempReal(:)
+        real(kind=r_kind), allocatable :: tempPd(:,:)
+        real(kind=r_kind), allocatable :: tempReal(:)
         integer, allocatable :: tempInt(:)
-        real, allocatable :: tempCoord(:,:)
+        real(kind=r_kind), allocatable :: tempCoord(:,:)
 
 
         integer :: n !number of stored results
@@ -158,8 +159,8 @@ contains
             write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(A,F4.2, 15X, F4.2, 15X, F4.2, 15X, F0.2, 12X, I5)', advance="no") &
-                " |  ", self%energies(i), self%fusionFraction(i), self%fissionFraction(i), &
+            write(*, '(F7.1, 15X, F7.3, 10X, F7.3, 10X, F0.2, 12X, I5)', advance="no") &
+                self%energies(i), self%fusionFraction(i), self%fissionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
             totS = totS + self%solveTime(i)
             totMults = totMults + self%matrixMultiplications(i)
@@ -171,9 +172,51 @@ contains
         print *, "--------------------------------------------------------------"
     end subroutine print_result_method
 
+    subroutine print_results_to_file(self)
+        class(convergedResult), intent(in) :: self
+        integer :: i, E
+        character(len=100) :: filename
+        real(kind=r_kind) :: printPd(size(self%probabilityDensity, 1),1)
+
+        do i = 1,self%numResults
+            printPd(:,1) = self%getProbabilityDensity(i)
+            WRITE(filename, '(A, F4.1)') "../data/PD-", self%energies(i)
+            print*, filename
+            call printMatrixToFile(filename, printPd)
+        end do
+        
+    end subroutine print_results_to_file
+
+    subroutine printMatrixToFile(fileName, A)
+        !Prints two dimensional matrix A to file.
+        real(r_kind), dimension(:,:), intent(in) :: A
+        integer :: i,j
+        character (len = *), intent(in) :: fileName
+        character (len = 8) :: folderPath
+        character (len = 100) :: fullName
+        folderPath = '../data/' !Name cannot have prefix /
+        folderPath = trim(folderPath) 
+        fullName = trim(folderPath//trim(fileName))
+
+        open(unit = 9, file = fullName)
+        
+        do i = 1,SIZE(A,1)
+            do j = 1,SIZE(A,2)
+                write(9,'(E12.4)', advance='no') A(i,j)
+                
+                if (j /= SIZE(A,2)) then !Dont write semicolon after last element
+                    write(9,'(A)', advance='no') '; '  ! Add space between elements except last element
+                end if
+            end do
+            write(9,*)
+        end do
+        
+        close(unit = 9)
+    end subroutine printMatrixToFile
+
     function get_probability_density_method(self, index) result(pd)
         class(convergedResult), intent(in) :: self
-        real(dp), allocatable :: pd(:)
+        real(kind=r_kind), allocatable :: pd(:)
         integer :: index
 
         if (index < 1 .or. index > self%numResults) then
@@ -186,7 +229,7 @@ contains
 
     function get_coordinate_method(self, index) result(coord)
         class(convergedResult), intent(in) :: self
-        real, dimension(:), allocatable :: coord(:)
+        real(kind=r_kind) ,dimension(:), allocatable :: coord(:)
         integer :: index
 
         if (index < 1 .or. index > self%numResults) then
@@ -199,7 +242,7 @@ contains
 
     function get_energy_method(self,index) result(energy)
         class(convergedResult), intent(in) :: self
-        real :: energy
+        real(kind=r_kind) :: energy
         integer :: index
 
         if (index < 1 .or. index > self%numResults) then
