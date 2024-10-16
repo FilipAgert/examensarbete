@@ -1,5 +1,5 @@
 module sparseMatrix
-    use fsparse
+    use sparse
     use potsurf
     implicit none
     
@@ -30,7 +30,7 @@ module sparseMatrix
         do i = 1,SIZE(dimSize)
             N = N * dimSize(i) !Number of grid points.
         end do
-        INITNNZ = N * 250_8!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
+        INITNNZ = N * 11_8!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
         NNZ = 0 !
         print*, "N = ", N
         print*, "NNZ guess: ", INITNNZ
@@ -48,7 +48,7 @@ module sparseMatrix
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoord(coord, dimSize, MIN_MAX_DIM) !Convert five dimensional coordinate into one dimensional index
-                            neighbours = pruneNeighbours(getNeighboursDiag(coord),dimSize, MIN_MAX_DIM)
+                            neighbours = pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
                             psum = 0.0_r_kind
                             NNZstart = NNZ
 
@@ -261,18 +261,18 @@ module sparseMatrix
         ! col = matrix%col
         ! rowptr = matrix%rowptr
         associate(data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, nnz => matrix%nnz, nrows => matrix%nrows, &
-            &ncols => matrix%ncols, sym => matrix%sym )
-            if( sym == k_NOSYMMETRY) then
-                !$omp parallel shared(matrix, vec_y, vec_x) private(i,j)
-                !$omp do schedule(static)
-                do i = 1, nrows
-                    do j = matrix%rowptr(i), matrix%rowptr(i+1)-1
-                        vec_y(i) = vec_y(i) + matrix%data(j) * vec_x(matrix%col(j))
-                    end do
+            &ncols => matrix%ncols)
+
+            !$omp parallel shared(matrix, vec_y, vec_x) private(i,j)
+            !$omp do schedule(static)
+            do i = 1, nrows
+                do j = matrix%rowptr(i), matrix%rowptr(i+1)-1
+                    vec_y(i) = vec_y(i) + matrix%data(j) * vec_x(matrix%col(j))
                 end do
-                !$omp end do
-                !$omp end parallel
-            endif
+            end do
+            !$omp end do
+            !$omp end parallel
+
         end associate
     end subroutine matvecpar
 
@@ -344,8 +344,8 @@ module sparseMatrix
 
     subroutine changeSize(sparseMat, new_nnz)
         type(COO_dp) :: sparseMat
-        integer, intent(in) :: new_nnz
-        integer :: current_nnz
+        integer(8), intent(in) :: new_nnz
+        integer(8) :: current_nnz
         integer, allocatable :: temp_idx(:,:)
         real(r_kind), allocatable :: temp(:)
         current_nnz = sparseMat%nnz

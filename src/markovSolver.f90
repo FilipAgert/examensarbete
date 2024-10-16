@@ -1,7 +1,7 @@
 module markovSolver
     use potsurf
     use sparseMatrix
-    use fsparse
+    use sparse
     use result_module
     !use sparseFromPotSurf
     implicit none
@@ -309,7 +309,7 @@ module markovSolver
                                     fissionFusionIndices, fusionChance, fissionChance, dimSize, MIN_MAX_DIM) 
 
         print*, "Starting coordinate setup. Sort and convert matrix to CSR data format."
-        call coo2ordered(COO, .TRUE.) !Sort entries in matrix.
+        call coo2ordered(COO) !Sort entries in matrix.
         call coo2csr(COO, CSR)!Convert from COO format to CSR format for easier time parallelising matrix * vector multiplication
         markovMatCSR = CSR
 
