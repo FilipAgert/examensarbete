@@ -12,7 +12,8 @@ module markovSolver
                                         1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM - MIN_MM]
     integer, dimension(5,2) :: MIN_MAX_DIM = reshape([MIN_II, MIN_JJ, MIN_KK, MIN_LL, MIN_MM, &
                                         MAX_II, MAX_JJ, MAX_KK, MAX_LL, MAX_MM], [5,2])
-    integer, allocatable :: fissionFusionIndices(:), fissionIdxs(:), fusionIdxs(:)
+    integer(8), allocatable :: fissionFusionIndices(:) !Will contain indices that might be greated than 2^32
+    integer, allocatable :: fissionIdxs(:), fusionIdxs(:)
     integer :: AZ, AA
     real(kind = r_kind) :: Egs !!ground state energy.
 
@@ -22,8 +23,8 @@ module markovSolver
     real(kind=r_kind) :: TOL
     integer :: NCV, num_threads
     real(kind=r_kind) :: Rneck_fission = 1.5_r_kind !Fm
-    real(kind=r_kind) :: fusionChance = 0.5_r_kind
-    real(kind=r_kind) :: fissionChance = 0.5_r_kind
+    real(kind=r_kind) :: fusionChance = 1.0_r_kind
+    real(kind=r_kind) :: fissionChance = 1.0_r_kind
     !!!!!!
 
 

@@ -36,13 +36,14 @@ gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../build/dependencies/fspar
 gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../build/dependencies/fsparse/fsparselibpar.a -larpack -fopenmp
 
 on @e121:
-gfortran -O3 -o ../src/result_module.o -c ../src/result_module.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
+gfortran -O3 -o ../src/result_module.o -c ../src/result_module.f90 -I../src -fopenmp 
+gfortran -O3 -o ../src/sparse.o -c ../src/sparse.f90 -I../src -fopenmp
 gfortran -O3 -o ../src/potsurf.o -c ../src/potsurf.f90
-gfortran -O3 -o ../src/sparseMatrix.o -c ../src/sparseMatrix.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
-gfortran -O3 -o ../src/markovSolver.o -c ../src/markovSolver.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
-gfortran -O3 -o ../src/denseMatrix.o -c ../src/denseMatrix.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
-gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../build/dependencies/fsparse/src -I../src -fopenmp 
-gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../build/dependencies/fsparse/fsparselib.a -L/export/filipa/lib/arpack-ng/build/lib -larpack -fopenmp
+gfortran -O3 -o ../src/sparseMatrix.o -c ../src/sparseMatrix.f90 -I../src -fopenmp 
+gfortran -O3 -o ../src/markovSolver.o -c ../src/markovSolver.f90 -I../src -fopenmp 
+gfortran -O3 -o ../src/denseMatrix.o -c ../src/denseMatrix.f90 -I../src -fopenmp 
+gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../src -fopenmp 
+gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../src/sparse.o -L/export/filipa/lib/arpack-ng/build/lib -larpack -fopenmp
 
 
 with sparse:
@@ -53,6 +54,5 @@ gfortran -O3 -o ../src/sparseMatrix.o -c ../src/sparseMatrix.f90 -I../src -fopen
 gfortran -O3 -o ../src/markovSolver.o -c ../src/markovSolver.f90 -I../src -fopenmp 
 gfortran -O3 -o ../src/denseMatrix.o -c ../src/denseMatrix.f90 -I../src -fopenmp 
 gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../src -fopenmp 
-
 gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../src/sparse.o -L/export/filipa/lib/arpack-ng/build/lib -larpack -fopenmp
 

@@ -43,7 +43,12 @@ module sparseMatrix
                 do KK = MIN_KK, MAX_KK
                     do LL = MIN_LL, MAX_LL
                         do MM = MIN_MAX_DIM(5,1), MAX_MM !from 0 to max_mm
-                            
+                            !if fusion/fission: do nothing (probability 1 to connect to start_idx)
+                            if(II .LE. II_fusion .or. Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then
+                                exit
+                            endif
+                            !Fusion/fission does not get here.
+                                
                             
 
                             coord = [II, JJ, KK, LL, MM]
@@ -98,13 +103,13 @@ module sparseMatrix
                             if(NNZstart /= NNZ) then
                                 dat(NNZstart + 1:NNZ) = dat(NNZstart + 1 : NNZ) / psum !Normalize to total prob 1.
                                 
-                                if(II .LE. II_fusion) then !if II less than or equal to, then its fusion
-                                    dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fusion_prob)
-                                elseif(Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then !If rneck less than limit, then we have fission
-                                    dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fission_prob)
-                                endif
+                                ! if(II .LE. II_fusion) then !if II less than or equal to, then its fusion
+                                !     dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fusion_prob)
+                                ! elseif(Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then !If rneck less than limit, then we have fission
+                                !     dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fission_prob)
+                                ! endif
                             else
-                                CANTEXIT = CANTEXIT + 1
+                                CANTEXIT = CANTEXIT + 1 !Counts number of grid point we cannot leave in any way
                             endif
                         end do
                     end do
@@ -130,9 +135,10 @@ module sparseMatrix
         !!TODO: DOES NOT WORK AS INTENDED IF FUSION OR FISSION INDEX NEIGHBOUR TO START_IDX
         type(COO_dp) :: COO
         integer, intent(in) :: start_c(5)
-        integer :: i, j, fusionIdx, fissionIdx, startIdx
-        integer :: connectionCounter, connectionIndex
-        integer :: fissionFusionIndices(:), fissionIdxs(:), fusionIdxs(:)
+        integer :: i, fusionIdx, fissionIdx, startIdx,connectionCounter
+        integer(8) :: connectionIndex !Might be greater than 2^32
+        integer(8) :: fissionFusionIndices(:)
+        integer :: fissionIdxs(:), fusionIdxs(:)
         logical :: connectedToStartingIdx
         real(kind=r_kind) :: fissionChance, fusionChance
         integer, dimension(5) :: dimSize

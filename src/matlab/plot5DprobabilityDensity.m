@@ -24,13 +24,13 @@ AZ = 102;
 AA = 256;
 
 A = zeros(dimSize);
-files = ["../../data/PDMM-13","../../data/PDMM-14", "../../data/PDMM-15", "../../data/PDMM-17"];
+files = ["../../data/PDMM-20","../../data/PDMM-25", "../../data/PDMM-30", "../../data/PDMM-40"];
 fusionChance = [39.5, 80.1,58.9,46.4];
-startingCoords = [21    6    3   14   29; 
-                  20    6    3   14   29; 
-                  20    6    3   14  29;
-                  20    6    3   14   29];
-E = [13,14,15,17];
+startingCoords = [19, 6, 3, 13, 30; 
+                  18, 7, 3, 14, 29; 
+                  17, 7, 3, 13, 30;
+                  16, 7, 3, 13, 30];
+E = [20,25,30,40];
 for f = 1:4
     subplot(2,2,f)
     pd = readmatrix(files(f), "Delimiter", ";");

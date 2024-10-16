@@ -148,7 +148,7 @@ contains
         ! Print the table headers
         print *, "Results: "
         print *, "--------------------------------------------------------------"
-        print *, "Index | Energy [MeV] | Fusion Fraction | Fission Fraction | Solve Time [s] | Matrix Mults"
+        print *, "Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults"
         print *, "--------------------------------------------------------------"
         
         ! Print each result
@@ -159,8 +159,8 @@ contains
             write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(F7.1, 15X, F7.3, 10X, F7.3, 10X, F0.2, 12X, I5)', advance="no") &
-                self%energies(i), self%fusionFraction(i), self%fissionFraction(i), &
+            write(*, '(F7.1, 15X, F14.10, 10X, F0.2, 12X, I5)', advance="no") &
+                self%energies(i), self%fusionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
             totS = totS + self%solveTime(i)
             totMults = totMults + self%matrixMultiplications(i)

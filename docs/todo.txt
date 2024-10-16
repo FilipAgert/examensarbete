@@ -14,3 +14,17 @@ Kanske är så att E = 13MeV inte funkar för den inte kan gå in i fusion indic
 Högre tolerans hjälper ej. (testat med 1E-15)
 
 Plotta med en KDE eftersom Q2 inte är evenly spaced.
+
+
+
+TODO:
+Testa mot random walk
+Lägg till spin term
+
+börja skriva rapport:
+Bakgrund. 
+Förklara koordinaterna I J K L M
+Jämför metoder
+Random walk vs iterativ multiplikation vs arpack
+
+Jämför linear interpolation
