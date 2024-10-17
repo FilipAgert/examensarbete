@@ -1,14 +1,10 @@
 CODE TODO:
-Parallelisera att räkna ut sannolikheter
-PROBLEM: 
+Få ner tid att skapa matris.
+Det är storleksförändringarna på vektorerna som tar mycket tid.
+Kopiering av vektor osv. BLAS?
+Om vi skapar vektorerna i rätt ordning slipper vi sortera dem. Iterera i rätt ordning i loopen Dock kan vi inte Parallelisera isåfall.
 
- "Array 'evals' at (1) is larger than limit set by '-fmax-stack-var-size=', moved from stack to static storage. 
- This makes the procedure unsafe when called recursively, or concurrently from multiple threads. 
- Consider increasing the '-fmax-stack-var-size=' limit (or use '-frecursive', which implies unlimited '-fmax-stack-var-size') - 
- or change the code to use an ALLOCATABLE array. If the variable is never accessed concurrently, this warning can be ignored, 
- and the variable could also be declared with the SAVE attribute. [-Wsurprising]",
 
-Lincomb does not work.
 
 
 

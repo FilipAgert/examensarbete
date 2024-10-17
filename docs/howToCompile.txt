@@ -58,3 +58,7 @@ gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/pot
 Run:
 export LD_LIBRARY_PATH=/export/filipa/lib/arpack-ng/build/lib:$LD_LIBRARY_PATH
 nohup nice -n 19 ./main2.exe | tee output.txt
+
+Copy:
+scp -J filipa@merlot.matfys.lth.se filipa@e121.matfys.lth.se
+

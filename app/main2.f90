@@ -16,7 +16,7 @@ PROGRAM main
     INTEGER(kind=i_kind) :: II_fusion = 3                                   ! Fusion occurs if index II becomes less than or equal than II=3
     REAL(kind=r_kind) :: Rneck_fission = 1.5                                  ! Fission occurs if neck radius becomes less than or equal than 1.5 fm
     REAL(kind=r_kind) :: TOL
-    INTEGER(kind=i_kind) :: NUM_THREADS = 3
+    INTEGER(kind=i_kind) :: NUM_THREADS = 4
     INTEGER(kind=i_kind) :: NCV
     real(kind=r_kind), dimension(15) :: energies = [13.0, 14.0, 15.0,17.0,20.0,22.0,25.0,30.0,35.0,40.0,45.0,50.0,55.0,60.0,65.0] !excitation energies relative gnd state
     real(kind=r_kind), dimension(11) :: e3s = [13.0,13.1,13.2,13.3,13.4,13.5,13.6,13.7,13.8,13.9,14.0]
@@ -39,9 +39,16 @@ PROGRAM main
     ! Input files
     ! --------------------------------------------------------------------
   
-    CHARACTER(100) :: filename_pot5D = '../input/old_potential_surface/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
-    CHARACTER(100) :: filename_emac5D = '../input/old_potential_surface/emacr102256.dat'                     ! Macroscopic potential energy Emac
-    CHARACTER(100) :: filename_rneck5D = '../input/old_potential_surface/neck5D.dat'               ! Neck radii
+    !MAX_MM = 30
+    !CHARACTER(100) :: filename_pot5D = '../input/old_potential_surface/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
+    !CHARACTER(100) :: filename_emac5D = '../input/old_potential_surface/emacr102256.dat'                     ! Macroscopic potential energy Emac
+    !CHARACTER(100) :: filename_rneck5D = '../input/old_potential_surface/neck5D.dat'               ! Neck radii
+
+
+    !MAX_MM = 40
+    CHARACTER(100) :: filename_pot5D = '../input/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
+    CHARACTER(100) :: filename_emac5D = '../input/emacr102256.dat'                     ! Macroscopic potential energy Emac
+    CHARACTER(100) :: filename_rneck5D = '../input/neck5D.dat'               ! Neck radii
   
     ! --------------------------------------------------------------------
   
@@ -49,10 +56,6 @@ PROGRAM main
   
   
     ! ---------------------------------------------------------------------
-
-
-    real(kind=r_kind), allocatable :: plotGrid(:,:), printPd(:,:)
-    
   
     WRITE(*,*) ''
     WRITE(*,*) ''
