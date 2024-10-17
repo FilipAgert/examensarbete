@@ -17,7 +17,7 @@ module sparseMatrix
         integer :: coord(5)
         integer :: II, JJ, KK, LL, MM, IDX, i, neighbourIDX, N, localIdx
         integer(kind=8) :: INITNNZ, NNZ, NNZstart
-        integer(kind=8), parameter :: Nneighbours = 11_8 !Set 11_8 if using only adjecent neighbours. Set 243_8 if using diagonal neighbours
+        integer(kind=8), parameter :: Nneighbours = 243_8 !Set 11_8 if using only adjecent neighbours. Set 243_8 if using diagonal neighbours
         integer, dimension(:,:), allocatable :: neighbours, INDEX
         real(kind=r_kind), dimension(:), allocatable :: dat
         real(kind=r_kind)  :: prob, psum
@@ -35,7 +35,7 @@ module sparseMatrix
         do i = 1,SIZE(dimSize)
             N = N * dimSize(i) !Number of grid points.
         end do
-        INITNNZ = N * Nneighbours!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
+        INITNNZ = N * Nneighbours!! !Guess for size of vectors is number of points * number of neighbours per point
         NNZ = 0 !
         print*, "N = ", N
         print*, "NNZ guess: ", INITNNZ
@@ -59,9 +59,9 @@ module sparseMatrix
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoord(coord, dimSize, MIN_MAX_DIM) !Convert five dimensional coordinate into one dimensional index
-                            !neighbours = getNeighboursDiag(coord, MIN_MAX_DIM)
-                            neighbours = pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
-                            psum = 0.0_r_kind
+                            neighbours = getNeighboursDiag(coord, MIN_MAX_DIM)
+                            !neighbours = pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
+                            psum = 0.0_r_kind !sum over total transition probability to 
                             !NNZstart = NNZ
                             localIdx = 0
                             do i = 1,size(neighbours, 2) !Iterate over all neighbours.
@@ -116,9 +116,12 @@ module sparseMatrix
         !$omp end parallel
 
 
-        call COO%malloc(N,N, NNZ + numFissionFusionIndices)
+        !this following part takes a majority of the time spent in this function.
+        call COO%malloc(N,N, NNZ + numFissionFusionIndices) !Pre-allocate fusion/fission coordinates so we dont have to 
+        !allocate space again.
         COO%data(1:NNZ) = dat(1:NNZ)
         COO%index(:,1:NNZ) = index(:,1:NNZ)
+        
         ! print*, "NNZ guess per grid point: ", real(INITNNZ)/N
         ! print*, "Actual nnz per grid point: ", real(NNZ)/N
         ! print*, "Number of columns without values: ", CANTEXIT
@@ -168,7 +171,7 @@ module sparseMatrix
                 COO%index(2,connectionIndex) = fissionIdx
                 COO%data(connectionIndex) = fissionChance
             end do
-        else!modify 
+        else!modify starting idx.
             do i = 1,size(fissionFusionIndices)
                 COO%index(1, fissionFusionIndices(i)) = startIdx
             end do

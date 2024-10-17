@@ -39,9 +39,9 @@ PROGRAM main
     ! Input files
     ! --------------------------------------------------------------------
   
-    CHARACTER(100) :: filename_pot5D = '../input/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
-    CHARACTER(100) :: filename_emac5D = '../input/emacr102256.dat'                     ! Macroscopic potential energy Emac
-    CHARACTER(100) :: filename_rneck5D = '../input/neck5D2024-09-11.dat'               ! Neck radii
+    CHARACTER(100) :: filename_pot5D = '../input/old_potential_surface/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
+    CHARACTER(100) :: filename_emac5D = '../input/old_potential_surface/emacr102256.dat'                     ! Macroscopic potential energy Emac
+    CHARACTER(100) :: filename_rneck5D = '../input/old_potential_surface/neck5D.dat'               ! Neck radii
   
     ! --------------------------------------------------------------------
   
@@ -78,7 +78,7 @@ PROGRAM main
     do i = 6,11
       C3(:,i) = startCoords(:,2)
     end do
-    call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, II_fusion, Egs, e3s, C3 ,useFullMM, filename_emac5D,&
+    call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, II_fusion, Egs, energies, startCoords ,useFullMM, filename_emac5D,&
                     filename_pot5D, filename_rneck5D)
 
     call solveAllEnergies()

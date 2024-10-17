@@ -180,7 +180,7 @@ contains
 
         do i = 1,self%numResults
             printPd(:,1) = self%getProbabilityDensity(i)
-            WRITE(filename, '(A, F4.1)') "../data/PD-", self%energies(i)
+            WRITE(filename, '(A, F4.1)') "PD-OLD_POT-", self%energies(i)
             print*, filename
             call printMatrixToFile(filename, printPd)
         end do
