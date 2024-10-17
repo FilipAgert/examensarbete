@@ -40,15 +40,15 @@ PROGRAM main
     ! --------------------------------------------------------------------
   
     !MAX_MM = 30
-    !CHARACTER(100) :: filename_pot5D = '../input/old_potential_surface/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
-    !CHARACTER(100) :: filename_emac5D = '../input/old_potential_surface/emacr102256.dat'                     ! Macroscopic potential energy Emac
-    !CHARACTER(100) :: filename_rneck5D = '../input/old_potential_surface/neck5D.dat'               ! Neck radii
+    CHARACTER(100) :: filename_pot5D = '../input/old_potential_surface/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
+    CHARACTER(100) :: filename_emac5D = '../input/old_potential_surface/emacr102256.dat'                     ! Macroscopic potential energy Emac
+    CHARACTER(100) :: filename_rneck5D = '../input/old_potential_surface/neck5D.dat'               ! Neck radii
 
 
     !MAX_MM = 40
-    CHARACTER(100) :: filename_pot5D = '../input/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
-    CHARACTER(100) :: filename_emac5D = '../input/emacr102256.dat'                     ! Macroscopic potential energy Emac
-    CHARACTER(100) :: filename_rneck5D = '../input/neck5D.dat'               ! Neck radii
+    !CHARACTER(100) :: filename_pot5D = '../input/pot5D102256.dat'                      ! Total potential energy (Emac + Emic)
+    !CHARACTER(100) :: filename_emac5D = '../input/emacr102256.dat'                     ! Macroscopic potential energy Emac
+    !CHARACTER(100) :: filename_rneck5D = '../input/neck5D.dat'               ! Neck radii
   
     ! --------------------------------------------------------------------
   
