@@ -7,7 +7,7 @@ module sparseMatrix
     contains
 
     function sparseFromPotential(AZ, AA, ETOT, II_fusion, fusion_prob, &
-        & Rneck_fission, fission_prob, dimSize, min_max_dim, useFullMMCoordinates, num_threads) result(COO)
+        & Rneck_fission, fission_prob, dimSize, min_max_dim, useFullMMCoordinates, num_threads, numFissionFusionIndices) result(COO)
         !! This function generates ALL transition probabilities except from fusion indices to start index.
         type(COO_dp) :: COO
         INTEGER(kind=i_kind), intent(inout) :: AZ, AA
@@ -27,6 +27,7 @@ module sparseMatrix
         integer, dimension(5,2) :: MIN_MAX_DIM
         integer :: num_threads
         logical :: useFullMMCoordinates
+        integer :: numFissionFusionIndices
         CALL omp_set_num_threads(num_threads)
         print* ,' '
         print* ,'Generating sparse matrix of transition probabilities...'
@@ -115,7 +116,7 @@ module sparseMatrix
         !$omp end parallel
 
 
-        call COO%malloc(N,N, NNZ)
+        call COO%malloc(N,N, NNZ + numFissionFusionIndices)
         COO%data(1:NNZ) = dat(1:NNZ)
         COO%index(:,1:NNZ) = index(:,1:NNZ)
         ! print*, "NNZ guess per grid point: ", real(INITNNZ)/N
@@ -141,12 +142,12 @@ module sparseMatrix
 
         startIdx = linearIdxFromCoord(start_c, dimSize, min_max_dim)
         connectionCounter = 0
-        connectionIndex = COO%NNZ
+        connectionIndex = COO%NNZ - size(fusionIdxs) - size(fissionIdxs) !We already allocated space for fusion/fission.
         ! print*, "size fission: ", size(fissionIdxs)
         ! print*, "size fusion: ", size(fusionIdxs)
         if(.NOT. connectedToStartingIdx) then  !Generate new connections
             !Extend size of sparsematrix data and index arrays.
-            call changeSize(COO, COO%nnz + size(fusionIdxs) + size(fissionIdxs))
+            !call changeSize(COO, COO%nnz + size(fusionIdxs) + size(fissionIdxs))     !dont need to change size.
             do i = 1, size(fusionIdxs) 
                 fusionIdx = fusionIdxs(i)
                 !!!!GENERATE CONNECTION TO START_IDX

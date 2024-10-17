@@ -311,7 +311,7 @@ module markovSolver
 
         print*, "Calculate matrix from potential... "
         COO = sparseFromPotential(AZ, AA, Etot, II_fusion, fusionChance, Rneck_fission, fissionChance, dimSize, &
-                                            MIN_MAX_DIM, useFullMMCoordinates, num_threads)
+                                            MIN_MAX_DIM, useFullMMCoordinates, num_threads, size(fissionFusionIndices))
         CALL system_clock(count=COUNT2)
         !Sets upp connection between fusion/fission coordinates to starting coordinate.
         !This is a seperate method incase we want the ability to try multiple starting coordinates with the same energy
