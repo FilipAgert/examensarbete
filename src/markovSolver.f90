@@ -57,7 +57,7 @@ module markovSolver
             Eexc = E - Egs
             print*, "Energy: ", Eexc, " MeV"
             print*, "Starting coord: ", coord
-            call setupMatrix(E,coord)  !Calculate transition matrix
+            call setupMatrix(E,coord, num_threads)  !Calculate transition matrix
             CALL system_clock(count=COUNT2)
             TIME1 = (count2-count1)/rate
             print*, ' '
@@ -298,19 +298,20 @@ module markovSolver
 
     end subroutine setupSolver
 
-    subroutine setupMatrix(Etot, startingCoord)
+    subroutine setupMatrix(Etot, startingCoord, num_threads)
         real(kind=r_kind) :: Etot
         integer, dimension(5) :: startingCoord
         type(CSR_DP) :: CSR
         type(COO_DP) :: COO
         integer :: COUNT1, COUNT2, COUNT3, COUNT4, COUNT5
+        integer :: num_threads
         real :: rate, TgenCOO, TconnectToStart, TSort, TCOO2CSR, total
         CALL system_clock(count_rate = rate)
         CALL system_clock(count=COUNT1)
 
         print*, "Calculate matrix from potential... "
         COO = sparseFromPotential(AZ, AA, Etot, II_fusion, fusionChance, Rneck_fission, fissionChance, dimSize, &
-                                            MIN_MAX_DIM, useFullMMCoordinates)
+                                            MIN_MAX_DIM, useFullMMCoordinates, num_threads)
         CALL system_clock(count=COUNT2)
         !Sets upp connection between fusion/fission coordinates to starting coordinate.
         !This is a seperate method incase we want the ability to try multiple starting coordinates with the same energy

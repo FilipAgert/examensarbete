@@ -7,7 +7,7 @@ module sparseMatrix
     contains
 
     function sparseFromPotential(AZ, AA, ETOT, II_fusion, fusion_prob, &
-        & Rneck_fission, fission_prob, dimSize, min_max_dim, useFullMMCoordinates) result(COO)
+        & Rneck_fission, fission_prob, dimSize, min_max_dim, useFullMMCoordinates, num_threads) result(COO)
         !! This function generates ALL transition probabilities except from fusion indices to start index.
         type(COO_dp) :: COO
         INTEGER(kind=i_kind), intent(inout) :: AZ, AA
@@ -15,29 +15,35 @@ module sparseMatrix
         real(kind=r_kind), intent(in) :: fusion_prob, fission_prob, Rneck_fission
         REAL(kind=r_kind), intent(inout) :: Etot
         integer :: coord(5)
-        integer :: II, JJ, KK, LL, MM, IDX, i, neighbourIDX, N
-        integer(kind=8) :: INITNNZ, NNZ, NNZstart, CANTEXIT
+        integer :: II, JJ, KK, LL, MM, IDX, i, neighbourIDX, N, localIdx
+        integer(kind=8) :: INITNNZ, NNZ, NNZstart
+        integer(kind=8), parameter :: Nneighbours = 11_8 !Set 11_8 if using only adjecent neighbours. Set 243_8 if using diagonal neighbours
         integer, dimension(:,:), allocatable :: neighbours, INDEX
         real(kind=r_kind), dimension(:), allocatable :: dat
         real(kind=r_kind)  :: prob, psum
+        real(kind=r_kind), dimension(Nneighbours) :: localProbs
+        integer, dimension(2,Nneighbours) :: localIdxs
         integer, dimension(5) :: dimSize
         integer, dimension(5,2) :: MIN_MAX_DIM
+        integer :: num_threads
         logical :: useFullMMCoordinates
-
+        CALL omp_set_num_threads(num_threads)
         print* ,' '
         print* ,'Generating sparse matrix of transition probabilities...'
         N = 1
         do i = 1,SIZE(dimSize)
             N = N * dimSize(i) !Number of grid points.
         end do
-        INITNNZ = N * 243_8!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
+        INITNNZ = N * Nneighbours!! 200_8 !11_8 !! NNZ = N*3⁵    (number of neighborus per coord: 243)
         NNZ = 0 !
         print*, "N = ", N
         print*, "NNZ guess: ", INITNNZ
 
         allocate(INDEX(2,INITNNZ))
         allocate(dat(INITNNZ))
-        CANTEXIT = 0
+        !$omp parallel shared(NNZ,dat,INDEX) private(II,JJ,KK,LL,MM,coord,IDX,neighbours,psum,localIdx,prob)&
+        !$omp& private(localProbs,localIdxs,NNZstart)
+        !$omp do schedule(static)
         do II = MIN_II, MAX_II
             do JJ = MIN_JJ, MAX_JJ
                 do KK = MIN_KK, MAX_KK
@@ -49,35 +55,14 @@ module sparseMatrix
                                 exit
                             endif
                             !Fusion/fission does not get here.
-                                
-                            
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoord(coord, dimSize, MIN_MAX_DIM) !Convert five dimensional coordinate into one dimensional index
-                            neighbours = getNeighboursDiag(coord, MIN_MAX_DIM)!pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
+                            !neighbours = getNeighboursDiag(coord, MIN_MAX_DIM)
+                            neighbours = pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
                             psum = 0.0_r_kind
-                            NNZstart = NNZ
-
-                            ! if(II .LE. II_fusion) then!IF FUSION: can only stay OR teleport to starting index.
-                            !     prob = 1-fusion_prob
-                            !     NNZ = NNZ + 1
-                            !     index(1,NNZ) = IDX
-                            !     index(2,NNZ) = IDX
-                            !     dat(NNZ) = prob
-                            !     exit
-                            ! elseif(Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then !If rneck less than limit, then we have fission
-                            !     !State in fission. Can only stay or teleport to starting index.
-                            !     prob = 1-fission_prob
-                            !     NNZ = NNZ + 1
-                            !     index(1,NNZ) = IDX
-                            !     index(2,NNZ) = IDX
-                            !     dat(NNZ) = prob
-                            !     exit
-                            !     !Here we only set probability to stay in state. probability to exit state is set later.
-                            ! endif
-                            ! !We dont go here if fissioned/fusioned.
-                            
-                            
+                            !NNZstart = NNZ
+                            localIdx = 0
                             do i = 1,size(neighbours, 2) !Iterate over all neighbours.
                                 prob = transition_probability(AZ, AA, ETOT, II, JJ, KK, LL, MM, &
                                 neighbours(1,i), neighbours(2,i), neighbours(3,i), neighbours(4,i), neighbours(5,i))
@@ -91,38 +76,45 @@ module sparseMatrix
                                     endif
                                 endif
                                 
-                                psum = psum + prob
+                                
                                 if(prob > 0.0_r_kind) then 
                                     !Some prob will equal 0. Do not add it to matrix as all non-declared 
                                     !positions already represents a zero. This saves space.
-                                    
+                                    localIdx = localIdx + 1 !Add number of nonzero elements
+                                    psum = psum + prob
                                     neighbourIDX = linearIdxFromCoord(neighbours(:,i),dimSize, MIN_MAX_DIM)
-                                    NNZ = NNZ + 1
-                                    index(1,NNZ) = neighbourIDX
-                                    index(2,NNZ) = IDX
-                                    dat(NNZ) = prob
+                                    !NNZ = NNZ + 1
+                                    localProbs(localIdx) = prob         !add element to list
+                                    localIdxs(1,localIdx) = neighbourIDX !add row/col to list
+                                    localIdxs(2,localIdx) = IDX
+
+
+                                    !index(1,NNZ) = neighbourIDX
+                                    !index(2,NNZ) = IDX
+                                    !dat(NNZ) = prob
                                 endif
                             end do
-                            if(NNZstart /= NNZ) then
-                                dat(NNZstart + 1 : NNZ) = dat(NNZstart + 1 : NNZ) / psum !Normalize to total prob 1.
-                                
-                                ! if(II .LE. II_fusion) then !if II less than or equal to, then its fusion
-                                !     dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fusion_prob)
-                                ! elseif(Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then !If rneck less than limit, then we have fission
-                                !     dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fission_prob)
-                                ! endif
-                            else
-                                CANTEXIT = CANTEXIT + 1 !Counts number of grid point we cannot leave in any way 
-                                !(All transitions to neighbours have probability zero.)
+                            if(localIdx > 0) then !If we have neighbours with nonzero transition probability:
+                                !dat(NNZstart + 1 : NNZ) = dat(NNZstart + 1 : NNZ) / psum !Normalize to total prob 1.
+                                localProbs(1:localIdx) = localProbs(1:localIdx)/psum !Normalize to total prob 1
+                                !$omp critical
+                                    NNZstart = NNZ !We can not let one multiple threads access this at the same time.
+                                    NNZ = NNZ + localIdx !If one thread writes NNZstart AND another does it before the first thread
+                                    !updates NNZ, two threads will write to same location on vector.
+                                !$omp end critical
+                                dat(NNZstart + 1 : NNZstart + 1 + localIdx) = localProbs(1:localIdx)
+                                index(:,NNZstart + 1 : NNZstart + 1 + localIdx) = localIdxs(:,1:localIdx)
                             endif
                         end do
                     end do
                 end do
             end do
-            print*, "Percentage complete: ", 100*II/dimSize(1), "%"
             print*, "Percentage of guess already allocated: ", 100*real(NNZ)/real(INITNNZ)
-
         end do
+        !$omp end do
+        !$omp end parallel
+
+
         call COO%malloc(N,N, NNZ)
         COO%data(1:NNZ) = dat(1:NNZ)
         COO%index(:,1:NNZ) = index(:,1:NNZ)
@@ -139,7 +131,7 @@ module sparseMatrix
         type(COO_dp) :: COO
         integer, intent(in) :: start_c(5)
         integer :: i, fusionIdx, fissionIdx, startIdx,connectionCounter
-        integer(8) :: connectionIndex !Might be greater than 2^32
+        integer(8) :: connectionIndex !Might be greater than 2^32 => use 8 bit integer
         integer(8) :: fissionFusionIndices(:)
         integer :: fissionIdxs(:), fusionIdxs(:)
         logical :: connectedToStartingIdx
