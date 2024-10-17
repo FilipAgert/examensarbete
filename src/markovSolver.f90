@@ -298,10 +298,15 @@ module markovSolver
         integer, dimension(5) :: startingCoord
         type(CSR_DP) :: CSR
         type(COO_DP) :: COO
+        integer :: COUNT1, COUNT2, COUNT3, COUNT4, COUNT5
+        real :: rate, TgenCOO, TconnectToStart, TSort, TCOO2CSR, total
+        CALL system_clock(count_rate = rate)
+        CALL system_clock(count=COUNT1)
 
         print*, "Calculate matrix from potential... "
         COO = sparseFromPotential(AZ, AA, Etot, II_fusion, fusionChance, Rneck_fission, fissionChance, dimSize, &
                                             MIN_MAX_DIM, useFullMMCoordinates)
+        CALL system_clock(count=COUNT2)
         !Sets upp connection between fusion/fission coordinates to starting coordinate.
         !This is a seperate method incase we want the ability to try multiple starting coordinates with the same energy
         !This way we dont have to recalculate all matrix elements when re-generating matrix. This is not used yet however.
@@ -309,12 +314,27 @@ module markovSolver
         call connectToStartingCoord(COO, startingCoord, connectedToStartingCoord, fusionIdxs, fissionIdxs, &
                                     fissionFusionIndices, fusionChance, fissionChance, dimSize, MIN_MAX_DIM) 
 
+        CALL system_clock(count=COUNT3)
         print*, "Starting coordinate setup. Sort and convert matrix to CSR data format."
         call coo2ordered(COO) !Sort entries in matrix.
+        CALL system_clock(count=COUNT4)
         call coo2csr(COO, CSR)!Convert from COO format to CSR format for easier time parallelising matrix * vector multiplication
+        CALL system_clock(count=COUNT5)
         markovMatCSR = CSR
+        TgenCOO = (count2-count1)/rate
+        TconnectToStart=(count3-count2)/rate
+        TSort = (count4-count3)/rate
+        TCOO2CSR = (count5-count4)/rate
+        total = TgenCOO + TconnectToStart + TSort + TCOO2CSR
 
         print*, "Calculated matrix from potential..."
+        print*, "--------------------------"
+        print*, "Generate COO matrix: " , 100*TgenCOO/total ," %"
+        print*, "Connect starting idx: " , 100*TconnectToStart/total ," %"
+        print*, "Sort COO: " , 100*TSort/total ," %"
+        print*, "COO to CSR: " , 100*TCOO2CSR/total ," %"
+        print*, "--------------------------"
+        
     end subroutine setupMatrix
 
 
@@ -524,8 +544,8 @@ module markovSolver
                         do MM = MIN_MAX_DIM(5,1), MAX_MM
                             if(Rneck(II,JJ,KK,LL,MM) < Rneck_fission) then
                                 NumberOfFissionIndices = NumberOfFissionIndices + 1
-                            else
-                                other = other + 1
+                            ! else
+                            !     other = other + 1
                             endif
                         end do
                     end do

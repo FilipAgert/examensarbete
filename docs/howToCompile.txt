@@ -52,7 +52,6 @@ gfortran -O3 -o ../src/sparse.o -c ../src/sparse.f90 -I../src -fopenmp
 gfortran -O3 -o ../src/potsurf.o -c ../src/potsurf.f90
 gfortran -O3 -o ../src/sparseMatrix.o -c ../src/sparseMatrix.f90 -I../src -fopenmp 
 gfortran -O3 -o ../src/markovSolver.o -c ../src/markovSolver.f90 -I../src -fopenmp 
-gfortran -O3 -o ../src/denseMatrix.o -c ../src/denseMatrix.f90 -I../src -fopenmp 
 gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../src -fopenmp 
 gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../src/sparse.o -L/export/filipa/lib/arpack-ng/build/lib -larpack -fopenmp
 

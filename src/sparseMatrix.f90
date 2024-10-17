@@ -44,6 +44,7 @@ module sparseMatrix
                     do LL = MIN_LL, MAX_LL
                         do MM = MIN_MAX_DIM(5,1), MAX_MM !from 0 to max_mm
                             !if fusion/fission: do nothing (probability 1 to connect to start_idx)
+                            !We connect fusion coord to starting index in another method which is why we do nothing here.
                             if(II .LE. II_fusion .or. Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then
                                 exit
                             endif
@@ -53,7 +54,7 @@ module sparseMatrix
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoord(coord, dimSize, MIN_MAX_DIM) !Convert five dimensional coordinate into one dimensional index
-                            neighbours = pruneNeighbours(getNeighboursDiag(coord),dimSize, MIN_MAX_DIM)
+                            neighbours = getNeighboursDiag(coord, MIN_MAX_DIM)!pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
                             psum = 0.0_r_kind
                             NNZstart = NNZ
 
@@ -91,7 +92,9 @@ module sparseMatrix
                                 endif
                                 
                                 psum = psum + prob
-                                if(prob > 0.0_r_kind) then
+                                if(prob > 0.0_r_kind) then 
+                                    !Some prob will equal 0. Do not add it to matrix as all non-declared 
+                                    !positions already represents a zero. This saves space.
                                     
                                     neighbourIDX = linearIdxFromCoord(neighbours(:,i),dimSize, MIN_MAX_DIM)
                                     NNZ = NNZ + 1
@@ -101,7 +104,7 @@ module sparseMatrix
                                 endif
                             end do
                             if(NNZstart /= NNZ) then
-                                dat(NNZstart + 1:NNZ) = dat(NNZstart + 1 : NNZ) / psum !Normalize to total prob 1.
+                                dat(NNZstart + 1 : NNZ) = dat(NNZstart + 1 : NNZ) / psum !Normalize to total prob 1.
                                 
                                 ! if(II .LE. II_fusion) then !if II less than or equal to, then its fusion
                                 !     dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fusion_prob)
@@ -109,7 +112,8 @@ module sparseMatrix
                                 !     dat(NNZstart + 1:NNZ) = dat(NNZstart + 1:NNZ)*(1-fission_prob)
                                 ! endif
                             else
-                                CANTEXIT = CANTEXIT + 1 !Counts number of grid point we cannot leave in any way
+                                CANTEXIT = CANTEXIT + 1 !Counts number of grid point we cannot leave in any way 
+                                !(All transitions to neighbours have probability zero.)
                             endif
                         end do
                     end do
@@ -196,25 +200,32 @@ module sparseMatrix
         end do
     end function getNeighbours
 
-    function getNeighboursDiag(coord) result(neighbours) !Gets all neighbours including diagonals and self.
+    function getNeighboursDiag(coord, MIN_MAX_DIM) result(neighbours) !Gets all neighbours including diagonals and self.
         integer, intent(in), dimension(5) :: coord
-        integer, dimension(5, 3**5) :: neighbours !Includes self
-        integer :: i,j,k,l,m, startIdx
+        integer, dimension(5, 3**5) :: temp !Includes self
+        integer, allocatable :: neighbours(:,:)
+        integer, dimension(5,2) :: MIN_MAX_DIM
+        integer :: i,j,k,l,m, idx
 
-        startIdx = 1
+        idx = 0
 
-        do i = coord(1)-1, coord(1) + 1
-            do j = coord(2) - 1, coord(2) + 1
-                do k = coord(3) - 1, coord(3) + 1
-                    do l = coord(4) - 1, coord(4) + 1
-                        do m = coord(5) - 1, coord(5) + 1
-                            neighbours(:, startIdx) = [i,j,k,l,m]
-                            startIdx = startIdx + 1
+        !THE MAX,MIN stuff ensures that we only loop over indices that are within the permitted coordinate range
+        !I.e. if we get neighbours of coord (1,5,5,5,5) we dont let I = 0, since this is not an allowed coordinate.
+        !This way we don't need the function pruneneighbours as the neighbours already are pruned.
+        do i = MAX(coord(1)-1, MIN_MAX_DIM(1,1)), MIN(coord(1) + 1, MIN_MAX_DIM(1,2))
+            do j = MAX(coord(2) - 1, MIN_MAX_DIM(2,1)), MIN(coord(2) + 1, MIN_MAX_DIM(2,2))
+                do k = MAX(coord(3) - 1, MIN_MAX_DIM(3,1)), MIN(coord(3) + 1, MIN_MAX_DIM(3,2))
+                    do l = MAX(coord(4) - 1, MIN_MAX_DIM(4,1)), MIN(coord(4) + 1, MIN_MAX_DIM(4,2))
+                        do m = MAX(coord(5) - 1, MIN_MAX_DIM(5,1)), MIN(coord(5) + 1, MIN_MAX_DIM(5,2))
+                            idx = idx + 1
+                            temp(:, idx) = [i,j,k,l,m]
                         end do
                     end do
                 end do
             end do
         end do
+        allocate(neighbours(5,idx))
+        neighbours = temp(:,1:idx)
     end function getNeighboursDiag
 
     function pruneNeighbours(neighbours, dimSize, MIN_MAX_DIM)  result(pruned)
