@@ -319,10 +319,11 @@ module markovSolver
         !Sets upp connection between fusion/fission coordinates to starting coordinate.
         !This is a seperate method incase we want the ability to try multiple starting coordinates with the same energy
         !This way we dont have to recalculate all matrix elements when re-generating matrix. This is not used yet however.
+        print*, " "
         print*, "Probabilities calculated. Setup starting coordinate..."
         call connectToStartingCoord(COO, startingCoord, connectedToStartingCoord, fusionIdxs, fissionIdxs, &
                                     fissionFusionIndices, fusionChance, fissionChance, dimSize, MIN_MAX_DIM) 
-
+        print*, " "
         CALL system_clock(count=COUNT3)
         print*, "Set up starting coordinate. Sort and convert matrix to CSR data format..."
         call coo2ordered(COO) !Sort entries in matrix.
@@ -335,8 +336,9 @@ module markovSolver
         TSort = (count4-count3)/rate
         TCOO2CSR = (count5-count4)/rate
         total = TgenCOO + TconnectToStart + TSort + TCOO2CSR
-
+        print*, " "
         print*, "Calculated matrix from potential..."
+        print*, " "
         print*, "--------------------------Percentages of total time spent on matrix generation-----------------------------------"
         print*, "Generate COO matrix: " , 100*TgenCOO/total ," %"
         print*, "Connect starting idx: " , 100*TconnectToStart/total ," %"
