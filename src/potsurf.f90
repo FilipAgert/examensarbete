@@ -18,7 +18,7 @@ MODULE potsurf
    INTEGER(kind=i_kind), parameter :: MIN_JJ = 1, MAX_JJ = 15 !Neck
    INTEGER(kind=i_kind), parameter :: MIN_KK = 1, MAX_KK = 15 !Left fragment deformation
    INTEGER(kind=i_kind), parameter :: MIN_LL = 1, MAX_LL = 15 !Right fragment deformation
-   INTEGER(kind=i_kind), parameter :: MIN_MM = -40, MAX_MM = 40 !Mass/reflection assymetry
+   INTEGER(kind=i_kind), parameter :: MIN_MM = -33, MAX_MM = 33 !Mass/reflection assymetry
    
    REAL(kind=r_kind) :: Epot(MIN_II:MAX_II,MIN_JJ:MAX_JJ,MIN_KK:MAX_KK,MIN_LL:MAX_LL,MIN_MM:MAX_MM)         ! Potential energy
    REAL(kind=r_kind) :: Emac(MIN_II:MAX_II,MIN_JJ:MAX_JJ,MIN_KK:MAX_KK,MIN_LL:MAX_LL,MIN_MM:MAX_MM)         ! Macroscopic energy

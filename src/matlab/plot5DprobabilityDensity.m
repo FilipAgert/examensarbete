@@ -22,14 +22,14 @@ AZ = 102;
 AA = 256;
 
 A = zeros(dimSize);
-files = ["../../data/PD-13.0","../../data/PD-15.0", "../../data/PD-20.0", "../../data/PD-30.0"];
+files = ["../../PD-OLD_POT-30.0","../../data/PD-15.0", "../../data/PD-20.0", "../../data/PD-30.0"];
 fusionChance = [0.28, 66.24, 39.93, 21.58];
-startingCoords = [21,6,3,14,29; 
+startingCoords = [17,7,3,13,30; 
                   20,6,3,14,29; 
                   19,6,3,13,30;
                   17,7,3,13,30];
-E = [13,15,20,30];
-for f = 1:4
+E = [30,15,20,30];
+for f = 1:1
     subplot(2,2,f)
     pd = readmatrix(files(f), "Delimiter", ";", "FileType", "Text");
     
