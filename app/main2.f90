@@ -2,7 +2,6 @@ PROGRAM main
 
     USE potsurf
     use markovSolver, only: results, setupSolver, solveAllEnergies
-    use denseMatrix, only: printMatrixToFileDp
     
     
     IMPLICIT NONE
@@ -20,7 +19,7 @@ PROGRAM main
     INTEGER(kind=i_kind) :: NUM_THREADS = 3
     INTEGER(kind=i_kind) :: NCV
     real(kind=r_kind), dimension(15) :: energies = [13.0, 14.0, 15.0,17.0,20.0,22.0,25.0,30.0,35.0,40.0,45.0,50.0,55.0,60.0,65.0] !excitation energies relative gnd state
-    real(kind=r_kind), dimension(1) :: e3s = [30]
+    real(kind=r_kind), dimension(11) :: e3s = [13.0,13.1,13.2,13.3,13.4,13.5,13.6,13.7,13.8,13.9,14.0]
     Integer(kind=i_kind), dimension(5,15) :: startCoords = RESHAPE( (/ &
     21, 6, 3, 14, 29,        20, 6, 3, 14, 29,& !13, 14
     20, 6, 3, 14, 29,        20, 6, 3, 14, 29,& !15, 17
@@ -32,8 +31,8 @@ PROGRAM main
     15, 7, 3, 14, 30 /), (/5,15/) )
 
     real(kind=r_kind), dimension(1) :: E3
-    integer(kind=i_kind), dimension(5,1) :: C3
-    LOGICAL :: useFullMM = .TRUE.
+    integer(kind=i_kind), dimension(5,11) :: C3
+    LOGICAL :: useFullMM = .FALSE.
     integer :: i
     
     ! --------------------------------------------------------------------
@@ -73,8 +72,11 @@ PROGRAM main
     NCV = 15
 
     E3 = energies(1)
-    do i = 1,size(C3,2)
-      C3(:,i) = startCoords(:,8)
+    do i = 1,5
+      C3(:,i) = startCoords(:,1)
+    end do
+    do i = 6,11
+      C3(:,i) = startCoords(:,2)
     end do
     call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, II_fusion, Egs, e3s, C3 ,useFullMM, filename_emac5D,&
                     filename_pot5D, filename_rneck5D)

@@ -1,19 +1,9 @@
-1. Gör fsparse parallel genom att skita i matvec och använd den egna. Där kan input vara numthreads också.
-2. Gör arpack till CSR så att vi kan använda paralell matvec
-3. Eftersom matrisen ändå ändras för varje energi måste vi räkna om den varje gång. Gör så att startindex kopplas direkt från fusionsindex när vi genererar matrisen
-4. Dvs lägg till det i klassen
-5. Testa nu olika NCR i med parallel. Lär vara snabbare när vi har låg NCR eftersom den då spenderar mycket tid i vår snabba matvec
-6. Testa med flera energier.
+CODE TODO:
+Parallelisera att räkna ut sannolikheter
+Gör så att neighbours redan är pruned. (Ändra så att man ändrar loopvariablerna:)
+do i = coord(1)-1, coord(1) + 1
+till do i = MAX(coord(1)-1, MIN_MAX_DIM(1,1)),      MIN(coord(1) + 1, MIN_MAX_DIM(1,2))
 
-
-
-
-1. Investigate energy of I indices and fission indices.
-Max, mean, etc
-Kanske är så att E = 13MeV inte funkar för den inte kan gå in i fusion indices.
-Högre tolerans hjälper ej. (testat med 1E-15)
-
-Plotta med en KDE eftersom Q2 inte är evenly spaced.
 
 
 
@@ -28,3 +18,4 @@ Jämför metoder
 Random walk vs iterativ multiplikation vs arpack
 
 Jämför linear interpolation
+
