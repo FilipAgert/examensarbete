@@ -4,12 +4,12 @@ program testResult
     implicit none
 
     real(dp),dimension (5,2) :: probabilityDensity
-    real, dimension(2) :: solveTime
+    real(dp), dimension(2) :: solveTime
     integer, dimension(2) :: matrixMultiplications
-    real, dimension(2) :: fusionFraction
-    real, dimension(2) :: fissionFraction
-    real, dimension(3,2) :: startCoordinate
-    real, dimension(2) :: energies
+    real(dp), dimension(2) :: fusionFraction
+    real(dp), dimension(2) :: fissionFraction
+    integer, dimension(3,2) :: startCoordinate
+    real(dp), dimension(2) :: energies
     type(convergedResult) :: res
     ! Initialize arrays
     probabilityDensity = reshape( (/ 1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp, 5.0_dp, &
@@ -20,8 +20,8 @@ program testResult
     matrixMultiplications = (/ 3, 5 /)
     fusionFraction = (/ 0.6, 0.7 /)
     fissionFraction = (/ 0.4, 0.3 /)
-    startCoordinate = reshape( (/ 1.0, 2.0, 3.0, 4.0, 5.0, &
-                                 5.0, 4.0, 3.0, 2.0, 1.0 /), &
+    startCoordinate = reshape( (/ 1, 2, 3, 4, 5, &
+                                 5, 4, 3, 2, 1 /), &
                                shape(startCoordinate) )
     energies = (/ 1.0, 2.0/)
 

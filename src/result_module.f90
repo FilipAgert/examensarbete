@@ -10,7 +10,7 @@ module result_module
         integer, allocatable :: matrixMultiplications(:)
         real(kind=r_kind), allocatable :: fusionFraction(:)
         real(kind=r_kind), allocatable :: fissionFraction(:)
-        real(kind=r_kind), allocatable :: startCoordinate(:,:)
+        integer, allocatable :: startCoordinate(:,:)
         real(kind=r_kind), allocatable :: energies(:)
         integer :: numResults = 0
     contains 
@@ -37,12 +37,12 @@ contains
         integer, intent(in) :: multiplications
         real(kind=r_kind), intent(in) :: fusionFrac
         real(kind=r_kind), intent(in) :: fissionFrac
-        real(kind=r_kind), intent(in) :: startCoord(:)
+        integer, intent(in) :: startCoord(:)
 
         real(kind=r_kind), allocatable :: tempPd(:,:)
         real(kind=r_kind), allocatable :: tempReal(:)
         integer, allocatable :: tempInt(:)
-        real(kind=r_kind), allocatable :: tempCoord(:,:)
+        integer, allocatable :: tempCoord(:,:)
 
 
         integer :: n !number of stored results
@@ -147,20 +147,21 @@ contains
     
         ! Print the table headers
         print *, "Results: "
-        print *, "--------------------------------------------------------------"
-        print *, "Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults |"
-        print *, "--------------------------------------------------------------"
+        print *, "-----------------------------------------------------------------------------------------------"
+        print *, "Index | I | J | K | L | M | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults |"
+        print *, "-----------------------------------------------------------------------------------------------"
         
         ! Print each result
         do i = 1, self%numResults
             ! Print the index and vertical bar
             write(*, '(I5, 1X, A)', advance="no") i, " |"
     
-            write(*, '(A)', advance = "no") " "
+            !write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(F7.1, 7X, F14.10, 10X, F0.2, 12X, I5)', advance="no") &
-                self%energies(i), self%fusionFraction(i), &
+            write(*, '(I2,2X, I2,2X,I2,2X,I2,2X,I2,2X, F7.1, 7X, F14.10, 10X, F0.2, 12X, I5)', advance="no") &
+                self%startCoordinate(1,i), self%startCoordinate(2,i), self%startCoordinate(3,i), self%startCoordinate(4,i),&
+                self%startCoordinate(5,i), self%energies(i), self%fusionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
             totS = totS + self%solveTime(i)
             totMults = totMults + self%matrixMultiplications(i)
@@ -229,7 +230,7 @@ contains
 
     function get_coordinate_method(self, index) result(coord)
         class(convergedResult), intent(in) :: self
-        real(kind=r_kind) ,dimension(:), allocatable :: coord(:)
+        integer ,dimension(:), allocatable :: coord(:)
         integer :: index
 
         if (index < 1 .or. index > self%numResults) then

@@ -84,7 +84,7 @@ module markovSolver
             print*, "Finding eigenvector took ", TIME2, " seconds"
             print*, "Setup matrix: ", 100*TIME1/(TIME1+TIME2) , " % of total time"
             print*, "Total time: ", TIME1+TIME2, " seconds"
-            call results%addResult(SOL, real(coord,r_kind), Eexc, TIME1+TIME2, numberOfMatvecCalls,fusionFraction,fissionFraction)
+            call results%addResult(SOL, coord, Eexc, TIME1+TIME2, numberOfMatvecCalls,fusionFraction,fissionFraction)
             call results%printResult()
             
         end do
