@@ -9,7 +9,7 @@ module result_module
         real(kind=r_kind), allocatable :: solveTime(:)
         integer, allocatable :: matrixMultiplications(:)
         real(kind=r_kind), allocatable :: fusionFraction(:)
-        real(kind=r_kind), allocatable :: fissionFraction(:)
+        real(kind=r_kind), allocatable :: fissionMassDistribution(:,:)
         integer, allocatable :: startCoordinate(:,:)
         real(kind=r_kind), allocatable :: energies(:)
         integer :: numResults = 0
@@ -21,6 +21,7 @@ module result_module
         procedure, public :: getEnergy => get_energy_method
         procedure, public :: hasResult => has_result_method
         procedure, public :: printResultToFile => print_results_to_file
+        procedure, public :: printMassDistribution => print_mass_distribution
     end type convergedResult
 
 contains
@@ -30,13 +31,13 @@ contains
         res = self%numResults > 0
     end function has_result_method
 
-    subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionFrac)
+    subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionMassDistribution)
         class(convergedResult), intent(inout) :: self
         real(kind=r_kind), intent(in) :: pd(:)
         real(kind=r_kind), intent(in) :: time, energy
         integer, intent(in) :: multiplications
         real(kind=r_kind), intent(in) :: fusionFrac
-        real(kind=r_kind), intent(in) :: fissionFrac
+        real(kind=r_kind), dimension(:), intent(in) :: fissionMassDistribution
         integer, intent(in) :: startCoord(:)
 
         real(kind=r_kind), allocatable :: tempPd(:,:)
@@ -54,7 +55,7 @@ contains
             allocate(self%matrixMultiplications(1))
             allocate(self%energies(1))
             allocate(self%fusionFraction(1))
-            allocate(self%fissionFraction(1))
+            allocate(self%fissionMassDistribution(size(fissionMassDistribution),1))
             allocate(self%startCoordinate(size(startCoord), 1))
             
         else 
@@ -90,13 +91,12 @@ contains
             self%fusionFraction(1:n) = tempReal
             deallocate(tempReal)
 
-            ! Resize fissionFraction with a temporary array
-            allocate(tempReal(n))
-            tempReal = self%fissionFraction
-            deallocate(self%fissionFraction)
-            allocate(self%fissionFraction(n+1))
-            self%fissionFraction(1:n) = tempReal
-            deallocate(tempReal)
+            allocate(tempPd(size(fissionMassDistribution), n))
+            tempPd = self%fissionMassDistribution
+            deallocate(self%fissionMassDistribution)
+            allocate(self%fissionMassDistribution(size(pd), n+1))
+            self%fissionMassDistribution(:, 1:n) = tempPd
+            deallocate(tempPd)
 
             allocate(tempReal(n))
             tempReal = self%energies
@@ -122,7 +122,7 @@ contains
         self%solveTime(n) = time
         self%matrixMultiplications(n) = multiplications
         self%fusionFraction(n) = fusionFrac
-        self%fissionFraction(n) = fissionFrac
+        self%fissionMassDistribution(:, n) = fissionMassDistribution
         self%startCoordinate(:, n) = startCoord
         self%energies(n) = energy
     end subroutine add_result_method
@@ -167,6 +167,15 @@ contains
         print *, "TOTAL MATRIX MULTIPLICATIONS: ", totMults
         print *, "---------------------------------------------------------------------------------------------"
     end subroutine print_result_method
+
+    subroutine print_mass_distribution(self,idx)
+        class(convergedResult), intent(in) :: self
+        integer :: idx
+        print*, "Fission mass distribution: "
+        print*, self%fissionMassDistribution(:,idx)
+
+
+    end subroutine
 
     subroutine print_results_to_file(self)
         class(convergedResult), intent(in) :: self

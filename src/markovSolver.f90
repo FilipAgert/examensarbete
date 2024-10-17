@@ -46,6 +46,7 @@ module markovSolver
         integer(8) :: COUNT1, COUNT2, COUNT3
         integer :: numberOfMatvecCalls
         real(kind=r_kind), allocatable :: guessPD(:), SOL(:)
+        real(kind=r_kind) :: massDistribution(MIN_MAX_DIM(5,1):MIN_MAX_DIM(5,2))
         allocate(guessPD(numberOfGridPoints()), SOL(numberOfGridPoints()))
 
         CALL system_clock(count_rate = rate)
@@ -76,20 +77,23 @@ module markovSolver
             print*, " "
             print*, "-----------------End arnoldi iteration--------------------------"
             print*, " "
-            fusionFraction = getFusionFraction(SOL)
-            fissionFraction = 1 - fusionFraction
-            
-
-
-
             call system_clock(count = COUNT3)
             TIME2 = (count3-count2)/rate
 
+            fusionFraction = getFusionFraction(SOL)
+            fissionFraction = 1 - fusionFraction
+            massDistribution = getFissionMassDistribution(SOL)
+
+
+
+            
+            
             print*, "Finding eigenvector took ", TIME2, " seconds"
             print*, "Setup matrix: ", 100*TIME1/(TIME1+TIME2) , " % of total time"
             print*, "Total time: ", TIME1+TIME2, " seconds"
-            call results%addResult(SOL, coord, Eexc, TIME1+TIME2, numberOfMatvecCalls,fusionFraction,fissionFraction)
+            call results%addResult(SOL, coord, Eexc, TIME1+TIME2, numberOfMatvecCalls,fusionFraction,massDistribution)
             call results%printResult()
+            call results%printMassDistribution(i)
             
         end do
     end subroutine solveAllEnergies
@@ -603,4 +607,22 @@ module markovSolver
 
         fusionFrac = fusionProb/(fusionProb + fissionProb)
     end function getFusionFraction
+
+    function getFissionMassDistribution(pd) result(dist)
+        real(r_kind), intent(in) :: pd(:)
+        real(r_kind) :: dist(MIN_MAX_DIM(5,1):MIN_MAX_DIM(5,2)), p, psum
+        integer :: i, fissionIdx, M, coord(5)
+        psum = 0.0_r_kind
+        dist = 0.0_r_kind
+        do i = 1,size(fissionIdxs)
+            fissionIdx = fissionIdxs(i)
+            coord = coordFromLinearIdx(fissionIdx, dimSize, MIN_MAX_DIM)
+            M = coord(5)
+            p = pd(fissionIdx)
+            psum = psum + p
+            dist(M) = dist(M) + p
+        end do
+        dist = dist/psum !Normalize to 1.
+    end function getFissionMassDistribution
+
 end module markovSolver

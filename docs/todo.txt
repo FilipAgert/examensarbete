@@ -5,10 +5,6 @@ Kopiering av vektor osv. BLAS?
 Om vi skapar vektorerna i rätt ordning slipper vi sortera dem. Iterera i rätt ordning i loopen Dock kan vi inte Parallelisera isåfall.
 
 
-
-
-
-
 TODO:
 Testa mot random walk
 Lägg till spin term
@@ -21,3 +17,6 @@ Random walk vs iterativ multiplikation vs arpack
 
 Jämför linear interpolation
 
+
+Kolla fördelning över mass-assymetri för alla som fussionerna.
+Dvs summera sannolikheten för fission för de olika M koordinaterna och läg i vektor.
