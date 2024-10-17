@@ -1,0 +1,2445 @@
+ 
+ 
+ ************************************************************
+                      Input data                             
+ ************************************************************
+ 
+  Compound nucleus: (Z,A) = (102, 256)
+ filename_pot5D = ../input/pot5D102256.dat                                                                            
+ filename_emac5D = ../input/emacr102256.dat                                                                            
+ filename_rneck5D = ../input/neck5D2024-09-11.dat                                                                       
+ 
+ 
+ Reading macroscopic energies from file ../input/emacr102256.dat                                                                            
+ Done reading, read      7512750  points
+ 
+ Reading energies from file ../input/pot5D102256.dat                                                                            
+ Done reading, read      7512750  points
+ 
+ Reading neck radii from file ../input/neck5D2024-09-11.dat                                                                       
+ Done reading, read      7512750  points
+ number of fission indicies      564665
+ Energy:    13.000000000000000       MeV
+ Starting coord:           21           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:   0.950816631    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.06664395    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.32578468    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    4.67204952    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.04613543    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    7.39988613    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    8.70345402    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    9.94785881    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    11.1320162    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    12.2581434    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    13.3493404    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    14.4210749    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    15.4805145    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    16.5354462    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    17.5914593    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    18.6528206    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    19.7221622    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    20.8012180    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    21.8903732    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    22.9907360    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    24.1050072    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    25.2375259    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    26.3922958    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    27.5734406    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    28.7841721    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    30.0422020    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    31.3442745    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    32.6834908    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    34.0416260    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    35.4084930    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    36.7798691    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    38.1546555    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    39.5325203    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    40.9127197    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    42.2929878    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    43.6740379    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    45.0544739    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    46.4317513    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    47.8038330    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    49.1689491    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    50.5251923    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    51.8683052    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    53.1953812    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    54.5055199    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    55.8011932    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    57.0855217    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    58.3634987    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    59.6381683    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    60.9073906    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    61.7524719    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    176.79728909599999       seconds
+ GUESS = even distribution
+ Size:   0.99999998763244946     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    82.7220001      seconds.
+ Latest arnoldi iteration time:   0.639999986      seconds. 
+ Latest matvec time:   0.564000010      seconds.    46.8438568     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000007170     
+ Sum probability negative entries:   -5.4391425351454677E-019
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99832556178808995     
+ Minimum value of eigenvector:   -1.8412250884179896E-020
+ Maximum value of eigenvector:    1.5923979246293646E-003
+ Sum of fusionprob:    4.4518628105517345E-006
+ Sum of fissionprob:    1.5852796898845598E-003
+ Finding eigenvector took    130.95166253400001       seconds
+ Setup matrix:    57.448543093189677       % of total time
+ Total time:    307.74895162999997       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    307.748962    
+ TOTAL MATRIX MULTIPLICATIONS:          123
+ --------------------------------------------------------------
+ Energy:    14.000000000000000       MeV
+ Starting coord:           20           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:   0.966890693    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.09620523    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.36915278    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    4.73462534    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.13914728    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    7.53562212    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    8.89558601    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    10.2106848    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    11.4724951    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    12.6756811    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    13.8354826    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    14.9693232    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    16.0846424    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    17.1891022    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    18.2904701    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    19.3941784    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    20.5037975    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    21.6207447    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    22.7457066    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    23.8811970    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    25.0312977    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    26.2008629    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    27.3934803    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    28.6130009    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    29.8626690    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    31.1568165    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    32.4870262    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    33.8458862    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    35.2176514    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    36.5951309    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    37.9749184    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    39.3568001    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    40.7412148    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    42.1279716    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    43.5152321    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    44.9034576    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    46.2908287    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    47.6748810    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    49.0533600    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    50.4244347    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    51.7860184    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    53.1345596    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    54.4676971    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    55.7841187    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    57.0863533    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    58.3778954    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    59.6631355    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    60.9449272    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    62.2205353    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    63.0699425    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    179.64217997599999       seconds
+ GUESS = RE-USE 1st solution
+ Size:    1.0000000000007170     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    82.2590027      seconds.
+ Latest arnoldi iteration time:   0.192000002      seconds. 
+ Latest matvec time:   0.584999979      seconds.    75.2895737     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    165.414993      seconds.
+ Latest arnoldi iteration time:   0.224000007      seconds. 
+ Latest matvec time:   0.574999988      seconds.    71.9649506     % of total
+  
+ Number of matvec calls so far :          300
+ Elapsed time so far:    249.472000      seconds.
+ Latest arnoldi iteration time:   0.200000003      seconds. 
+ Latest matvec time:   0.574999988      seconds.    74.1935501     % of total
+  
+ Number of matvec calls so far :          400
+ Elapsed time so far:    333.528015      seconds.
+ Latest arnoldi iteration time:   0.199000001      seconds. 
+ Latest matvec time:   0.575999975      seconds.    74.3225784     % of total
+ Found eigenvector
+ Eigenvalue:  0.99982628510764671     
+ Minimum value of eigenvector:    0.0000000000000000     
+ Maximum value of eigenvector:    9.9859327422439931E-003
+ Sum of fusionprob:    8.5920119880071935E-003
+ Sum of fissionprob:    1.3921860416112270E-003
+ Finding eigenvector took    371.86596662500000       seconds
+ Setup matrix:    32.572896897924856       % of total time
+ Total time:    551.50814660100002       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    859.257080    
+ TOTAL MATRIX MULTIPLICATIONS:          533
+ --------------------------------------------------------------
+ Energy:    15.000000000000000       MeV
+ Starting coord:           20           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:   0.980556548    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.12112093    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.40508652    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    4.78483820    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.21198320    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    7.64111280    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.04420471    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    10.4127111    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    11.7399340    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    13.0168886    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    14.2517719    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    15.4553709    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    16.6338577    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    17.7956009    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    18.9490509    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    20.0999851    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    21.2524548    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    22.4089184    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    23.5723896    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    24.7470646    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    25.9370327    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    27.1460361    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    28.3778706    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    29.6367073    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    30.9246826    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    32.2523079    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    33.6077461    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    34.9841995    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    36.3679848    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    37.7542877    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    39.1410866    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    40.5291901    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    41.9198189    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    43.3126831    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    44.7060890    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    46.1001129    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    47.4931297    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    48.8828812    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    50.2667046    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    51.6428490    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    53.0092354    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    54.3630028    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    55.7015266    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    57.0233383    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    58.3317947    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    59.6297264    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    60.9214478    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    62.2087135    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    63.4897766    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    64.3428192    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    183.14321899600000       seconds
+ Guess = LINCOMB of energies:   14.000000000000000       and    13.000000000000000       MeV
+ Size:   0.99999999999996503     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    84.6019974      seconds.
+ Latest arnoldi iteration time:   0.693000019      seconds. 
+ Latest matvec time:   0.580999970      seconds.    45.6043968     % of total
+  
+ Number of matvec calls so far :          200
+ Elapsed time so far:    170.175995      seconds.
+ Latest arnoldi iteration time:   0.209999993      seconds. 
+ Latest matvec time:   0.579999983      seconds.    73.4177246     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000001081     
+ Sum probability negative entries:   -1.1474831104339282E-015
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99980218901711548     
+ Minimum value of eigenvector:   -9.7797146512085899E-017
+ Maximum value of eigenvector:    1.1961375231861573E-002
+ Sum of fusionprob:    7.2401025824309247E-003
+ Sum of fissionprob:    3.6895589163300868E-003
+ Finding eigenvector took    202.35233244500000       seconds
+ Setup matrix:    47.508516845759253       % of total time
+ Total time:    385.49555144099998       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    1244.75269    
+ TOTAL MATRIX MULTIPLICATIONS:          735
+ --------------------------------------------------------------
+ Energy:    17.000000000000000       MeV
+ Starting coord:           20           6           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.00282490    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.16168880    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.46313262    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    4.86330318    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.32092476    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    7.79445076    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.25682735    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    10.6981077    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.1118832    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    13.4892006    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    14.8367176    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    16.1611748    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    17.4641018    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    18.7476254    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    20.0158939    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    21.2733860    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    22.5250359    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    23.7765923    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    25.0326576    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    26.2975578    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    27.5745068    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    28.8674526    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    30.1803017    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    31.5158730    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    32.8744278    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    34.2605705    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    35.6586494    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    37.0620651    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    38.4636154    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    39.8632545    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    41.2617950    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    42.6608505    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    44.0617599    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    45.4643631    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    46.8668976    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    48.2692871    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    49.6703339    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    51.0679283    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    52.4596748    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    53.8439598    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    55.2187538    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    56.5810318    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    57.9284859    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    59.2605133    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    60.5803947    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    61.8896446    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    63.1913567    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    64.4876480    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    65.7777100    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    66.6368179    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    191.26013970100001       seconds
+ Guess = LINCOMB of energies:   14.000000000000000       and    13.000000000000000       MeV
+ Size:    1.0000000000000031     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    85.5569992      seconds.
+ Latest arnoldi iteration time:   0.206000000      seconds. 
+ Latest matvec time:   0.598999977      seconds.    74.4099426     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000004818     
+ Sum probability negative entries:   -6.8459947681251102E-017
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99974184493268170     
+ Minimum value of eigenvector:   -2.0181835176837148E-017
+ Maximum value of eigenvector:    1.1003952528789638E-002
+ Sum of fusionprob:    4.9108351699396653E-003
+ Sum of fissionprob:    5.2946666543177805E-003
+ Finding eigenvector took    193.97451095000000       seconds
+ Setup matrix:    49.647698974584316       % of total time
+ Total time:    385.23465065100004       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    1629.98730    
+ TOTAL MATRIX MULTIPLICATIONS:          924
+ --------------------------------------------------------------
+ Energy:    20.000000000000000       MeV
+ Starting coord:           19           6           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.02682590    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.20596027    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.52601886    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    4.94582939    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.42794895    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    7.93669271    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.44891071    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    10.9556007    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.4481077    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    13.9142876    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    15.3584566    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    16.7867241    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    18.2011242    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    19.6039619    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    20.9976501    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    22.3845539    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    23.7672558    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    25.1479855    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    26.5289936    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    27.9123898    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    29.3019905    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    30.7019100    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    32.1155472    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    33.5434914    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    34.9822960    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    36.4290771    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    37.8665504    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    39.2935371    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    40.7128525    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    42.1284752    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    43.5414543    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    44.9531784    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    46.3649368    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    47.7768173    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    49.1869659    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    50.5956192    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    52.0024147    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    53.4056435    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    54.8037987    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    56.1954308    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    57.5792656    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    58.9522858    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    60.3117790    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    61.6560860    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    62.9876175    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    64.3077774    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    65.6202087    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    66.9276505    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    68.2303467    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    69.0984879    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    195.11092297299999       seconds
+ Guess = LINCOMB of energies:   17.000000000000000       and    15.000000000000000       MeV
+ Size:    1.0000000000000002     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    88.3580017      seconds.
+ Latest arnoldi iteration time:   0.694000006      seconds. 
+ Latest matvec time:   0.629999995      seconds.    47.5830803     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000000704     
+ Sum probability negative entries:   -3.0988739758292568E-015
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99959990623909944     
+ Minimum value of eigenvector:   -1.9923276496661132E-016
+ Maximum value of eigenvector:    7.3688339183628432E-003
+ Sum of fusionprob:    2.7719900266765757E-003
+ Sum of fissionprob:    4.1693787629466170E-003
+ Finding eigenvector took    166.65739329900001       seconds
+ Setup matrix:    53.932562415527684       % of total time
+ Total time:    361.76831627199999       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    1991.75562    
+ TOTAL MATRIX MULTIPLICATIONS:         1076
+ --------------------------------------------------------------
+ Energy:    22.000000000000000       MeV
+ Starting coord:           19           6           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.03807771    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.22726274    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.55645418    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    4.98516369    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.47709036    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    7.99867201    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.52921581    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.0612898    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.5862150    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.0903959    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    15.5770044    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.0508404    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    18.5132561    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    19.9658394    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    21.4110069    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    22.8513203    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    24.2889690    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    25.7255669    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    27.1628990    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    28.6038342    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    30.0507889    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    31.5065861    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    32.9714165    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    34.4440956    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    35.9186440    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    37.3913612    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    38.8469734    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    40.2874680    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    41.7174416    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    43.1409950    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    44.5596619    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    45.9756851    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    47.3908195    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    48.8053131    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    50.2175179    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    51.6280060    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    53.0364113    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    54.4411354    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    55.8407326    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    57.2342262    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    58.6203232    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    59.9960899    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    61.3590012    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    62.7075615    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    64.0441360    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    65.3700562    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    66.6887894    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    68.0032120    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    69.3136978    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    70.1873093    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    199.62414719899999       seconds
+ Guess = LINCOMB of energies:   20.000000000000000       and    17.000000000000000       MeV
+ Size:   0.99999999999999922     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    88.4319992      seconds.
+ Latest arnoldi iteration time:   0.219999999      seconds. 
+ Latest matvec time:   0.628000021      seconds.    74.0566025     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000004809     
+ Sum probability negative entries:   -1.0615993896322198E-013
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99950907956746993     
+ Minimum value of eigenvector:   -1.2917263924611849E-015
+ Maximum value of eigenvector:    6.4759398261490719E-003
+ Sum of fusionprob:    1.7774262939486639E-003
+ Sum of fissionprob:    4.3850539334126717E-003
+ Finding eigenvector took    161.95819433899999       seconds
+ Setup matrix:    55.208488984803147       % of total time
+ Total time:    361.58234153799998       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    2353.33789    
+ TOTAL MATRIX MULTIPLICATIONS:         1221
+ --------------------------------------------------------------
+ Energy:    25.000000000000000       MeV
+ Starting coord:           18           7           3          14          29
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.04945695    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.24956799    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.58913231    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.02781820    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.53033638    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.06440067    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.61164761    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.1666927    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.7231045    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.2662230    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    15.7976828    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.3197269    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    18.8332291    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.3392735    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    21.8392658    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    23.3350544    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    24.8284492    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    26.3217583    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    27.8164425    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    29.3140392    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    30.8152599    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    32.3204498    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    33.8271027    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    35.3318253    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    36.8287315    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    38.3156586    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    39.7803230    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    41.2267532    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    42.6613884    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    44.0886955    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    45.5105057    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    46.9291496    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    48.3464928    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    49.7627716    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    51.1766434    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    52.5883713    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    53.9977875    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    55.4030952    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    56.8031044    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    58.1968384    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    59.5831451    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    60.9592819    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    62.3229904    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    63.6730919    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    65.0123062    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    66.3422318    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    67.6664429    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    68.9875870    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    70.3050995    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    71.1834030    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    204.96421875400000       seconds
+ Guess = LINCOMB of energies:   22.000000000000000       and    20.000000000000000       MeV
+ Size:   0.99999999999999578     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    90.1780014      seconds.
+ Latest arnoldi iteration time:   0.191000000      seconds. 
+ Latest matvec time:   0.634999990      seconds.    76.8765182     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000000797     
+ Sum probability negative entries:   -3.0101278735947690E-017
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99944866398675536     
+ Minimum value of eigenvector:   -4.3290235550107753E-018
+ Maximum value of eigenvector:    5.3134786335893797E-003
+ Sum of fusionprob:    1.2374679178159551E-003
+ Sum of fissionprob:    3.8124226461535579E-003
+ Finding eigenvector took    159.04997830200000       seconds
+ Setup matrix:    56.306655183140634       % of total time
+ Total time:    364.01419705600000       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    2717.35205    
+ TOTAL MATRIX MULTIPLICATIONS:         1360
+ --------------------------------------------------------------
+ Energy:    30.000000000000000       MeV
+ Starting coord:           17           7           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06001711    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.27141929    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.62255049    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.07263517    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.58652592    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.13328934    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.69647980    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.2728443    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.8575850    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.4359570    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.0094261    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.5787106    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.1437130    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.7046890    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.2616177    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    23.8150845    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.3649883    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    26.9118958    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.4554958    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    29.9954872    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.5308495    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.0609474    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    34.5838737    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.0982056    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    37.6002617    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.0900993    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.5567932    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.0051613    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.4417343    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    44.8708878    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.2943459    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    47.7144318    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.1330147    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.5503349    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    51.9649467    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.3771019    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    54.7866745    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.1920280    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    57.5920448    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    58.9857750    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.3720818    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    61.7482224    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.1119232    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.4620361    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    65.8013077    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.1314240    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.4559937    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    69.7775803    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.0954514    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    71.9739380    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    207.96166874599999       seconds
+ Guess = LINCOMB of energies:   22.000000000000000       and    25.000000000000000       MeV
+ Size:   0.99999999999999656     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    89.9789963      seconds.
+ Latest arnoldi iteration time:   0.224000007      seconds. 
+ Latest matvec time:   0.642000020      seconds.    74.1339493     % of total
+  
+ --------------------------------------------------------------------------------------------------
+ ERROR: Eigenvector contains both negative and positive probability values.
+ Tolerance is likely too large.
+ Sum probability positive entries (should be 1):    1.0000000000002103     
+ Sum probability negative entries:   -2.5802005577242089E-019
+ --------------------------------------------------------------------------------------------------
+  
+ Found eigenvector
+ Eigenvalue:  0.99939480999543329     
+ Minimum value of eigenvector:   -6.6368526587492851E-020
+ Maximum value of eigenvector:    4.6279707424672148E-003
+ Sum of fusionprob:    9.6923256352032187E-004
+ Sum of fissionprob:    3.5218720743316100E-003
+ Finding eigenvector took    138.21083246200001       seconds
+ Setup matrix:    60.074577853613185       % of total time
+ Total time:    346.17250120799997       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    3063.52466    
+ TOTAL MATRIX MULTIPLICATIONS:         1476
+ --------------------------------------------------------------
+ Energy:    35.000000000000000       MeV
+ Starting coord:           17           7           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06462395    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28190303    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.63973141    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.09694099    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.61824894    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.17294121    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.74532604    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3330030    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9319468    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.5269022    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.1194363    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.7093563    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.2958794    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.8787975    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.4569588    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.0305710    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.5990009    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.1623116    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.7197685    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.2707958    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.8142662    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.3497734    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    34.8757019    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.3913956    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    37.8938293    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.3837166    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.8504143    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.2987862    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.7353859    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.1645622    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.5880508    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.0081596    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.4267464    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.8440742    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.2586823    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.6708374    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.0804100    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.4857635    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    57.8857841    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.2795181    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.6658173    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.0419617    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.4056625    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.7557678    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.0950470    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.4251633    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.7497330    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.0713196    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.3891983    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.2676773    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    210.06963709499999       seconds
+ Guess = LINCOMB of energies:   25.000000000000000       and    30.000000000000000       MeV
+ Size:    1.0000000000000062     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    91.0260010      seconds.
+ Latest arnoldi iteration time:   0.185000002      seconds. 
+ Latest matvec time:   0.646000028      seconds.    77.7376709     % of total
+ Found eigenvector
+ Eigenvalue:  0.99935035138193828     
+ Minimum value of eigenvector:    0.0000000000000000     
+ Maximum value of eigenvector:    4.4464178101405643E-003
+ Sum of fusionprob:    8.4291590600535349E-004
+ Sum of fissionprob:    3.5140148532879865E-003
+ Finding eigenvector took    136.37694901300000       seconds
+ Setup matrix:    60.635505015342723       % of total time
+ Total time:    346.44658610800002       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    3409.97119    
+ TOTAL MATRIX MULTIPLICATIONS:         1589
+ --------------------------------------------------------------
+ Energy:    40.000000000000000       MeV
+ Starting coord:           16           7           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06644309    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28654861    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.64800811    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.10936832    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.63519573    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.19479370    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.77271271    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3669233    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9731512    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.5752668    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.1745510    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.7705383    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.3624535    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.9503555    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.5331345    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.1111431    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.6837578    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.2510529    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.8119907    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.3657818    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.9111938    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.4478531    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    34.9742775    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.4901047    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    37.9925537    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.4824448    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.9491386    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.3975220    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.8341103    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.2632904    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.6867752    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.1068840    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.5254745    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.9428024    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.3574104    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.7695694    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.1791420    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.5844917    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    57.9845085    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.3782425    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.7645454    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.1406822    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.5043831    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.8544998    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.1937714    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.5238876    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.8484650    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.1700516    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.4879227    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.3664093    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    209.60662356099999       seconds
+ Guess = LINCOMB of energies:   30.000000000000000       and    35.000000000000000       MeV
+ Size:    1.0000000000000002     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    91.0830002      seconds.
+ Latest arnoldi iteration time:   0.193000004      seconds. 
+ Latest matvec time:   0.648000002      seconds.    77.0511322     % of total
+ Found eigenvector
+ Eigenvalue:  0.99938138247999309     
+ Minimum value of eigenvector:   -0.0000000000000000     
+ Maximum value of eigenvector:    4.3849978068543896E-003
+ Sum of fusionprob:    1.0743783781137961E-003
+ Sum of fissionprob:    3.2493914592300875E-003
+ Finding eigenvector took    135.61397331200001       seconds
+ Setup matrix:    60.716720108710732       % of total time
+ Total time:    345.22059687299998       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    3755.19189    
+ TOTAL MATRIX MULTIPLICATIONS:         1701
+ --------------------------------------------------------------
+ Energy:    45.000000000000000       MeV
+ Starting coord:           16           7           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06704640    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28831649    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.65152478    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.11514521    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.64364100    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.20611095    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.78685474    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3835974    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9918623    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.5956621    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.1965179    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.7940826    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.3876419    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.9772778    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.5617943    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.1414680    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.7155514    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.2841358    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.8461494    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.4007435    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.9466248    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.4834595    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    35.0099335    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.5257607    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    38.0282059    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.5180969    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.9847946    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.4331741    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.8697624    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.2989426    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.7224312    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.1425362    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.5611267    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.9784584    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.3930626    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.8052216    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.2147942    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.6201477    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    58.0201607    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.4138947    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.8002014    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.1763344    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.5400391    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.8901520    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.2294235    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.5595474    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.8841171    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.2057037    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.5235748    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.4020615    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    210.28611753600001       seconds
+ Guess = LINCOMB of energies:   35.000000000000000       and    40.000000000000000       MeV
+ Size:   0.99999999999999833     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    91.1880035      seconds.
+ Latest arnoldi iteration time:   0.172000006      seconds. 
+ Latest matvec time:   0.647000015      seconds.    78.9987869     % of total
+ Found eigenvector
+ Eigenvalue:  0.99938144179014043     
+ Minimum value of eigenvector:   -0.0000000000000000     
+ Maximum value of eigenvector:    4.3301651007511864E-003
+ Sum of fusionprob:    1.1008075888987166E-003
+ Sum of fissionprob:    3.1756958865361740E-003
+ Finding eigenvector took    130.21491515700001       seconds
+ Setup matrix:    61.757850151836870       % of total time
+ Total time:    340.50103269300001       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+   11  |    45.0                 0.2574083232          340.50              106 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    4095.69287    
+ TOTAL MATRIX MULTIPLICATIONS:         1807
+ --------------------------------------------------------------
+ Energy:    50.000000000000000       MeV
+ Starting coord:           16           7           3          13          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06717908    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28878593    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.65259075    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.11705256    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.64653778    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.20997334    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.79146862    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3886538    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9971638    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.6011734    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.2023640    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.8003731    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.3944492    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.9846821    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.5698795    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.1502743    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.7250195    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.2941055    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.8564587    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.4112225    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.9571724    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.4940109    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    35.0204887    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.5363083    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    38.0387611    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.5286484    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.9953499    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.4437218    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.8803139    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.3094940    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.7329865    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.1530876    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.5716820    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.9890060    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.4036179    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.8157730    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.2253456    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.6306992    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    58.0307121    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.4244499    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.8107529    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.1868935    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.5505981    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.9007034    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.2399826    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.5700989    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.8946686    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.2162552    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.5341263    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.4126129    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    211.40167844000001       seconds
+ Guess = LINCOMB of energies:   40.000000000000000       and    45.000000000000000       MeV
+ Size:   0.99999999999999656     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+ Found eigenvector
+ Eigenvalue:  0.99939040264655477     
+ Minimum value of eigenvector:   -0.0000000000000000     
+ Maximum value of eigenvector:    4.2707943401308806E-003
+ Sum of fusionprob:    1.1254079856056959E-003
+ Sum of fissionprob:    3.0961551391477638E-003
+ Finding eigenvector took    121.19406869600000       seconds
+ Setup matrix:    63.561149010590576       % of total time
+ Total time:    332.59574713600000       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+   11  |    45.0                 0.2574083232          340.50              106 
+   12  |    50.0                 0.2665856111          332.60               96 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    4428.28857    
+ TOTAL MATRIX MULTIPLICATIONS:         1903
+ --------------------------------------------------------------
+ Energy:    55.000000000000000       MeV
+ Starting coord:           15           7           3          14          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06723809    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28898072    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.65301299    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.11776018    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.64751482    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.21113396    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.79270363    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3899050    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9984159    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.6024332    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.2036514    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.8017273    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.3959274    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.9863358    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.5717182    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.1522846    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.7271671    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.2963448    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.8587341    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.4134979    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.9594479    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.4962845    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    35.0227661    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.5385857    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    38.0410385    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.5309296    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.9976234    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.4459991    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.8825912    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.3117714    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.7352600    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.1553688    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.5739555    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.9912834    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.4058952    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.8180504    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.2276230    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.6329765    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    58.0329933    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.4267273    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.8130264    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.1891747    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.5528755    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.9029770    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.2422562    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.5723724    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.8969498    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.2185364    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.5363998    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.4148865    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    209.66896620599999       seconds
+ Guess = LINCOMB of energies:   45.000000000000000       and    50.000000000000000       MeV
+ Size:    1.0000000000000011     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+  
+ Number of matvec calls so far :          100
+ Elapsed time so far:    91.2910004      seconds.
+ Latest arnoldi iteration time:   0.185000002      seconds. 
+ Latest matvec time:   0.644999981      seconds.    77.7108459     % of total
+ Found eigenvector
+ Eigenvalue:  0.99946148074037089     
+ Minimum value of eigenvector:    0.0000000000000000     
+ Maximum value of eigenvector:    4.3510778847858401E-003
+ Sum of fusionprob:    1.4666177115572317E-003
+ Sum of fissionprob:    2.8248240531061537E-003
+ Finding eigenvector took    136.74969484400000       seconds
+ Setup matrix:    60.524732002164761       % of total time
+ Total time:    346.41866104999997       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+   11  |    45.0                 0.2574083232          340.50              106 
+   12  |    50.0                 0.2665856111          332.60               96 
+   13  |    55.0                 0.3417540752          346.42              113 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    4774.70703    
+ TOTAL MATRIX MULTIPLICATIONS:         2016
+ --------------------------------------------------------------
+ Energy:    60.000000000000000       MeV
+ Starting coord:           15           7           3          14          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06723905    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28898501    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.65302038    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.11777020    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.64752436    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.21114349    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.79271412    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3899155    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9984264    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.6024427    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.2036591    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.8017406    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.3959465    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.9863644    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.5717506    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.1523190    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.7272053    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.2963791    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.8587685    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.4135361    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.9594803    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.4963226    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    35.0228004    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.5386238    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    38.0410767    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.5309601    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.9976616    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.4460335    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.8826294    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.3118057    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.7352943    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.1553993    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.5739937    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.9913216    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.4059296    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.8180809    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.2276535    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.6330070    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    58.0330276    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.4267616    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.8130646    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.1892052    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.5529022    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.9030151    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.2422943    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.5724106    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.8969803    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.2185669    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.5364380    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.4149246    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    210.94025701699999       seconds
+ Guess = LINCOMB of energies:   50.000000000000000       and    55.000000000000000       MeV
+ Size:    1.0000000000000018     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+ Found eigenvector
+ Eigenvalue:  0.99947679785000987     
+ Minimum value of eigenvector:   -0.0000000000000000     
+ Maximum value of eigenvector:    4.2735725784414811E-003
+ Sum of fusionprob:    1.4678915850832599E-003
+ Sum of fissionprob:    2.7484882430333837E-003
+ Finding eigenvector took    114.70309170300000       seconds
+ Setup matrix:    64.776467213636877       % of total time
+ Total time:    325.64334872000001       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+   11  |    45.0                 0.2574083232          340.50              106 
+   12  |    50.0                 0.2665856111          332.60               96 
+   13  |    55.0                 0.3417540752          346.42              113 
+   14  |    60.0                 0.3481402637          325.64               89 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    5100.35059    
+ TOTAL MATRIX MULTIPLICATIONS:         2105
+ --------------------------------------------------------------
+ Energy:    65.000000000000000       MeV
+ Starting coord:           15           7           3          14          30
+ Calculate matrix from potential... 
+  
+ Generating sparse matrix of transition probabilities...
+ N =      7333875
+ NNZ guess:            1782131625
+ Percentage complete:            1 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            3 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            5 %
+ Percentage of guess already allocated:    0.00000000    
+ Percentage complete:            7 %
+ Percentage of guess already allocated:    1.06723905    
+ Percentage complete:            9 %
+ Percentage of guess already allocated:    2.28898501    
+ Percentage complete:           11 %
+ Percentage of guess already allocated:    3.65302038    
+ Percentage complete:           13 %
+ Percentage of guess already allocated:    5.11777020    
+ Percentage complete:           15 %
+ Percentage of guess already allocated:    6.64752436    
+ Percentage complete:           16 %
+ Percentage of guess already allocated:    8.21114349    
+ Percentage complete:           18 %
+ Percentage of guess already allocated:    9.79271412    
+ Percentage complete:           20 %
+ Percentage of guess already allocated:    11.3899155    
+ Percentage complete:           22 %
+ Percentage of guess already allocated:    12.9984264    
+ Percentage complete:           24 %
+ Percentage of guess already allocated:    14.6024427    
+ Percentage complete:           26 %
+ Percentage of guess already allocated:    16.2036591    
+ Percentage complete:           28 %
+ Percentage of guess already allocated:    17.8017406    
+ Percentage complete:           30 %
+ Percentage of guess already allocated:    19.3959465    
+ Percentage complete:           32 %
+ Percentage of guess already allocated:    20.9863644    
+ Percentage complete:           33 %
+ Percentage of guess already allocated:    22.5717506    
+ Percentage complete:           35 %
+ Percentage of guess already allocated:    24.1523190    
+ Percentage complete:           37 %
+ Percentage of guess already allocated:    25.7272053    
+ Percentage complete:           39 %
+ Percentage of guess already allocated:    27.2963791    
+ Percentage complete:           41 %
+ Percentage of guess already allocated:    28.8587685    
+ Percentage complete:           43 %
+ Percentage of guess already allocated:    30.4135361    
+ Percentage complete:           45 %
+ Percentage of guess already allocated:    31.9594803    
+ Percentage complete:           47 %
+ Percentage of guess already allocated:    33.4963226    
+ Percentage complete:           49 %
+ Percentage of guess already allocated:    35.0228004    
+ Percentage complete:           50 %
+ Percentage of guess already allocated:    36.5386238    
+ Percentage complete:           52 %
+ Percentage of guess already allocated:    38.0410767    
+ Percentage complete:           54 %
+ Percentage of guess already allocated:    39.5309601    
+ Percentage complete:           56 %
+ Percentage of guess already allocated:    40.9976616    
+ Percentage complete:           58 %
+ Percentage of guess already allocated:    42.4460335    
+ Percentage complete:           60 %
+ Percentage of guess already allocated:    43.8826294    
+ Percentage complete:           62 %
+ Percentage of guess already allocated:    45.3118057    
+ Percentage complete:           64 %
+ Percentage of guess already allocated:    46.7352943    
+ Percentage complete:           66 %
+ Percentage of guess already allocated:    48.1553993    
+ Percentage complete:           67 %
+ Percentage of guess already allocated:    49.5739937    
+ Percentage complete:           69 %
+ Percentage of guess already allocated:    50.9913216    
+ Percentage complete:           71 %
+ Percentage of guess already allocated:    52.4059296    
+ Percentage complete:           73 %
+ Percentage of guess already allocated:    53.8180809    
+ Percentage complete:           75 %
+ Percentage of guess already allocated:    55.2276535    
+ Percentage complete:           77 %
+ Percentage of guess already allocated:    56.6330070    
+ Percentage complete:           79 %
+ Percentage of guess already allocated:    58.0330276    
+ Percentage complete:           81 %
+ Percentage of guess already allocated:    59.4267616    
+ Percentage complete:           83 %
+ Percentage of guess already allocated:    60.8130646    
+ Percentage complete:           84 %
+ Percentage of guess already allocated:    62.1892052    
+ Percentage complete:           86 %
+ Percentage of guess already allocated:    63.5529022    
+ Percentage complete:           88 %
+ Percentage of guess already allocated:    64.9030151    
+ Percentage complete:           90 %
+ Percentage of guess already allocated:    66.2422943    
+ Percentage complete:           92 %
+ Percentage of guess already allocated:    67.5724106    
+ Percentage complete:           94 %
+ Percentage of guess already allocated:    68.8969803    
+ Percentage complete:           96 %
+ Percentage of guess already allocated:    70.2185669    
+ Percentage complete:           98 %
+ Percentage of guess already allocated:    71.5364380    
+ Percentage complete:          100 %
+ Percentage of guess already allocated:    72.4149246    
+ Generated sparse matrix.
+ Probabilities calculated. Setup starting coordinate...
+ Starting coordinate setup. Sort and convert matrix to CSR data format.
+ Calculated matrix from potential...
+  
+ Matrix setup took    212.33476079200000       seconds
+ Guess = LINCOMB of energies:   55.000000000000000       and    60.000000000000000       MeV
+ Size:    1.0000000000000000     
+ ------------------Starting arnoldi iteration--------------------
+ NCV:           15
+ TOL:   6.9000001268193500E-009
+ Tol should be:    1.36353560E-08
+ Found eigenvector
+ Eigenvalue:  0.99949258197716029     
+ Minimum value of eigenvector:   -0.0000000000000000     
+ Maximum value of eigenvector:    4.1984215842147104E-003
+ Sum of fusionprob:    1.4656626230245401E-003
+ Sum of fissionprob:    2.6774053602370835E-003
+ Finding eigenvector took    113.04578941299999       seconds
+ Setup matrix:    65.257361160100828       % of total time
+ Total time:    325.38055020499996       seconds
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+   11  |    45.0                 0.2574083232          340.50              106 
+   12  |    50.0                 0.2665856111          332.60               96 
+   13  |    55.0                 0.3417540752          346.42              113 
+   14  |    60.0                 0.3481402637          325.64               89 
+   15  |    65.0                 0.3537626293          325.38               87 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    5425.73096    
+ TOTAL MATRIX MULTIPLICATIONS:         2192
+ --------------------------------------------------------------
+ Results: 
+ --------------------------------------------------------------
+ Index | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults
+ --------------------------------------------------------------
+    1  |    13.0                 0.0028003865          307.75              123 
+    2  |    14.0                 0.8605610548          551.51              410 
+    3  |    15.0                 0.6624269730          385.50              202 
+    4  |    17.0                 0.4811948745          385.23              189 
+    5  |    20.0                 0.3993434308          361.77              152 
+    6  |    22.0                 0.2884270989          361.58              145 
+    7  |    25.0                 0.2450484624          364.01              139 
+    8  |    30.0                 0.2158116191          346.17              116 
+    9  |    35.0                 0.1934655271          346.45              113 
+   10  |    40.0                 0.2484818616          345.22              112 
+   11  |    45.0                 0.2574083232          340.50              106 
+   12  |    50.0                 0.2665856111          332.60               96 
+   13  |    55.0                 0.3417540752          346.42              113 
+   14  |    60.0                 0.3481402637          325.64               89 
+   15  |    65.0                 0.3537626293          325.38               87 
+ --------------------------------------------------------------
+ TOTAL TIME [s]:    5425.73096    
+ TOTAL MATRIX MULTIPLICATIONS:         2192
+ --------------------------------------------------------------
+ ../data/PD-13.0                                                                                     
+ ../data/PD-14.0                                                                                     
+ ../data/PD-15.0                                                                                     
+ ../data/PD-17.0                                                                                     
+ ../data/PD-20.0                                                                                     
+ ../data/PD-22.0                                                                                     
+ ../data/PD-25.0                                                                                     
+ ../data/PD-30.0                                                                                     
+ ../data/PD-35.0                                                                                     
+ ../data/PD-40.0                                                                                     
+ ../data/PD-45.0                                                                                     
+ ../data/PD-50.0                                                                                     
+ ../data/PD-55.0                                                                                     
+ ../data/PD-60.0                                                                                     
+ ../data/PD-65.0                                                                                     
