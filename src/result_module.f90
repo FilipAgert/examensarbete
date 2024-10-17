@@ -142,9 +142,9 @@ contains
     
         ! Print the table headers
         print *, "Results: "
-        print *, "-----------------------------------------------------------------------------------------------"
+        print *, "---------------------------------------------------------------------------------------------"
         print *, "Index | I | J | K | L | M | Energy [MeV] | Fusion Fraction |  Solve Time [s] | Matrix Mults |"
-        print *, "-----------------------------------------------------------------------------------------------"
+        print *, "---------------------------------------------------------------------------------------------"
         
         ! Print each result
         do i = 1, self%numResults
@@ -162,10 +162,10 @@ contains
             totMults = totMults + self%matrixMultiplications(i)
             print *, "" ! Move to the next line
         end do
-        print *, "--------------------------------------------------------------"
+        print *, "---------------------------------------------------------------------------------------------"
         print *, "TOTAL TIME [s]: ", totS
         print *, "TOTAL MATRIX MULTIPLICATIONS: ", totMults
-        print *, "--------------------------------------------------------------"
+        print *, "---------------------------------------------------------------------------------------------"
     end subroutine print_result_method
 
     subroutine print_results_to_file(self)
