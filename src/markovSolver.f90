@@ -427,7 +427,7 @@ module markovSolver
             guess = linearInterpolation(energy, E0, E1, pdf0, pdf1)!
             print*, "Guess = LINCOMB of energies:", E0, " and ", E1, " MeV"
         endif
-        guess = applyMatrix(maxval(dimSize), guess, CSR)
+        guess = applyMatrix(10, guess, CSR)
     end function startingGuess
 
     function applyMatrix(iterations, input, CSR) result(res)
