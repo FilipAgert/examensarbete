@@ -130,8 +130,7 @@ contains
     subroutine print_result_method(self)
         class(convergedResult), intent(in) :: self
         integer :: i
-        integer :: coordDim
-        integer :: coordWidth, totMults
+        integer :: totMults
         real :: totS
         totS = 0
         totMults = 0
@@ -140,10 +139,6 @@ contains
             print *, "No results available"
             return
         end if
-    
-        ! Determine the dimension size for startCoordinate
-        coordDim = size(self%startCoordinate, 1)
-        coordWidth = 2  ! Adjust this based on expected coordinate width
     
         ! Print the table headers
         print *, "Results: "
@@ -159,9 +154,9 @@ contains
             !write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(I2,2X, I2,2X,I2,2X,I2,2X,I2,2X, F7.1, 7X, F14.10, 10X, F0.2, 12X, I5)', advance="no") &
-                self%startCoordinate(1,i), self%startCoordinate(2,i), self%startCoordinate(3,i), self%startCoordinate(4,i),&
-                self%startCoordinate(5,i), self%energies(i), self%fusionFraction(i), &
+            write(*, '(I2,1X,A, I2,1X,A,I2,1X,A,I2,1X,A,I2,1X,A, F7.1, 7X, F14.10, 10X, F0.2, 12X, I5)', advance="no") &
+                self%startCoordinate(1,i), "|",self%startCoordinate(2,i), "|",self%startCoordinate(3,i), "|",&
+                self%startCoordinate(4,i),"|",self%startCoordinate(5,i),"|", self%energies(i), self%fusionFraction(i), &
                 self%solveTime(i), self%matrixMultiplications(i)
             totS = totS + self%solveTime(i)
             totMults = totMults + self%matrixMultiplications(i)
