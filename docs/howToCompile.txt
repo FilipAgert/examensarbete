@@ -55,3 +55,6 @@ gfortran -O3 -o ../src/markovSolver.o -c ../src/markovSolver.f90 -I../src -fopen
 gfortran -O3 -o ../app/main2.o -c ../app/main2.f90 -I../src -fopenmp 
 gfortran -O3 -o ../app/main2.exe ../app/main2.o ../src/markovSolver.o ../src/potsurf.o ../src/result_module.o ../src/sparseMatrix.o ../src/sparse.o -L/export/filipa/lib/arpack-ng/build/lib -larpack -fopenmp
 
+Run:
+export LD_LIBRARY_PATH=/export/filipa/lib/arpack-ng/build/lib:$LD_LIBRARY_PATH
+nohup nice -n 19 ./main2.exe | tee output.txt

@@ -161,10 +161,14 @@ module sparse
             real(wpr), allocatable :: temp(:)
             !---------------------------------------------------------
             ! Sort a first time with respect to first index using Count sort
+            !How this works is: we count number of values containing each index
+            !So we get a list containing number of values in each row
             allocate( count_i( 0:num_rows ) , source = 0 )
             do ed = 1, n
                 count_i( a(1,ed) ) = count_i( a(1,ed) ) + 1
             end do
+            !Then, we iteratively add each value of the index below it to the index above it.
+            !This way, count_i represents pointers to where in data vector the corresponding row starts its data.
             do n_i = 2, num_rows
                 count_i(n_i) = count_i(n_i) + count_i(n_i-1)
             end do

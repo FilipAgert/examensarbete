@@ -66,7 +66,12 @@ module markovSolver
             guessPD = startingGuess(E, markovMatCSR)
 
             print*, "------------------Starting arnoldi iteration--------------------"
+            print*, " "
+
             call findEigenVector(markovMatCSR, guessPD, SOL, numberOfMatvecCalls, TOL, NCV, num_threads)
+            print*, " "
+            print*, "-----------------End arnoldi iteration--------------------------"
+            print*, " "
             fusionFraction = getFusionFraction(SOL)
             fissionFraction = 1 - fusionFraction
             
@@ -243,7 +248,6 @@ module markovSolver
                     print*, " "
                     print*, "--------------------------------------------------------------------------------------------------"
                     print*, "ERROR: Eigenvector contains both negative and positive probability values."
-                    print*, "Tolerance is likely too large."
                     print*, "Sum probability positive entries (should be 1): ", posP
                     print*, "Sum probability negative entries: ", negP
                     print*, "--------------------------------------------------------------------------------------------------"
@@ -253,6 +257,7 @@ module markovSolver
                 print *, 'Eigenvalue:', DR(1)
                 print*, "Minimum value of eigenvector: ", minval(endPd)
                 print*, "Maximum value of eigenvector: ", maxval(endPd)
+                print*, "-----------------------------------------------"
                 
             endif
         endif
@@ -315,7 +320,7 @@ module markovSolver
                                     fissionFusionIndices, fusionChance, fissionChance, dimSize, MIN_MAX_DIM) 
 
         CALL system_clock(count=COUNT3)
-        print*, "Starting coordinate setup. Sort and convert matrix to CSR data format."
+        print*, "Set up starting coordinate. Sort and convert matrix to CSR data format..."
         call coo2ordered(COO) !Sort entries in matrix.
         CALL system_clock(count=COUNT4)
         call coo2csr(COO, CSR)!Convert from COO format to CSR format for easier time parallelising matrix * vector multiplication
@@ -328,12 +333,12 @@ module markovSolver
         total = TgenCOO + TconnectToStart + TSort + TCOO2CSR
 
         print*, "Calculated matrix from potential..."
-        print*, "--------------------------"
+        print*, "--------------------------Percentages of total time spent on matrix generation-----------------------------------"
         print*, "Generate COO matrix: " , 100*TgenCOO/total ," %"
         print*, "Connect starting idx: " , 100*TconnectToStart/total ," %"
         print*, "Sort COO: " , 100*TSort/total ," %"
         print*, "COO to CSR: " , 100*TCOO2CSR/total ," %"
-        print*, "--------------------------"
+        print*, "-----------------------------------------------------------------------------------------------------------------"
         
     end subroutine setupMatrix
 
@@ -379,25 +384,24 @@ module markovSolver
             print*, "GUESS = RE-USE 1st solution"
         else
             E0 = huge(E0)
-            E1 = huge(E1) - 1
+            E1 = huge(E1)
 
-            E0idx = storedResults - 1
-            E1idx = storedResults
-            do i = 1, storedResults !find two closest energies as they will produce best fit.
+            E0idx = -1
+            E1idx = -1
+            
+            do i = 1, storedResults ! Find the two closest energies for best fit
                 potentialClosest = results%energies(i)
                 diff = abs(energy - potentialClosest)
-                E0DIFF = abs(E0-energy)
-                E1DIFF = abs(E1-energy)
-                if(E0DIFF > E1DIFF) then 
-                    if(diff < E0DIFF) then
-                        E0 = potentialClosest
-                        E0idx = i
-                    endif
-                else
-                    if(diff < E1DIFF) then
-                        E1 = potentialClosest
-                        E1idx = i
-                    endif
+            
+                ! Update E1 with the closest energy and E0 with the second closest energy
+                if (diff < abs(energy - E1)) then
+                    E0 = E1           ! Promote E1 to E0 (second closest)
+                    E0idx = E1idx     ! Update index for E0
+                    E1 = potentialClosest
+                    E1idx = i         ! E1 gets updated to the current potentialClosest (closest)
+                elseif (diff < abs(energy - E0)) then
+                    E0 = potentialClosest
+                    E0idx = i
                 endif
             end do
 
@@ -431,7 +435,6 @@ module markovSolver
         real(kind=r_kind) :: input(:)
         real(kind=r_kind), dimension(size(input)) :: res, temp
         res = input
-        print*, "Size: ", sum(res)
         do i = 1,iterations
             temp = 0
             call matvecpar(CSR, res, temp, num_threads)
@@ -496,8 +499,12 @@ module markovSolver
         real(r_kind), intent(in) :: pdf0(:), pdf1(:)
         real(r_kind) :: interpolation(size(pdf0))
         real(r_kind) :: alpha, sumInt
-        alpha = (E-E0)/(E1-E0)
-        interpolation = (1-alpha)*pdf0 + alpha*pdf1
+        if(E1.eq.E0) then
+            interpolation = (pdf0 + pdf1)/2
+        else
+            alpha = (E-E0)/(E1-E0)
+            interpolation = (1-alpha)*pdf0 + alpha*pdf1
+        endif
         sumInt= sum(interpolation)
         interpolation = interpolation/sumInt
     end function linearInterpolation

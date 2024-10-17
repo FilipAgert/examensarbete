@@ -126,7 +126,6 @@ module sparseMatrix
         call COO%malloc(N,N, NNZ)
         COO%data(1:NNZ) = dat(1:NNZ)
         COO%index(:,1:NNZ) = index(:,1:NNZ)
-        print*, "Generated sparse matrix."
         ! print*, "NNZ guess per grid point: ", real(INITNNZ)/N
         ! print*, "Actual nnz per grid point: ", real(NNZ)/N
         ! print*, "Number of columns without values: ", CANTEXIT

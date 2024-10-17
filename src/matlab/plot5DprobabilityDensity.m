@@ -1,5 +1,5 @@
 clear
-
+close
 figure(11)
 MIN_II = 1;
 MAX_II = 53;
@@ -9,31 +9,29 @@ MIN_KK = 1;
 MAX_KK = 15;
 MIN_LL = 1;
 MAX_LL = 15;
-MIN_MM = -40;
+MIN_MM = 0;
 MAX_MM = 40;
 
-%MIN_MAX_DIM = [MIN_II, MAX_II; MIN_JJ, MAX_JJ; MIN_KK, MAX_KK; MIN_LL, MAX_LL; 0, MAX_MM];
-%dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ, 1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM];
-MIN_MAX_DIM = [MIN_II, MAX_II; MIN_JJ, MAX_JJ; MIN_KK, MAX_KK; MIN_LL, MAX_LL; MIN_MM, MAX_MM];
-dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ, 1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM - MIN_MM];
+MIN_MAX_DIM = [MIN_II, MAX_II; MIN_JJ, MAX_JJ; MIN_KK, MAX_KK; MIN_LL, MAX_LL; 0, MAX_MM];
+dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ, 1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM];
+%MIN_MAX_DIM = [MIN_II, MAX_II; MIN_JJ, MAX_JJ; MIN_KK, MAX_KK; MIN_LL, MAX_LL; MIN_MM, MAX_MM];
+%dimSize = [1 + MAX_II-MIN_II, 1 + MAX_JJ-MIN_JJ, 1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM - MIN_MM];
 
-startCoord = [17,7,3,13,30];
 %pd = str2double(pdstr)
-%This is very wrong.
 AZ = 102;
 AA = 256;
 
 A = zeros(dimSize);
-files = ["../../data/PDMM-20","../../data/PDMM-25", "../../data/PDMM-30", "../../data/PDMM-40"];
-fusionChance = [39.5, 80.1,58.9,46.4];
-startingCoords = [19, 6, 3, 13, 30; 
-                  18, 7, 3, 14, 29; 
-                  17, 7, 3, 13, 30;
-                  16, 7, 3, 13, 30];
-E = [20,25,30,40];
+files = ["../../data/PD-13.0","../../data/PD-15.0", "../../data/PD-20.0", "../../data/PD-30.0"];
+fusionChance = [0.28, 66.24, 39.93, 21.58];
+startingCoords = [21,6,3,14,29; 
+                  20,6,3,14,29; 
+                  19,6,3,13,30;
+                  17,7,3,13,30];
+E = [13,15,20,30];
 for f = 1:4
     subplot(2,2,f)
-    pd = readmatrix(files(f), "Delimiter", ";");
+    pd = readmatrix(files(f), "Delimiter", ";", "FileType", "Text");
     
     
     
@@ -45,14 +43,14 @@ for f = 1:4
         A(c(1),c(2),c(3),c(4),c(5)) = pd(i);
     end
     A(find(A<0)) = 0;
-    
+    B = A(1:30,:,:,:,:);
     maxval = 0;
     s = 0;
     maxj = 0;
     maxk = 0;
     maxl = 0;
-    summedA = zeros([dimSize(1), dimSize(5)]);
-    TEMP = permute(A,[1,5,2,3,4]); %Move dim5 into dim 2. For plotting purposes I, M, J, K, L
+    summedA = zeros([30, dimSize(5)]);
+    TEMP = permute(B,[1,5,2,3,4]); %Move dim5 into dim 2. For plotting purposes I, M, J, K, L
     for j = MIN_JJ:MAX_JJ
         for k = MIN_KK:MAX_KK
             for l = MIN_LL:MAX_LL
@@ -62,19 +60,19 @@ for f = 1:4
     end
     
     xrang = (MIN_MAX_DIM(5,1):MIN_MAX_DIM(5,2))*0.02;
-    yrang = MIN_MAX_DIM(1,1):MIN_MAX_DIM(1,2);
+    yrang = MIN_MAX_DIM(1,1):30;%;MIN_MAX_DIM(1,2);
     for i = 1:length(yrang)
         val = get_q2_val(AZ,AA,yrang(i));
         yrang(i) = val;
     end
     %Now we have to create a kernel
-    kernel = zeros([dimSize(1), dimSize(5)]);
+    kernel = zeros([30,dimSize(5)]);zeros([dimSize(1), dimSize(5)]);
     [X,Y] = meshgrid(xrang, yrang);
-    bw = 0.003
-    bwx = bw*(xrang(end)-xrang(1));
+    bw = 0.003;
+    bwx = bw*(xrang(end)-xrang(1))/2;
     bwy = bw*(yrang(end)-yrang(1));
     summedA(find(summedA<1e-12))=1e-12;
-    for i = 1:MIN_MAX_DIM(1,2)
+    for i = 1:30%MIN_MAX_DIM(1,2)
         for m = MIN_MAX_DIM(5,1):MIN_MAX_DIM(5,2)
             ms = m - MIN_MM + 1;
             p = summedA(i,ms);
