@@ -51,6 +51,9 @@ module markovSolver
         CALL system_clock(count_rate = rate)
         
         do i = 1,SIZE(startingEnergies)
+            print*, " "
+            print*, "----------------------------------------------------------------"
+            print*, "Start solver for setup:"
             CALL system_clock(count=COUNT1)
             coord = startingCoords(:,i)
             E = startingEnergies(i)
@@ -288,7 +291,6 @@ module markovSolver
 
         fusionIdxs = getFusionIndices(II_fusion)
         fissionIdxs = getFissionIndices(Rneck_fission)
-        print*, "number of fission indicies", SIZE(fissionIdxs)
         allocate(fissionFusionIndices(size(fusionIdxs) + size(fissionIdxs)))
         allocate(startingEnergies(size(startingEs)))
         allocate(startingCoords(5, size(startingC,2)))
