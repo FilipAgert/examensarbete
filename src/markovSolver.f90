@@ -53,18 +53,19 @@ module markovSolver
         do i = 1,SIZE(startingEnergies)
             print*, " "
             print*, "----------------------------------------------------------------"
-            print*, "Start solver for setup:"
+            print*, "Start solver setup:"
             CALL system_clock(count=COUNT1)
             coord = startingCoords(:,i)
             E = startingEnergies(i)
             Eexc = E - Egs
             print*, "Energy: ", Eexc, " MeV"
             print*, "Starting coord: ", coord
+            print*, " "
             call setupMatrix(E,coord, num_threads)  !Calculate transition matrix
             CALL system_clock(count=COUNT2)
             TIME1 = (count2-count1)/rate
             print*, ' '
-            print*, "Matrix setup took ", TIME1, " seconds"
+            !print*, "Matrix setup took ", TIME1, " seconds"
 
             guessPD = startingGuess(Eexc, markovMatCSR)
 
@@ -341,6 +342,7 @@ module markovSolver
         print*, "Connect starting idx: " , 100*TconnectToStart/total ," %"
         print*, "Sort COO: " , 100*TSort/total ," %"
         print*, "COO to CSR: " , 100*TCOO2CSR/total ," %"
+        print*, "Total time spent on matrix setup: ", total, " seconds"
         print*, "-----------------------------------------------------------------------------------------------------------------"
         
     end subroutine setupMatrix
