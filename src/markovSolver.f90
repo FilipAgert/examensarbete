@@ -63,7 +63,7 @@ module markovSolver
             print*, ' '
             print*, "Matrix setup took ", TIME1, " seconds"
 
-            guessPD = startingGuess(E, markovMatCSR)
+            guessPD = startingGuess(Eexc, markovMatCSR)
 
             print*, "------------------Starting arnoldi iteration--------------------"
             print*, " "
@@ -392,10 +392,6 @@ module markovSolver
             do i = 1, storedResults ! Find the two closest energies for best fit
                 potentialClosest = results%energies(i)
                 diff = abs(energy - potentialClosest)
-                print*, "potential closest", potentialClosest
-                print*, "diff: ", diff
-                print*, "First if diff: ", abs(energy - E1)
-                print*, "2nd if diff: ", abs(energy - E0)
                 ! Update E1 with the closest energy and E0 with the second closest energy
                 if (diff < abs(energy - E1)) then
                     E0 = E1           ! Promote E1 to E0 (second closest)
