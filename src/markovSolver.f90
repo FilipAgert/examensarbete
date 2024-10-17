@@ -370,7 +370,7 @@ module markovSolver
         type(CSR_dp) :: CSR
         real(r_kind), allocatable :: guess(:)
         integer :: storedResults, i, E0idx, E1idx, tempidx
-        real(r_kind) :: energy, E0, E1, diff, potentialClosest, tempE, E1DIFF, E0DIFF
+        real(r_kind) :: energy, E0, E1, diff, potentialClosest, tempE
         real(r_kind), allocatable :: pdf0(:), pdf1(:) 
         allocate(guess(numberOfGridPoints()))
         guess = 0
@@ -392,7 +392,10 @@ module markovSolver
             do i = 1, storedResults ! Find the two closest energies for best fit
                 potentialClosest = results%energies(i)
                 diff = abs(energy - potentialClosest)
-            
+                print*, "potential closest", potentialClosest
+                print*, "diff: ", diff
+                print*, "First if diff: ", abs(energy - E1)
+                print*, "2nd if diff: ", abs(energy - E0)
                 ! Update E1 with the closest energy and E0 with the second closest energy
                 if (diff < abs(energy - E1)) then
                     E0 = E1           ! Promote E1 to E0 (second closest)
@@ -404,16 +407,6 @@ module markovSolver
                     E0idx = i
                 endif
             end do
-
-            if(abs(E0-energy) < abs(E1-energy)) then
-                tempE = E0
-                E0 = E1
-                E1 = tempE
-                tempidx = E0idx
-                E0idx = E1idx
-                E1idx = tempidx
-            endif
-            
         
             allocate(pdf0(numberOfGridPoints()), pdf1(numberOfGridPoints()))
 
