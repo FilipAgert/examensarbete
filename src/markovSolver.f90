@@ -212,8 +212,8 @@ module markovSolver
                     print*, " "
                     print*, "Number of matvec calls so far : ", numberOfMatvecCalls
                     print*, "Elapsed time so far: ", TIME3, " seconds."
-                    print*, "Total arnoldi iteration time: ", TIME2, " seconds. "
-                    print*, "Total matvec time: ", TIME1, " seconds. ", 100*(matvectime)/(matvectime+arnolditime), "% of total"
+                    print*, "Total arnoldi iteration time: ", arnolditime, " seconds. "
+                    print*, "Total matvec time: ", matvectime, " seconds. ", 100*(matvectime)/(matvectime+arnolditime), "% of total"
                 endif
             else 
                 converged = .TRUE.
@@ -267,6 +267,9 @@ module markovSolver
                 print *, 'Eigenvalue:', DR(1)
                 print*, "Minimum value of eigenvector: ", minval(endPd)
                 print*, "Maximum value of eigenvector: ", maxval(endPd)
+                print*, " "
+                print*, "Total arnoldi iteration time: ", arnolditime, " seconds. "
+                print*, "Total matvec time: ", matvectime, " seconds. ", 100*(matvectime)/(matvectime+arnolditime), "% of total"
                 print*, "-----------------------------------------------"
                 
             endif
