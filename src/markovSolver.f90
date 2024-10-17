@@ -134,10 +134,13 @@ module markovSolver
         real(kind=r_kind), dimension(:), allocatable :: DR, DI
         real(kind=r_kind), dimension(:,:), allocatable :: Z
         real(kind=r_kind) :: SIGMAR, SIGMAI
-        real :: TIME1, TIME2, TIME3, RATE
+        real :: TIME1, TIME2, TIME3, RATE, matvectime, arnolditime
         integer :: COUNT0, COUNT1, COUNT2, COUNT3
         integer :: LDZ
         integer :: num_threads
+
+        matvectime = 0
+        arnolditime = 0
         N = numberOfGridPoints()
         !!USER SETTINGS.
         maxitr = 50000
@@ -199,15 +202,18 @@ module markovSolver
                 numberOfMatvecCalls = numberOfMatvecCalls + 1
 
                 call system_clock(count=count3)
+                Time3 = (count3-count0)/RATE
+                Time2 = (count2-count1)/RATE
+                Time1 = (count3-count2)/rate
+                arnolditime = arnolditime + TIME2
+                matvectime = matvectime + TIME1
                 if(mod(numberOfMatvecCalls,100) == 0) then
-                    Time3 = (count3-count0)/RATE
-                    Time2 = (count2-count1)/RATE
-                    Time1 = (count3-count2)/rate
+                    
                     print*, " "
                     print*, "Number of matvec calls so far : ", numberOfMatvecCalls
                     print*, "Elapsed time so far: ", TIME3, " seconds."
-                    print*, "Latest arnoldi iteration time: ", TIME2, " seconds. "
-                    print*, "Latest matvec time: ", TIME1, " seconds. ", 100*(TIME1)/(TIME1+TIME2), "% of total"
+                    print*, "Total arnoldi iteration time: ", TIME2, " seconds. "
+                    print*, "Total matvec time: ", TIME1, " seconds. ", 100*(matvectime)/(matvectime+arnolditime), "% of total"
                 endif
             else 
                 converged = .TRUE.
