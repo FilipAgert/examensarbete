@@ -85,8 +85,7 @@ PROGRAM main
                     filename_pot5D, filename_rneck5D)
 
     call solveAllEnergies()
-    call results%printResult()
-    call results%printResultToFile()
+    call results%printResult() !Prints summary over results.
 
 
   

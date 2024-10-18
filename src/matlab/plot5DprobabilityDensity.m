@@ -1,6 +1,6 @@
 clear
-close
-figure(11)
+%close
+figure(12)
 MIN_II = 1;
 MAX_II = 53;
 MIN_JJ = 1;
@@ -22,14 +22,14 @@ AZ = 102;
 AA = 256;
 
 A = zeros(dimSize);
-files = ["../../PD-OLD_POT-30.0","../../data/PD-15.0", "../../data/PD-20.0", "../../data/PD-30.0"];
-fusionChance = [0.28, 66.24, 39.93, 21.58];
-startingCoords = [17,7,3,13,30; 
+files = ["../../data/PD-OLD_POT-13.0","../../data/PD-OLD_POT-15.0", "../../data/PD-OLD_POT-20.0", "../../data/PD-OLD_POT-30.0"];
+fusionChance = [63.8, 74.7, 56.4, 26.7];
+startingCoords = [21,6,3,14,29; 
                   20,6,3,14,29; 
                   19,6,3,13,30;
                   17,7,3,13,30];
-E = [30,15,20,30];
-for f = 1:1
+E = [13,15,20,30];
+for f = 1:4
     subplot(2,2,f)
     pd = readmatrix(files(f), "Delimiter", ";", "FileType", "Text");
     
@@ -88,7 +88,7 @@ for f = 1:1
 
     
     plotMatrix = log10(summedA);
-    %plotMatrix = kernel;
+    %plotMatrix = log10(kernel);
     climits = [min(plotMatrix,[],'all'), max(plotMatrix,[],'all')];
     
     
@@ -100,7 +100,8 @@ for f = 1:1
     hold on
     pcolor(X,Y,plotMatrix);
     plot(x_coord, y_coord, 'ko', 'MarkerSize', 5, 'MarkerFaceColor', 'm');
-    shading interp;
+    %shading interp;
+    shading flat
     
     %imagesc('XData', xrang, 'YData', yrang,'CData', plotMatrix);
     %contourf(xrang, yrang, plotMatrix, 20)

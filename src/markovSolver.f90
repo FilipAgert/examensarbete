@@ -94,8 +94,9 @@ module markovSolver
             print*, "Setup matrix: ", 100*TIME1/(TIME1+TIME2) , " % of total time"
             print*, "Total time: ", TIME1+TIME2, " seconds"
             call results%addResult(SOL, coord, Eexc, TIME1+TIME2, numberOfMatvecCalls,fusionFraction,massDistribution,MIN_MAX_DIM)
-            call results%printIMpdsToFile()
-            call results%printMassDistribution(i)
+            call results%printImPdToFile(i) !Prints I-M prob distribution to file.
+            call results%printResult() !Prints summary of all results so far.
+            call results%printMassDistribution(i) !Prints the fission mass distribution to console.
             
         end do
     end subroutine solveAllEnergies

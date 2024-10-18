@@ -24,6 +24,7 @@ module result_module
         procedure, public :: hasResult => has_result_method
         procedure, public :: printPdsToFile => print_pds_to_file
         procedure, public :: printIMpdsToFile => print_IM_pds_to_file
+        procedure, public :: printIMpdToFile => print_IM_pd_to_file
         procedure, public :: printMassDistribution => print_mass_distribution
     end type convergedResult
 
@@ -183,43 +184,47 @@ contains
 
     subroutine print_pds_to_file(self)
         class(convergedResult), intent(in) :: self
-        integer :: i, E
+        integer :: i
         character(len=100) :: filename
         real(kind=r_kind) :: printPd(size(self%probabilityDensity, 1),1)
 
         do i = 1,self%numResults
             printPd(:,1) = self%getProbabilityDensity(i)
-            WRITE(filename, '(A, F4.1)') "PD-OLD_POT-", self%energies(i)
-            print*, filename
+            WRITE(filename, '(A, F4.1)') "PD-", self%energies(i)
+            print*, "Printed 5D probability distribution to file: ", filename
             call printMatrixToFile(filename, printPd)
         end do
     end subroutine print_pds_to_file
 
     subroutine print_IM_pds_to_file(self)
+        class(convergedResult), intent(inout) :: self
+        integer :: i
+        do i = 1,self%numResults
+            call self%printIMpdToFile(i)
+        end do
+    end subroutine print_IM_pds_to_file
+
+    subroutine print_IM_pd_to_file(self, resultIdx)
         class(convergedResult), intent(in) :: self
-        integer :: i, linearIdx
+        integer :: i, linearIdx, resultIdx
         integer, dimension(5) :: dimSize, coord
         character(len=100) :: filename
         real(kind=r_kind) :: IMpd(self%MIN_MAX_DIM(1,1):self%MIN_MAX_DIM(1,2), self%MIN_MAX_DIM(5,1):self%MIN_MAX_DIM(5,2))
-
         do i = 1,5
             dimSize(i) = self%MIN_MAX_DIM(i,2) - self%MIN_MAX_DIM(i,1) + 1
         end do
         Impd = 0
-        do i = 1,self%numResults
-            do linearIdx = 1,size(self%probabilityDensity,1)
-                coord = coordFromLinearIdx(linearIdx, dimSize, self%MIN_MAX_DIM)
-                Impd(coord(1), coord(5)) = Impd(coord(1), coord(5)) + self%probabilityDensity(linearIdx, i) 
-                !Loop flattens 5D probability density into a 2D one by summing over J,K,L coordinates.
-            end do
-
-            WRITE(filename, '(A, F4.1)') "II-MM-PROB-", self%energies(i)
-            print*, filename
-            call printMatrixToFile(filename, IMpd)
+        do linearIdx = 1,size(self%probabilityDensity,1)
+            coord = coordFromLinearIdx(linearIdx, dimSize, self%MIN_MAX_DIM)
+            Impd(coord(1), coord(5)) = Impd(coord(1), coord(5)) + self%probabilityDensity(linearIdx, resultIdx) 
+            !Loop flattens 5D probability density into a 2D one by summing over J,K,L coordinates.
         end do
 
+        WRITE(filename, '(A, F4.1)') "II-MM-PROB-", self%energies(resultIdx)
+        print*, "Printed I-M probability sum to file: ", filename
+        call printMatrixToFile(filename, IMpd)
 
-    end subroutine print_IM_pds_to_file
+    end subroutine print_IM_pd_to_file
 
     subroutine printMatrixToFile(fileName, A)
         !Prints two dimensional matrix A to file.
