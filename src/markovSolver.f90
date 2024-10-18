@@ -12,10 +12,12 @@ module markovSolver
                                         1 + MAX_KK-MIN_KK, 1 + MAX_LL-MIN_LL, 1 + MAX_MM - MIN_MM]
     integer, dimension(5,2) :: MIN_MAX_DIM = reshape([MIN_II, MIN_JJ, MIN_KK, MIN_LL, MIN_MM, &
                                         MAX_II, MAX_JJ, MAX_KK, MAX_LL, MAX_MM], [5,2])
-    integer(8), allocatable :: fissionFusionIndices(:) !Will contain indices that might be greated than 2^32
-    integer, allocatable :: fissionIdxs(:), fusionIdxs(:)
-    integer :: AZ, AA
-    real(kind = r_kind) :: Egs !!ground state energy.
+    integer(8), allocatable :: fissionFusionIndices(:) !!Contains indices in COO matrix where fission and fusion points reside
+    integer, allocatable :: fissionIdxs(:), fusionIdxs(:) !!Contains the indices in the PD where fission and fusion points reside.
+    !!I.e. coordFromLinearIdx(idx) will give the coordinate of the fusion/fission point.
+    
+    integer :: AZ, AA !!Proton number and mass number
+    real(kind = r_kind) :: Eg !!ground state energy.
 
 
     !!!!!these are constants we can change
@@ -29,7 +31,7 @@ module markovSolver
 
 
 
-    real(kind=r_kind), allocatable :: startingEnergies(:)
+    real(kind=r_kind), allocatable :: excitationEs(:)
     integer, allocatable :: startingCoords(:,:)
     
     type(CSR_dp) :: markovMatCSR
@@ -42,7 +44,7 @@ module markovSolver
 
     subroutine solveAllEnergies()
         integer :: i, coord(5)
-        real(kind=r_kind) :: E, RATE, TIME1, TIME2, fusionFraction, fissionFraction, Eexc
+        real(kind=r_kind) :: Etot, RATE, TIME1, TIME2, fusionFraction, fissionFraction, Eexc
         integer(8) :: COUNT1, COUNT2, COUNT3
         integer :: numberOfMatvecCalls
         real(kind=r_kind), allocatable :: guessPD(:), SOL(:)
@@ -51,18 +53,18 @@ module markovSolver
 
         CALL system_clock(count_rate = rate)
         
-        do i = 1,SIZE(startingEnergies)
+        do i = 1,SIZE(excitationEs)
             print*, " "
             print*, "----------------------------------------------------------------"
             print*, "Start solver setup:"
             CALL system_clock(count=COUNT1)
             coord = startingCoords(:,i)
-            E = startingEnergies(i)
-            Eexc = E - Egs
+            Eexc = excitationEs(i)
+            Etot = Eexc + Eg
             print*, "Energy: ", Eexc, " MeV"
             print*, "Starting coord: ", coord
             print*, " "
-            call setupMatrix(E,coord, num_threads)  !Calculate transition matrix
+            call setupMatrix(Etot,coord, num_threads)  !Calculate transition matrix
             CALL system_clock(count=COUNT2)
             TIME1 = (count2-count1)/rate
             print*, ' '
@@ -190,11 +192,11 @@ module markovSolver
         do while(.not. converged)
             CALL system_clock(count = count1)
             call dnaupd(IDO, BMAT, N, WHICH, NEV, TOL, RESID, NCV, V, LDV,IPARAM,IPNTR, workd, workl, lworkl,info)
-            
+            call system_clock(count=count2)
             if(IDO .eq. -1 .or. IDO .eq. 1) then
                 temp = 0
 
-                call system_clock(count=count2)
+                
 
                 if(num_threads > 1) then !Probably dont need this but not sure how OMP works if num_threads = 1 or num_threads < 1
                     call matvecpar(sparseMat, workd(ipntr(1):ipntr(1) + N - 1),temp, num_threads)
@@ -281,17 +283,17 @@ module markovSolver
         continue
     end subroutine findEigenVector
 
-    subroutine setupSolver(tolerance, arnoldiNCV, number_of_threads, Z, A, Rneck_fis, II_fus, Eg, startingEs, startingC, &
+    subroutine setupSolver(tolerance, arnoldiNCV, number_of_threads, Z, A, Rneck_fis, II_fus, Egndstate, Eexcs, startCoords, &
         useFullMM, filename_emac5D, filename_pot5D, filename_rneck5D)
         integer :: Z,A, II_fus
-        real(kind=r_kind) :: Rneck_fis, startingEs(:), tolerance, Eg
-        integer :: startingC(:,:), arnoldiNCV, number_of_threads
+        real(kind=r_kind) :: Rneck_fis, Eexcs(:), tolerance, Egndstate
+        integer :: startCoords(:,:), arnoldiNCV, number_of_threads
         logical :: useFullMM
         CHARACTER(100) :: filename_pot5D                   ! Total potential energy (Emac + Emic)
         CHARACTER(100) :: filename_emac5D                     ! Macroscopic potential energy Emac
         CHARACTER(100) :: filename_rneck5D
         call setMMsymmetryMode(useFullMM)
-        Egs = Eg
+        Eg = Egndstate
         TOL = tolerance
         NCV = arnoldiNCV
         num_threads = number_of_threads
@@ -306,10 +308,10 @@ module markovSolver
         fusionIdxs = getFusionIndices(II_fusion)
         fissionIdxs = getFissionIndices(Rneck_fission)
         allocate(fissionFusionIndices(size(fusionIdxs) + size(fissionIdxs)))
-        allocate(startingEnergies(size(startingEs)))
-        allocate(startingCoords(5, size(startingC,2)))
-        startingEnergies = startingEs
-        startingCoords = startingC
+        allocate(ExcitationEs(size(EExcs)))
+        allocate(startingCoords(5, size(startCoords,2)))
+        excitationEs = Eexcs
+        startingCoords = startCoords
         
 
     end subroutine setupSolver

@@ -20,3 +20,4 @@ Jämför linear interpolation
 
 Kolla fördelning över mass-assymetri för alla som fussionerna.
 Dvs summera sannolikheten för fission för de olika M koordinaterna och läg i vektor.
+!borde jag vikta assymetrin dubbel så stort för M = 0? eftersom alla andra M är egentligen två grid points pga symmetrin.

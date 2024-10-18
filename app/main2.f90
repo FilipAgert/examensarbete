@@ -69,8 +69,8 @@ PROGRAM main
     WRITE(*,*) 'filename_rneck5D = ', filename_rneck5D
     WRITE(*,*) ''
   
-    energies = energies + Egs !Total energy.
-    e3s = e3s + Egs
+    energies = energies!excitation energy
+    e3s = e3s
     TOL = 6.9e-9
     NCV = 15
 
