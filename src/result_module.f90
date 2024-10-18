@@ -94,7 +94,7 @@ contains
             allocate(tempPd(size(fissionMassDistribution), n))
             tempPd = self%fissionMassDistribution
             deallocate(self%fissionMassDistribution)
-            allocate(self%fissionMassDistribution(size(pd), n+1))
+            allocate(self%fissionMassDistribution(size(fissionMassDistribution), n+1))
             self%fissionMassDistribution(:, 1:n) = tempPd
             deallocate(tempPd)
 
@@ -154,10 +154,10 @@ contains
             !write(*, '(A)', advance = "no") " "
     
             ! Print the remaining fields with vertical bars separating columns
-            write(*, '(I2,1X,A, I2,1X,A,I2,1X,A,I2,1X,A,I2,1X,A, F7.1, 7X, F14.10, 10X, F0.2, 12X, I5)', advance="no") &
+            write(*, '(I3,A, I3,A,I3,A,I3,A,I3,A, F7.1, 6X,A, F14.10, 9X, A,F0.2, 11X,A, I5)', advance="no") &
                 self%startCoordinate(1,i), "|",self%startCoordinate(2,i), "|",self%startCoordinate(3,i), "|",&
-                self%startCoordinate(4,i),"|",self%startCoordinate(5,i),"|", self%energies(i), self%fusionFraction(i), &
-                self%solveTime(i), self%matrixMultiplications(i)
+                self%startCoordinate(4,i),"|",self%startCoordinate(5,i),"|", self%energies(i), "|", self%fusionFraction(i), &
+                "|",self%solveTime(i), "|",self%matrixMultiplications(i)
             totS = totS + self%solveTime(i)
             totMults = totMults + self%matrixMultiplications(i)
             print *, "" ! Move to the next line
