@@ -14,7 +14,8 @@ PROGRAM main
     INTEGER(kind=i_kind) :: Z = 102, A = 256                                ! Excitation energy relative ground state
     REAL(kind=r_kind), parameter :: Egs = -4.026                              ! Ground-state energy for nucleus (Z,A)=(102,256) 
     INTEGER(kind=i_kind) :: II_fusion = 3                                   ! Fusion occurs if index II becomes less than or equal than II=3
-    REAL(kind=r_kind) :: Rneck_fission = 1.5                                  ! Fission occurs if neck radius becomes less than or equal than 1.5 fm
+    REAL(kind=r_kind) :: Rneck_fission = 1.5_r_kind! Fission occurs if neck radius becomes less than or equal than 1.5 fm
+    REAL(kind=r_kind) :: Rneck_mass_freeze = 2.5_r_kind!Dont let core wander in mass if neck less than 2.5 fm
     REAL(kind=r_kind) :: TOL
     INTEGER(kind=i_kind) :: NUM_THREADS = 4
     INTEGER(kind=i_kind) :: NCV
@@ -78,7 +79,7 @@ PROGRAM main
     do i = 1,1
       C3(:,1) = startCoords(:,15)
     end do
-    call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, II_fusion, Egs, E3, C3 ,useFullMM, filename_emac5D,&
+    call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, Rneck_mass_freeze,II_fusion, Egs, E3, C3 ,useFullMM, filename_emac5D,&
                     filename_pot5D, filename_rneck5D)
 
     call solveAllEnergies()

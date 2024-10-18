@@ -10,10 +10,20 @@ Testa mot random walk
 Lägg till spin term
 
 börja skriva rapport:
-Bakgrund. 
+Bakgrund: Läs nuclear fission modes and fragment mass assymetries in five-dimensional deformation space.
+Brownian shape...
+Nuclear shape evolution based on microscopic level densities
+Modellen kommer från P. Möler
+Nuclear ground state-masses and deformations: FRDM: grunden till modellen.
+den underliggande moddellen är FRDM: FElet är typ 0.5 MeV
+modellen har : massor -> fission -> fusion
+
 Förklara koordinaterna I J K L M
 Jämför metoder
 Random walk vs iterativ multiplikation vs arpack
+
+
+
 
 Jämför linear interpolation
 

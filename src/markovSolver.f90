@@ -25,6 +25,7 @@ module markovSolver
     real(kind=r_kind) :: TOL
     integer :: NCV, num_threads
     real(kind=r_kind) :: Rneck_fission = 1.5_r_kind !Fm
+    real(kind=r_kind) :: RneckMassFreeze = 2.5_r_kind !Fm
     real(kind=r_kind) :: fusionChance = 1.0_r_kind
     real(kind=r_kind) :: fissionChance = 1.0_r_kind
     !!!!!!
@@ -284,10 +285,10 @@ module markovSolver
         continue
     end subroutine findEigenVector
 
-    subroutine setupSolver(tolerance, arnoldiNCV, number_of_threads, Z, A, Rneck_fis, II_fus, Egndstate, Eexcs, startCoords, &
-        useFullMM, filename_emac5D, filename_pot5D, filename_rneck5D)
+    subroutine setupSolver(tolerance, arnoldiNCV, number_of_threads, Z, A, Rneck_fis, Rneck_mass_freeze,&
+        II_fus, Egndstate, Eexcs, startCoords, useFullMM, filename_emac5D, filename_pot5D, filename_rneck5D)
         integer :: Z,A, II_fus
-        real(kind=r_kind) :: Rneck_fis, Eexcs(:), tolerance, Egndstate
+        real(kind=r_kind) :: Rneck_fis, Eexcs(:), tolerance, Egndstate, Rneck_mass_freeze
         integer :: startCoords(:,:), arnoldiNCV, number_of_threads
         logical :: useFullMM
         CHARACTER(100) :: filename_pot5D                   ! Total potential energy (Emac + Emic)
@@ -313,6 +314,7 @@ module markovSolver
         allocate(startingCoords(5, size(startCoords,2)))
         excitationEs = Eexcs
         startingCoords = startCoords
+        RneckMassFreeze = Rneck_mass_freeze
         
 
     end subroutine setupSolver
@@ -329,7 +331,7 @@ module markovSolver
         CALL system_clock(count=COUNT1)
 
         print*, "Calculate matrix from potential... "
-        COO = sparseFromPotential(AZ, AA, Etot, II_fusion, fusionChance, Rneck_fission, fissionChance, dimSize, &
+        COO = sparseFromPotential(AZ, AA, Etot, II_fusion, Rneck_fission, RneckMassFreeze, dimSize, &
                                             MIN_MAX_DIM, useFullMMCoordinates, num_threads, size(fissionFusionIndices))
         CALL system_clock(count=COUNT2)
         !Sets upp connection between fusion/fission coordinates to starting coordinate.

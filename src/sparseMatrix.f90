@@ -6,13 +6,13 @@ module sparseMatrix
 
     contains
 
-    function sparseFromPotential(AZ, AA, ETOT, II_fusion, fusion_prob, &
-        & Rneck_fission, fission_prob, dimSize, min_max_dim, useFullMMCoordinates, num_threads, numFissionFusionIndices) result(COO)
+    function sparseFromPotential(AZ, AA, ETOT, II_fusion, Rneck_fission, Rneck_mass_freeze, dimSize, min_max_dim,&
+         useFullMMCoordinates, num_threads,numFissionFusionIndices) result(COO)
         !! This function generates ALL transition probabilities except from fusion indices to start index.
         type(COO_dp) :: COO
         INTEGER(kind=i_kind), intent(inout) :: AZ, AA
         INTEGER(kind = i_kind), intent(in) :: II_fusion
-        real(kind=r_kind), intent(in) :: fusion_prob, fission_prob, Rneck_fission
+        real(kind=r_kind), intent(in) :: Rneck_fission, Rneck_mass_freeze
         REAL(kind=r_kind), intent(inout) :: Etot
         integer :: coord(5)
         integer :: II, JJ, KK, LL, MM, IDX, i, neighbourIDX, N, localIdx
@@ -27,6 +27,7 @@ module sparseMatrix
         integer, dimension(5,2) :: MIN_MAX_DIM
         integer :: num_threads
         logical :: useFullMMCoordinates
+        logical :: massLocked
         integer :: numFissionFusionIndices
         CALL omp_set_num_threads(num_threads)
         print* ,' '
@@ -43,7 +44,7 @@ module sparseMatrix
         allocate(INDEX(2,INITNNZ))
         allocate(dat(INITNNZ))
         !$omp parallel shared(NNZ,dat,INDEX) private(II,JJ,KK,LL,MM,coord,IDX,neighbours,psum,localIdx,prob)&
-        !$omp& private(localProbs,localIdxs,NNZstart)
+        !$omp& private(localProbs,localIdxs,NNZstart, massLocked, neckRadius)
         !$omp do schedule(static)
         do II = MIN_II, MAX_II
             do JJ = MIN_JJ, MAX_JJ
@@ -54,18 +55,26 @@ module sparseMatrix
                             !We connect fusion coord to starting index in another method which is why we do nothing here.
                             neckRadius = Rneck(II,JJ,KK,LL,MM)
                             if(II .LE. II_fusion .or. Rneck_fission > neckRadius) then
-                                exit
+                                exit !Fusion defined as II less than or equal 3. Fission defined as Rneck < 1.5fm
                             endif
                             !Fusion/fission does not get here.
+                            massLocked = (neckRadius < Rneck_mass_freeze) !If neckRadius < 2.5fm, we cant move in MM coordinate
+                            
 
                             coord = [II, JJ, KK, LL, MM]
                             IDX = linearIdxFromCoord(coord, dimSize, MIN_MAX_DIM) !Convert five dimensional coordinate into one dimensional index
-                            neighbours = getNeighboursDiag(coord, MIN_MAX_DIM)
+                            neighbours = getNeighboursDiag(coord, MIN_MAX_DIM) !Already pruned neighbours.
                             !neighbours = pruneNeighbours(getNeighbours(coord),dimSize, MIN_MAX_DIM)
                             psum = 0.0_r_kind !sum over total transition probability to 
                             !NNZstart = NNZ
                             localIdx = 0
                             do i = 1,size(neighbours, 2) !Iterate over all neighbours.
+
+                                if(massLocked .and. neighbours(5,i) /= MM) then!If we are masslocked (Rneck < 2.5fm) then we cant move in M direction
+                                    exit
+                                endif
+                                !Mass frozen does not go here.
+
                                 prob = transition_probability(AZ, AA, ETOT, II, JJ, KK, LL, MM, &
                                 neighbours(1,i), neighbours(2,i), neighbours(3,i), neighbours(4,i), neighbours(5,i))
 
@@ -78,7 +87,7 @@ module sparseMatrix
                                     endif
                                 endif
                                 
-                                
+
                                 if(prob > 0.0_r_kind) then 
                                     !Some prob will equal 0. Do not add it to matrix as all non-declared 
                                     !positions already represents a zero. This saves space.
