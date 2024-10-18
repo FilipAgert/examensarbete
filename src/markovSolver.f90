@@ -624,6 +624,10 @@ module markovSolver
             psum = psum + p
             dist(M) = dist(M) + p
         end do
+        if(.not. useFullMMCoordinates) then
+            dist(0) = dist(0) * 2 !If we utilize the symmetry, all points except M = 0 have double weighing (M = 2 and M = -2 for example)
+            !This compensates for that.
+        endif
         dist = dist/psum !Normalize to 1.
     end function getFissionMassDistribution
 
