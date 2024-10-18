@@ -1,5 +1,6 @@
 module result_module
     use iso_fortran_env, only: r_kind=>real64
+    use sparseMatrix, only: coordFromLinearIdx
     implicit none
     private
     public :: convergedResult
@@ -13,6 +14,7 @@ module result_module
         integer, allocatable :: startCoordinate(:,:)
         real(kind=r_kind), allocatable :: energies(:)
         integer :: numResults = 0
+        integer :: MIN_MAX_DIM(5,2)
     contains 
         procedure, public :: addResult => add_result_method
         procedure, public :: printResult => print_result_method
@@ -20,7 +22,8 @@ module result_module
         procedure, public :: getStartCoord => get_coordinate_method
         procedure, public :: getEnergy => get_energy_method
         procedure, public :: hasResult => has_result_method
-        procedure, public :: printResultToFile => print_results_to_file
+        procedure, public :: printPdsToFile => print_pds_to_file
+        procedure, public :: printIMpdsToFile => print_IM_pds_to_file
         procedure, public :: printMassDistribution => print_mass_distribution
     end type convergedResult
 
@@ -31,7 +34,8 @@ contains
         res = self%numResults > 0
     end function has_result_method
 
-    subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionMassDistribution)
+    subroutine add_result_method(self, pd, startCoord, energy, time, multiplications, fusionFrac, fissionMassDistribution,&
+            MIN_MAX_DIM)
         class(convergedResult), intent(inout) :: self
         real(kind=r_kind), intent(in) :: pd(:)
         real(kind=r_kind), intent(in) :: time, energy
@@ -39,6 +43,7 @@ contains
         real(kind=r_kind), intent(in) :: fusionFrac
         real(kind=r_kind), dimension(:), intent(in) :: fissionMassDistribution
         integer, intent(in) :: startCoord(:)
+        integer, dimension(5,2) :: MIN_MAX_DIM
 
         real(kind=r_kind), allocatable :: tempPd(:,:)
         real(kind=r_kind), allocatable :: tempReal(:)
@@ -48,6 +53,7 @@ contains
 
         integer :: n !number of stored results
         n = self%numResults
+        self%MIN_MAX_DIM = MIN_MAX_DIM
 
         if (n == 0) then !allocate arrays
             allocate(self%probabilityDensity(size(pd), 1))
@@ -173,11 +179,9 @@ contains
         integer :: idx
         print*, "Fission mass distribution: "
         print*, self%fissionMassDistribution(:,idx)
-
-
     end subroutine
 
-    subroutine print_results_to_file(self)
+    subroutine print_pds_to_file(self)
         class(convergedResult), intent(in) :: self
         integer :: i, E
         character(len=100) :: filename
@@ -189,8 +193,33 @@ contains
             print*, filename
             call printMatrixToFile(filename, printPd)
         end do
-        
-    end subroutine print_results_to_file
+    end subroutine print_pds_to_file
+
+    subroutine print_IM_pds_to_file(self)
+        class(convergedResult), intent(in) :: self
+        integer :: i, linearIdx
+        integer, dimension(5) :: dimSize, coord
+        character(len=100) :: filename
+        real(kind=r_kind) :: IMpd(self%MIN_MAX_DIM(1,1):self%MIN_MAX_DIM(1,2), self%MIN_MAX_DIM(5,1):self%MIN_MAX_DIM(5,2))
+
+        do i = 1,5
+            dimSize(i) = self%MIN_MAX_DIM(i,2) - self%MIN_MAX_DIM(i,1) + 1
+        end do
+        Impd = 0
+        do i = 1,self%numResults
+            do linearIdx = 1,size(self%probabilityDensity,1)
+                coord = coordFromLinearIdx(linearIdx, dimSize, self%MIN_MAX_DIM)
+                Impd(coord(1), coord(5)) = Impd(coord(1), coord(5)) + self%probabilityDensity(linearIdx, i) 
+                !Loop flattens 5D probability density into a 2D one by summing over J,K,L coordinates.
+            end do
+
+            WRITE(filename, '(A, F4.1)') "II-MM-PROB-", self%energies(i)
+            print*, filename
+            call printMatrixToFile(filename, IMpd)
+        end do
+
+
+    end subroutine print_IM_pds_to_file
 
     subroutine printMatrixToFile(fileName, A)
         !Prints two dimensional matrix A to file.
