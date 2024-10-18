@@ -88,7 +88,7 @@ for f = 1:4
 
     
     plotMatrix = log10(summedA);
-    %plotMatrix = log10(kernel);
+    plotMatrix = log10(kernel);
     climits = [min(plotMatrix,[],'all'), max(plotMatrix,[],'all')];
     
     

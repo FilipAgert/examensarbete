@@ -31,7 +31,7 @@ PROGRAM main
     15, 7, 3, 14, 30 /), (/5,15/) )
 
     real(kind=r_kind), dimension(1) :: E3
-    integer(kind=i_kind), dimension(5,11) :: C3
+    integer(kind=i_kind), dimension(5,1) :: C3
     LOGICAL :: useFullMM = .FALSE.
     integer :: i
     
@@ -74,14 +74,11 @@ PROGRAM main
     TOL = 6.9e-9
     NCV = 15
 
-    E3 = energies(1)
-    do i = 1,5
-      C3(:,i) = startCoords(:,1)
+    E3 = 100
+    do i = 1,1
+      C3(:,1) = startCoords(:,15)
     end do
-    do i = 6,11
-      C3(:,i) = startCoords(:,2)
-    end do
-    call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, II_fusion, Egs, energies, startCoords ,useFullMM, filename_emac5D,&
+    call setupSolver(TOL,NCV,NUM_THREADS,Z,A, Rneck_fission, II_fusion, Egs, E3, C3 ,useFullMM, filename_emac5D,&
                     filename_pot5D, filename_rneck5D)
 
     call solveAllEnergies()

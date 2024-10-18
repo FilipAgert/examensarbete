@@ -21,3 +21,15 @@ Jämför linear interpolation
 Kolla fördelning över mass-assymetri för alla som fussionerna.
 Dvs summera sannolikheten för fission för de olika M koordinaterna och läg i vektor.
 !borde jag vikta assymetrin dubbel så stort för M = 0? eftersom alla andra M är egentligen två grid points pga symmetrin.
+
+Mass assymetri alpha: 
+alpha = 0 => lika stora kärnor.
+alpha = 1 => allt i ena kärnan
+alpha = (A1-A2)/(A1+A2)
+
+Testa för I = 0..60 i steg av 10.
+Testa för gamla gittret med energier 15,20,40.
+
+plotta (2I + 1) * P_fus(E,I)
+
+Om R_neck < 2.5, låt den inte vandra i M koordinaten.

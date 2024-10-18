@@ -20,7 +20,7 @@ module sparseMatrix
         integer(kind=8), parameter :: Nneighbours = 243_8 !Set 11_8 if using only adjecent neighbours. Set 243_8 if using diagonal neighbours
         integer, dimension(:,:), allocatable :: neighbours, INDEX
         real(kind=r_kind), dimension(:), allocatable :: dat
-        real(kind=r_kind)  :: prob, psum
+        real(kind=r_kind)  :: prob, psum, neckRadius
         real(kind=r_kind), dimension(Nneighbours) :: localProbs
         integer, dimension(2,Nneighbours) :: localIdxs
         integer, dimension(5) :: dimSize
@@ -52,7 +52,8 @@ module sparseMatrix
                         do MM = MIN_MAX_DIM(5,1), MAX_MM !from 0 to max_mm
                             !if fusion/fission: do nothing (probability 1 to connect to start_idx)
                             !We connect fusion coord to starting index in another method which is why we do nothing here.
-                            if(II .LE. II_fusion .or. Rneck_fission > Rneck(II, JJ, KK, LL, MM)) then
+                            neckRadius = Rneck(II,JJ,KK,LL,MM)
+                            if(II .LE. II_fusion .or. Rneck_fission > neckRadius) then
                                 exit
                             endif
                             !Fusion/fission does not get here.
